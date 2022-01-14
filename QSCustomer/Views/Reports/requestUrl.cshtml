@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
+    <link rel="stylesheet" href="/mdb5/css/mdb.min.css" />
+    <link rel="stylesheet" href="~/css/barchart.css" />
+    <link rel="stylesheet" href="~/css/site.css" type="text/css" media="screen" runat="server" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+
+
+
+    <!--TEST-->
+    <!--Dev Extreme StyleSheet-->
+    <!-- Diagram and Gantt stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.css" rel="stylesheet">
+    <!-- Theme stylesheets (reference only one of them) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/css/dx.light.css" rel="stylesheet">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Diagram and Gantt development stylesheets -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.css" rel="stylesheet"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.css" rel="stylesheet"> -->
+    <!--Dev Extreme StyleSheet End-->
+    <!--Dev Extreme-->
+    <!-- Diagram and Gantt -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.js"></script>
+
+    <!-- DevExtreme Quill (required by the HtmlEditor UI component) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-quill/1.5.5/dx-quill.min.js"></script>
+
+    <!-- DevExtreme library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/js/dx.all.js"></script>
+
+    <!-- DevExpress.AspNet.Data -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.min.js"></script>
+
+    <!-- Development scripts -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-quill/1.5.5/dx-quill.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.js"></script> -->
+    <!--Dev Extreme End-->
+    <style>
+
+        body {
+            /*
+            padding-top: 100px;
+            padding-left:50px;
+            padding-right:50px;*/
+        }
+
+        table {
+            /*font-size: 8.5px !important;*/
+            font-size: 5px !important;
+            /*FONT SIZE ları tek tek ayarlamak gerekiyor!*/
+        }
+
+        .table > :not(caption) > * > * {
+            padding: 0.5rem 1rem !important;
+        }
+    </style>
+</head>
+<body>
+    @*
+    <section class="container" id="renderedSection">
+        <div class="pt-5"></div>
+
+        <div class="pb-lg-5">
+            <table class="table table-bordered border-expert">
+                <thead>
+                    <tr>
+                        <th scope="col" class="mediumtx" style="width:130px;">EXPRERT</th>
+                        <th scope="col" class="table-active text-center mediumtx" colspan="5">KALITE KONTROL & ROTUS RAPORU / QUALITY CONTROL & REWORK REPORT</th>
+                        <th scope="col" class="smalltx">
+                            OPR. NO<br />
+                            Opr.Nr#
+                        </th>
+                        <th scope="col" class="mediumtx text-center" colspan="2">@Model._SelectedProject.projeCode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-active">
+                        <th scope="row" class="smalltx">
+                            Başlangıç Tarihi<br />
+                            Start Date
+                        </th>
+                        <td class="mediumtx">
+                            <span id="beg_date">
+                                @begDate.ToString("dd/MM/yyyy")
+                            </span>
+                        </td>
+                        <td class="mediumtx">
+                            ÜRÜN REFERANS<br />
+                            Product Ref #
+                        </td>
+                        <td class="mediumtx">
+                            HATA TANIMLARI<br />
+                            Nok Descriptions
+                        </td>
+                        <td class="smalltx">
+                            ŞİKAYET NO<br />
+                            Complaint Nr#
+                        </td>
+                        <td class="mediumtx">
+                            PPM
+
+                        </td>
+                        <td class="smalltx">
+                            KONTROL ADET<br />
+                            Checked Qty
+
+                        </td>
+                        <td class="smalltx">
+                            HATALI ADET<br />
+                            NOK Qty
+
+                        </td>
+                        <td class="smalltx">
+                            RÖTÜŞ ADET<br />
+                            Reworked Qty
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            MÜŞTERİ<br />
+                            Customer
+                        </th>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="customer">
+                                @Model._Customer.musteriAdi
+                            </span>
+                        </td>
+                        <td rowspan="3" style="text-align:center;">
+                            @foreach (var item in Model._PartNrTanimlari)
+                            {
+                                productRef_count++;
+                                if (productRef_count % 3 == 0)
+                                {
+                                    <span>@item.partNrTanimi,</span><br /> }
+                                else
+                                {
+                                    <span>@item.partNrTanimi,</span>}
+                            }
+                        </td>
+                        <td rowspan="3" style="text-align:center;">
+                            @foreach (var item in Model._ProjeHataTanim)
+                            {
+                                productRef_count++;
+                                if (productRef_count % 3 == 0)
+                                {
+                                    <span>@item.hataTanimi,</span><br /> }
+                                else
+                                {
+                                    <span>@item.hataTanimi,</span>}
+                            }
+                        </td>
+                        <td rowspan="3" style="text-align:center;">
+                            <span id="comp_nr">@Model._SelectedProject.sikayetNo</span>
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="ppm">@Model._PPMTotal</span>
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="checked">@Model._CheckedTotal</span>
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="nok">@Model._NokTotal</span><!--HATALI ADETNOK Qty-->
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="reworked">@Model._ReworkedTotal</span><!--RÖTÜŞ ADETReworked Qty-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            OPR. ALANI
+                            Opr. Area
+                        </th>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="opr_area">
+                                @Model._Operation.fabrikaAdi
+                            </span>
+                        </td>
+
+                        <td style="text-align:center; vertical-align: middle;">
+                            HARCANAN SÜRE
+                            Spent Hours
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            %50 FAZLA MESAI
+                            %50 overtime
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            %100 FAZLA MESAI
+                            %100 overtime
+                        </td>
+
+                        <td style="text-align:center; vertical-align: middle;">
+                            TOPLAM HARCANAN SÜRE
+                            Total Spent Hours
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            PARÇA TANIMI
+                            Name of Product
+                        </th>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="nameofProduct">@Model._SelectedProject.materyel</span>
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="spent_hr">
+                                @spent
+                            </span>
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="overtime50"></span><!--%50 FAZLA MESAI %50 overtime-->
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="overtime100">@OverTime100</span><!--%100 FAZLA MESAI %100 overtime-->
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <span id="totalSpent_hr">
+                                @SpentHoursTotal
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="demo-container">
+            <div id="chart">
+            </div>
+        </div>
+
+
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Control Date</th>
+                    <th>Product Date</th>
+                    <th>Ürün Referansları Prod</th>
+                    <th>lotNo</th>
+                    <th>Seri No Serial Number</th>
+                    <th>Harcanan Süre Spent</th>
+                    <th>%50 Fazla Mesai</th>
+                    <th>%100 Fazla Mesai</th>
+                    <th>Kontrol Adet Checked</th>
+                    <th>Rötüş Adet Reworker</th>
+                    <th>Hatalı Adet Nok</th>
+                    @foreach (var item in Model._ProjeHataTanim)
+                    {
+                        <th>@item.hataTanimi</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model._ProjectDetails)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.KontrolTarihi</td>
+                        <td>@item.UretimTarihi</td>
+                        <td>@item.PartNrTanimi</td>
+                        <td>@item.IotNo</td>
+                        <td>@item.SeriNo</td>
+                        <td>@item.Harcanansaat</td>
+                        <td>@item.Mesai50Hesapla</td>
+                        <td>@item.Harcanangirilenmesai</td>
+                        <td>@item.KontrolAdedi</td>
+                        <td>@item.TamirAdedi</td>
+                        <td>@item.HataAdeti</td>
+                        @if (item.Faults != null)
+                        {
+                            @foreach (var FaultItem in item.Faults)
+                            {
+                                if (FaultItem == null)
+                                {
+                                    <td> </td>
+                                }
+                                else
+                                {
+                                    <td>@FaultItem.Adet</td>
+                                }
+                            }}
+
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+
+    </section>
+    <div class="container" hidden>
+        <form asp-action="Renderedpdf" asp-controller="Reports" asp-route-renderedHtmlStr="@Model._HtmlString" id="renderedform">
+            <div asp-validation-summary="All"></div>
+            <input type="text" id="rendVal" class="form-control form-text" asp-for="@Model._HtmlString" />
+            <input type="text" id="urlVal" class="form-control form-text" asp-for="@Model._Url" />
+        </form>
+    </div>
+    *@
+</body>
+</html>

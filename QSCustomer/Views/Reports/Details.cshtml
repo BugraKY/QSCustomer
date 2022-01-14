@@ -1,0 +1,645 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using static QSCustomer.Extensions.HttpContextExtension
+@using static QSCustomer.Extensions.ProjectExtensions
+@using Microsoft.AspNetCore.Http
+
+@model QSCustomer.Models.ViewModels.PdfReport
+
+@inject IHttpContextAccessor HttpContextAccessor
+@{ int count = 0; }
+<link rel="stylesheet" href="/css/barchart.css" />
+<style type="text/css">
+
+    /*
+    @@media only screen and (max-width: 1185) {
+        .table > :not(caption) > * > * {
+            padding: 0 !important;
+        }
+    }*/
+    row > td > .dx-datagrid-text-content {
+        white-space: unset !important;
+    }
+
+    .dx-theme-generic-typography {
+        background-color: aliceblue;
+    }
+
+    .table > :not(caption) > * > * {
+        padding: 0.5rem 1rem !important;
+    }
+
+    .modal {
+        min-height: 100vh;
+        min-width: 100vh;
+        background-color: azure;
+        z-index: 9999 !important;
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+
+    .form {
+        padding: 20% 0;
+        text-align: center;
+    }
+
+    #progress-button {
+        margin-bottom: 20px;
+    }
+
+    #progressBarStatus {
+        display: inline-block;
+    }
+
+    .complete .dx-progressbar-range {
+        background-color: green;
+    }
+</style>
+<div class="container">
+    <div class="container pb-5 pt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <form action="/" method="post"><a asp-controller="Reports" asp-action="LoadingPdfView" asp-route-id="@Model._ProjectCode" id='pdf-report' class="btn btn-expert waves-effect waves-dark" target="_blank" draggable="false"><i class="fas fa-file-pdf"></i></a></form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+
+    <div class="progress shadow-2-strong" style="height: 20px;">
+        <div class="progress-bar bg-expert"
+             id="theprogressbar"
+             role="progressbar"
+             style="width: 1%;"
+             aria-valuenow="0"
+             aria-valuemin="0"
+             aria-valuemax="100">
+            <output id="result"></output>
+        </div>
+    </div>
+
+    <p><strong>Note:</strong> Internet Explorer 9 and earlier versions do not support Web Workers.</p>
+</div>
+
+<section class="container report-det-sect">
+    <div class="container pb-lg-5">
+        <table class="table table-bordered border-expert">
+            <thead>
+                <tr>
+                    <th scope="col" class="mediumtx" style="width:130px;">EXPRERT</th>
+                    <th scope="col" class="table-active text-center mediumtx" colspan="5">KALITE KONTROL & ROTUS RAPORU / QUALITY CONTROL & REWORK REPORT</th>
+                    <th scope="col" class="smalltx">
+                        OPR. NO<br />
+                        Opr.Nr#
+                    </th>
+                    <th scope="col" class="mediumtx" colspan="2">@Model._ProjectCode</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-active">
+                    <th scope="row" class="smalltx">
+                        Başlangıç Tarihi<br />
+                        Start Date
+                    </th>
+                    <td class="mediumtx">
+                        <span id="beg_date"></span>
+                    </td>
+                    <td class="mediumtx">
+                        ÜRÜN REFERANS<br />
+                        Product Ref #
+                    </td>
+                    <td class="mediumtx">
+                        HATA TANIMLARI<br />
+                        Nok Descriptions
+                    </td>
+                    <td class="smalltx">
+                        ŞİKAYET NO<br />
+                        Complaint Nr#
+                    </td>
+                    <td class="mediumtx">
+                        PPM
+
+                    </td>
+                    <td class="smalltx">
+                        KONTROL ADET<br />
+                        Checked Qty
+
+                    </td>
+                    <td class="smalltx">
+                        HATALI ADET<br />
+                        NOK Qty
+
+                    </td>
+                    <td class="smalltx">
+                        RÖTÜŞ ADET<br />
+                        Reworked Qty
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        MÜŞTERİ<br />
+                        Customer
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="customer"></span>
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="product_ref"></span>
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="nok_desc"></span><!--HATA TANIMLARI Nok Descriptions -->
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="comp_nr"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="ppm"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="checked"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="nok"></span><!--HATALI ADETNOK Qty-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="reworked"></span><!--RÖTÜŞ ADETReworked Qty-->
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        OPR. ALANI
+                        Opr. Area
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="opr_area"></span>
+                    </td>
+
+                    <td style="text-align:center; vertical-align: middle;">
+                        HARCANAN SÜRE
+                        Spent Hours
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        %50 FAZLA MESAI
+                        %50 overtime
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        %100 FAZLA MESAI
+                        %100 overtime
+                    </td>
+
+                    <td style="text-align:center; vertical-align: middle;">
+                        TOPLAM HARCANAN SÜRE
+                        Total Spent Hours
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        PARÇA TANIMI
+                        Name of Product
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="nameofProduct"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="spent_hr"></span><!--HARCANAN SÜRE Spent Hours-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="overtime50"></span><!--%50 FAZLA MESAI %50 overtime-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="overtime100"></span><!--%100 FAZLA MESAI %100 overtime-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="totalSpent_hr"></span><!--TOPLAM HARCANAN SÜRE Total Spent Hours-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="container pb-5">
+        <div class="demo-container">
+            <div id="gridContainer"></div>
+        </div>
+    </div>
+</section>
+
+<input id="projetanimleng" hidden />
+
+
+
+
+@*
+<div class="modal">
+    <div id="spinner-loading">
+        <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh" id="sectionArea">
+            <div class="text-center">
+                <div id="large-indicator"></div>
+                <h6>Loading..</h6>
+
+                <div class="form">
+                    <div id="progress-button"></div>
+                    <div class="progress-info"> Time left 00:00:<span id="timer">10</span> </div>
+                    <div id="progress"><div id="progressBarStatus"></div></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+*@
+
+
+
+@section Scripts{
+
+    <script>
+        /*import ProgressBar from "devextreme/ui/progress_bar";*/
+
+        //import ProgressBar from "";
+
+
+        
+        /*
+        var ajax = function (url, data, callback, type) {
+            url = "/progressbarval"
+            var data_array, data_string, idx, req, value;
+            if (data == null) {
+                data = {};
+            }
+            if (callback == null) {
+                callback = function () { };
+            }
+            if (type == null) {
+                //default to a GET request
+                type = 'GET';
+            }
+            data_array = [];
+            for (idx in data) {
+                value = data[idx];
+                data_array.push("" + idx + "=" + value);
+            }
+            data_string = data_array.join("&");
+            req = new XMLHttpRequest();
+            req.open(type, url, false);
+            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            req.onreadystatechange = function () {
+                if (req.readyState === 4 && req.status === 200) {
+                    return callback(req.responseText);
+                }
+            };
+            document.getElementById("result").innerHTML = event.data;
+            req.send(data_string);
+            return req;
+        };
+        */
+
+
+
+
+        
+        var w;
+
+        function startWorker() {
+            if (typeof (Worker) !== "undefined") {
+                if (typeof (w) == "undefined") {
+                    w = new Worker("/js/demo_workers.js");
+                }
+                w.onmessage = function (event) {
+                    document.getElementById("result").innerHTML = event.data + '%';
+                    $('#theprogressbar').attr('aria-valuenow', event.data).css('width', event.data +'%');
+                };
+            } else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+            }
+        }
+        function stopWorker() {
+            w.terminate();
+            w = undefined;
+        }
+        
+        $(document).ready(function () {
+            
+            startWorker();
+
+
+
+
+
+
+
+            $('#progressbar').progressbar();
+            /*
+            for (var i = 0; i < 10; i++) {
+                $.ajax({
+                    url: "/progressbarval",
+                    type: "get",
+                    cache: false,
+                    async: true,
+                    crossDomain: true,
+                    timeout: 2000
+                }).always(function (data) {
+                        console.log("done: " + data);
+                    });
+            }*/
+
+
+/*
+            setTimeout(function () {
+
+
+                }, 2000);
+                */
+
+
+
+            /*
+            $.ajax({
+                url: "test.html",
+                context: document.body
+            }).always(function (data) {
+                $(this).addClass("done: "+data);
+            });*/
+
+            $('#large-indicator').dxLoadIndicator({
+                height: 60,
+                width: 60,
+            });
+        $.ajax({
+            type: "get",
+            url: "/detailTest/" + '@Model._ProjectCode' + "?&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic',
+                success: function (data) {
+
+                    //return data;
+                    console.log(data);
+                    console.log("İşlenen veri: " + JSON.stringify(data._SelectedProject))
+
+                    var baslangicTarihi = new Date(data._SelectedProject.baslangicTarihi);
+                    var _PartNrTanimlariArr = data._PartNrTanimlari.length;
+                    var _ProjeHataTanimArr = data._ProjeHataTanim.length;
+
+                    $("#opr_area").text(data._Operation.fabrikaAdi);
+                    $("#customer").text(data._Customer.musteriAdi);
+                    $("#beg_date").text(baslangicTarihi.toLocaleDateString("tr-TR"));
+                    $("#nameofProduct").text(data._SelectedProject.materyel);
+
+
+                    var s = 0;
+                    for (let i = 0; i < _PartNrTanimlariArr; i++) {
+                        if (!(data._PartNrTanimlari[i].partNrTanimi == "")) {
+                            s++;
+                            if (s % 3 == 0)
+                                $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + "," + "<br>");
+                            else
+                                $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + ",");
+                        }
+                    }
+                    var z = 0;
+                    //_PartNrTanimlari
+                    for (let i = 0; i < _ProjeHataTanimArr; i++) {
+                        if (!(data._ProjeHataTanim[i].hataTanimi == ""))
+                            $("#nok_desc").append(data._ProjeHataTanim[i].hataTanimi + ",");
+                    }
+                    $("#comp_nr").text(data._SelectedProject.sikayetNo);
+                    $("#checked").text(data._CheckedTotal);
+                    $("#nok").text(data._NokTotal);
+                    $("#reworked").text(data._ReworkedTotal);
+                    $("#ppm").text(data._PPMTotal);
+                    $("#overtime100").text(Math.round(data._OverTime100Total*100)/100);
+                    $("#spent_hr").text(Math.round(data._SpentHours*100)/100);
+                    $("#totalSpent_hr").text(Math.round(data._SpentHoursTotal * 100) / 100);
+					const obj = JSON.stringify(data);
+                    const { formatMessage } = DevExpress.localization;
+
+                    /*
+                    for (var i = 0; i < data._ProjeHataTanim.length; i++) {
+                        _dataFields += `{ dataField: '` + data._ProjeHataTanim[i].hataTanimi+`' },`
+                    };*/
+                    var faultsLength = data._ProjeHataTanim.length;
+                    sessionStorage.setItem("faultsLength", faultsLength);
+
+                    console.log("Hatalar sayısı:" + faultsLength);
+
+                    /*
+                    $('#projetanimleng').val(faultsLength);
+                    console.log();*/
+
+                    @{
+                        count = Model._ProjeHataTanimCount;
+                        await System.Threading.Tasks.Task.Delay(500);
+                        /*
+                    while (FaultValues.ProjectCode != Model)
+                    {
+                        count = FaultValues.Count;
+                        await System.Threading.Tasks.Task.Delay(500);
+                    }*/
+
+
+}
+                    $("#chartContainer").dxChart("getAllSeries")
+                    $(() => {
+                        $('#gridContainer').dxDataGrid({
+                         dataSource: data._ProjectDetails,
+                            keyExpr: 'id',
+							showBorders: true,
+                            showRowLines: true,
+                            selection: {
+                             mode: 'single',
+							},
+                            paging: {
+                             pageSize: 50,
+                            },
+                            hoverStateEnabled: true,
+                            //columns: [html]
+
+                            columns: [
+                                { dataField: 'id', caption:'id' },// visible: false
+                                { dataField: 'kontrolTarihi', caption: 'Control Date' },
+                                { dataField: 'uretimTarihi', caption: 'Product Date' },
+                                { dataField: 'partNrTanimi', caption: 'Ürün Referansları Prod' },
+                                { dataField: 'iotNo', caption: 'lotNo' },
+                                { dataField: 'seriNo', caption: 'Seri No Serial Number' },
+                                { dataField: 'harcanansaat', caption: 'Harcanan Süre Spent' },
+								{ dataField: 'mesai50Hesapla', caption: '%50 Fazla Mesai' },
+                                { dataField: 'harcanangirilenmesai', caption: '%100 Fazla Mesai' },
+								{ dataField: 'kontrolAdedi', caption: 'Kontrol Adet Checked' },
+                                { dataField: 'tamirAdedi', caption: 'Rötüş Adet Reworker' },
+                                { dataField: 'hataAdeti', caption: 'Hatalı Adet Nok' },
+                                @if (count > 0)
+                                {
+                                    @for (int i = 0; i < count; i++)
+                                    {
+                                        <text>
+                                        { dataField: 'faults[@i].adet', caption: data._ProjeHataTanim[@i].hataTanimi },
+                                        </text>
+                                    }
+                                }
+
+                            ],
+                        });
+                    });
+
+                    stopWorker();
+                    $('#theprogressbar').attr('aria-valuenow', 100).css('width', 100 + '%');
+                    document.getElementById("result").innerHTML ='100%';
+                    $('.modal').hide();
+                        /*$("#dx-col-1").width("10px");*/
+
+
+                        /*DX TABLE for Detail Reports
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+                         *
+
+                         */
+                }
+            });
+
+            setTimeout(function () {
+                $('a[href]#pdf-report').each(function () {
+                    var href = this.href;
+                    $(this).removeAttr('href').css('cursor', 'pointer').click(function () {
+                        if (href.toLowerCase().indexOf("#") >= 0) {
+
+                        } else {
+                            window.open(href, '_blank');
+                        }
+                    });
+                });
+
+            }, 500);
+
+            $(() => {
+                $('#chart').dxChart({
+                    dataSource,
+                    commonSeriesSettings: {
+                        argumentField: 'state',
+                        type: 'bar',
+                        hoverMode: 'allArgumentPoints',
+                        selectionMode: 'allArgumentPoints',
+                        label: {
+                            visible: true,
+                            format: {
+                                type: 'fixedPoint',
+                                precision: 0,
+                            },
+                        },
+                    },
+                    series: [
+                        { valueField: 'year2018', name: '2018' },
+                        { valueField: 'year2017', name: '2017' },
+                        { valueField: 'year2016', name: '2016' },
+                    ],
+                    title: 'Gross State Product within the Great Lakes Region',
+                    legend: {
+                        verticalAlignment: 'bottom',
+                        horizontalAlignment: 'center',
+                    },
+                    export: {
+                        enabled: true,
+                    },
+                    onPointClick(e) {
+                        e.target.select();
+                    },
+                });
+            });
+
+            const dataSource = [{
+                state: 'Illinois',
+                year2016: 803,
+                year2017: 823,
+                year2018: 863,
+            }, {
+                state: 'Indiana',
+                year2016: 316,
+                year2017: 332,
+                year2018: 332,
+            }, {
+                state: 'Michigan',
+                year2016: 452,
+                year2017: 459,
+                year2018: 470,
+            }, {
+                state: 'Ohio',
+                year2016: 621,
+                year2017: 642,
+                year2018: 675,
+            }, {
+                state: 'Wisconsin',
+                year2016: 290,
+                year2017: 294,
+                year2018: 301,
+            }];
+
+
+            $(() => {
+                let seconds = 10;
+                let inProgress = false;
+                let intervalId;
+
+                const progressBarStatus = $('#progressBarStatus').dxProgressBar({
+                    min: 0,
+                    max: 100,
+                    width: '90%',
+                    statusFormat(value) {
+                        return `Loading: ${value * 100}%`;
+                    },
+                    onComplete(e) {
+                        inProgress = false;
+                        progressButton.option('text', 'Restart progress');
+                        e.element.addClass('complete');
+                    },
+                }).dxProgressBar('instance');
+
+                const progressButton = $('#progress-button').dxButton({
+                    text: 'Start progress',
+                    width: 200,
+                    onClick() {
+                        $('#progressBarStatus').removeClass('complete');
+                        if (inProgress) {
+                            progressButton.option('text', 'Continue progress');
+                            clearInterval(intervalId);
+                        } else {
+                            progressButton.option('text', 'Stop progress');
+                            setCurrentStatus();
+                            intervalId = setInterval(timer, 1000);
+                        }
+                        inProgress = !inProgress;
+                    },
+                }).dxButton('instance');
+
+                function setCurrentStatus() {
+                    progressBarStatus.option('value', (10 - seconds) * 10);
+                    $('#timer').text((`0${seconds}`).slice(-2));
+                }
+
+                function timer() {
+                    seconds -= 1;
+                    setCurrentStatus();
+                    if (seconds === 0) {
+                        clearInterval(intervalId);
+                        seconds = 10;
+                    }
+                }
+            });
+
+        });
+    </script>
+}

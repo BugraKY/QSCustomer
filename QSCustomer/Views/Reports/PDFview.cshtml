@@ -1,0 +1,324 @@
+﻿@using static QSCustomer.Extensions.HttpContextExtension
+@using static QSCustomer.Extensions.ProjectExtensions
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = null;
+    int count = 0;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="/mdb5/css/mdb.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" type="text/css" media="screen" runat="server" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <!--<title>PDFview</title>-->
+    <style>
+
+        body {
+            padding-top: 10vh;
+            padding-left: 6.5vh;
+            padding-right: 6.5vh;
+        }
+
+        table {
+            font-size: 8.5px !important;
+            /*FONT SIZE ları tek tek ayarlamak gerekiyor!*/
+        }
+
+        .table > :not(caption) > * > * {
+            padding: 0.5rem 1rem !important;
+        }
+    </style>
+    <!--TEST-->
+    <!--Dev Extreme StyleSheet-->
+    <!-- Diagram and Gantt stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.css" rel="stylesheet">
+    <!-- Theme stylesheets (reference only one of them) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/css/dx.carmine.css" rel="stylesheet">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Diagram and Gantt development stylesheets -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.css" rel="stylesheet"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.css" rel="stylesheet"> -->
+    <!--Dev Extreme StyleSheet End-->
+    <!--Dev Extreme-->
+    <!-- Diagram and Gantt -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.js"></script>
+
+    <!-- DevExtreme Quill (required by the HtmlEditor UI component) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-quill/1.5.5/dx-quill.min.js"></script>
+
+    <!-- DevExtreme library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/js/dx.all.js"></script>
+
+    <!-- DevExpress.AspNet.Data -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.min.js"></script>
+
+    <!-- Development scripts -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-quill/1.5.5/dx-quill.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.js"></script> -->
+    <!--Dev Extreme End-->
+
+    <script src="~/js/chartTest.js"></script>
+    <!--TEST END-->
+</head>
+<body>
+    <div class="pb-lg-5">
+        <table class="table table-bordered border-expert">
+            <thead>
+                <tr>
+                    <th scope="col" class="mediumtx" style="width:130px;">EXPRERT</th>
+                    <th scope="col" class="table-active text-center mediumtx" colspan="5">KALITE KONTROL & ROTUS RAPORU / QUALITY CONTROL & REWORK REPORT</th>
+                    <th scope="col" class="smalltx">
+                        OPR. NO<br />
+                        Opr.Nr#
+                    </th>
+                    <th scope="col" class="mediumtx" colspan="2">@Model</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-active">
+                    <th scope="row" class="smalltx">
+                        Başlangıç Tarihi<br />
+                        Start Date
+                    </th>
+                    <td class="mediumtx">
+                        <span id="beg_date"></span>
+                    </td>
+                    <td class="mediumtx">
+                        ÜRÜN REFERANS<br />
+                        Product Ref #
+                    </td>
+                    <td class="mediumtx">
+                        HATA TANIMLARI<br />
+                        Nok Descriptions
+                    </td>
+                    <td class="smalltx">
+                        ŞİKAYET NO<br />
+                        Complaint Nr#
+                    </td>
+                    <td class="mediumtx">
+                        PPM
+
+                    </td>
+                    <td class="smalltx">
+                        KONTROL ADET<br />
+                        Checked Qty
+
+                    </td>
+                    <td class="smalltx">
+                        HATALI ADET<br />
+                        NOK Qty
+
+                    </td>
+                    <td class="smalltx">
+                        RÖTÜŞ ADET<br />
+                        Reworked Qty
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        MÜŞTERİ<br />
+                        Customer
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="customer"></span>
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="product_ref"></span>
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="nok_desc"></span><!--HATA TANIMLARI Nok Descriptions -->
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="comp_nr"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="ppm"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="checked"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="nok"></span><!--HATALI ADETNOK Qty-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="reworked"></span><!--RÖTÜŞ ADETReworked Qty-->
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        OPR. ALANI
+                        Opr. Area
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="opr_area"></span>
+                    </td>
+
+                    <td style="text-align:center; vertical-align: middle;">
+                        HARCANAN SÜRE
+                        Spent Hours
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        %50 FAZLA MESAI
+                        %50 overtime
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        %100 FAZLA MESAI
+                        %100 overtime
+                    </td>
+
+                    <td style="text-align:center; vertical-align: middle;">
+                        TOPLAM HARCANAN SÜRE
+                        Total Spent Hours
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        PARÇA TANIMI
+                        Name of Product
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="nameofProduct"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="spent_hr"></span><!--HARCANAN SÜRE Spent Hours-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="overtime50"></span><!--%50 FAZLA MESAI %50 overtime-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="overtime100"></span><!--%100 FAZLA MESAI %100 overtime-->
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="totalSpent_hr"></span><!--TOPLAM HARCANAN SÜRE Total Spent Hours-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pb-5">
+        <div class="demo-container">
+            <div id="gridContainer"></div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+        $(document).ready(function () {
+        $.ajax({
+                type: "get",
+            url: "/detailTest/" + '@Model' + "?",
+                success: function (data) {
+                    console.log(data);
+                    console.log("İşlenen veri: " + JSON.stringify(data._SelectedProject))
+
+                    var baslangicTarihi = new Date(data._SelectedProject.baslangicTarihi);
+                    var _PartNrTanimlariArr = data._PartNrTanimlari.length;
+                    var _ProjeHataTanimArr = data._ProjeHataTanim.length;
+
+                    $("#opr_area").text(data._Operation.fabrikaAdi);
+                    $("#customer").text(data._Customer.musteriAdi);
+                    $("#beg_date").text(baslangicTarihi.toLocaleDateString("tr-TR"));
+                    $("#nameofProduct").text(data._SelectedProject.materyel);
+
+                    var s = 0;
+                    for (let i = 0; i < _PartNrTanimlariArr; i++) {
+                        if (!(data._PartNrTanimlari[i].partNrTanimi == "")) {
+                            s++;
+                            if (s % 3 == 0)
+                                $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + "," + "<br>");
+                            else
+                                $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + ",");
+                        }
+                    }
+                    var z = 0;
+                    for (let i = 0; i < _ProjeHataTanimArr; i++) {
+                        if (!(data._ProjeHataTanim[i].hataTanimi == ""))
+                            $("#nok_desc").append(data._ProjeHataTanim[i].hataTanimi + ",");
+                    }
+                    $("#comp_nr").text(data._SelectedProject.sikayetNo);
+                    $("#checked").text(data._CheckedTotal);
+                    $("#nok").text(data._NokTotal);
+                    $("#reworked").text(data._ReworkedTotal);
+                    $("#ppm").text(data._PPMTotal);
+                    $("#overtime100").text(Math.round(data._OverTime100Total*100)/100);
+                    $("#spent_hr").text(Math.round(data._SpentHours*100)/100);
+                    $("#totalSpent_hr").text(Math.round(data._SpentHoursTotal * 100) / 100);
+					const obj = JSON.stringify(data);
+                    const { formatMessage } = DevExpress.localization;
+                    var faultsLength = data._ProjeHataTanim.length;
+                    sessionStorage.setItem("faultsLength", faultsLength);
+
+                    @{
+                        count = FaultValues.Count;
+                        while (FaultValues.ProjectCode != Model)
+                        {
+                            count = FaultValues.Count;
+                            await System.Threading.Tasks.Task.Delay(500);
+                        }
+                     }
+                    $("#chartContainer").dxChart("getAllSeries")
+                    $(() => {
+                        $('#gridContainer').dxDataGrid({
+                         dataSource: data._ProjectDetails,
+                            keyExpr: 'id',
+							showBorders: true,
+                            showRowLines: true,
+                            selection: {
+                             mode: 'single',
+							},
+                            paging: {
+                             pageSize: 999,
+                            },
+                            hoverStateEnabled: true,
+                            columns: [
+                                { dataField: 'id', caption:'id' },// visible: false
+                                { dataField: 'kontrolTarihi', caption: 'Control Date' },
+                                { dataField: 'uretimTarihi', caption: 'Product Date' },
+                                { dataField: 'partNrTanimi', caption: 'Ürün Referansları Prod' },
+                                { dataField: 'iotNo', caption: 'lotNo' },
+                                { dataField: 'seriNo', caption: 'Seri No Serial Number' },
+                                { dataField: 'harcanansaat', caption: 'Harcanan Süre Spent' },
+								{ dataField: 'mesai50Hesapla', caption: '%50 Fazla Mesai' },
+                                { dataField: 'harcanangirilenmesai', caption: '%100 Fazla Mesai' },
+								{ dataField: 'kontrolAdedi', caption: 'Kontrol Adet Checked' },
+                                { dataField: 'tamirAdedi', caption: 'Rötüş Adet Reworker' },
+                                { dataField: 'hataAdeti', caption: 'Hatalı Adet Nok' },
+                                @for (int i = 0; i < count; i++)
+                                {
+                                    <text>
+                                { dataField: 'faults[@i].adet' , caption: data._ProjeHataTanim[@i].hataTanimi },
+                                    </text>
+                                }
+                            ],
+                        });
+                    });
+                }
+            });
+
+            setTimeout(function () {
+                $('a[href]#pdf-report').each(function () {
+                    var href = this.href;
+                    $(this).removeAttr('href').css('cursor', 'pointer').click(function () {
+                        if (href.toLowerCase().indexOf("#") >= 0) {
+
+                        } else {
+                            window.open(href, '_blank');
+                        }
+                    });
+                });
+
+            }, 500);
+        });
+</script>

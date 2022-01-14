@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>@ViewData["Title"] - QSCustomer</title>
+    <!--<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />-->
+    <link rel="stylesheet" href="/mdb5/css/mdb.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" type="text/css" media="screen" runat="server" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <!--Dev Extreme StyleSheet-->
+    <!-- Diagram and Gantt stylesheets -->
+    <link href="/lib/devextreme/dist/css/dx-diagram.min.css" rel="stylesheet">
+    <link href="/lib/devextreme/dist/css/dx-gantt.min.css" rel="stylesheet">
+    <link href="/css/expert-table.css" rel="stylesheet">
+    <!--Dev Extreme StyleSheet End-->
+</head>
+<body>
+    <header onmousedown="return false">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/assets/img/logo.png" alt="logo" height="50" width="220"/></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />@*
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>*@
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="pb-lg-5">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - QSCustomer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/mdb5/js/mdb.min.js"></script>
+
+    <script src="~/lib/devextreme/dist/js/dx-diagram.min.js"></script>
+    <script src="~/lib/devextreme/dist/js/dx-gantt.min.js"></script>
+    <script src="~/lib/devextreme/dist/js/dx-quill.min.js"></script>
+    <script src="~/lib/devextreme/dist/js/dx.all.js"></script>
+    <script src="~/lib/devextreme/dist/js/dx.aspnet.data.min.js"></script>
+
+    <script src="/lib/jquery-ui/dist/js/jquery-ui.min.js" integrity="sha256-R6eRO29lbCyPGfninb/kjIXeRjMOqY3VWPVk6gMhREk=" crossorigin="anonymous"></script>
+
+    <script src="~/lib/datatables/dist/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+    <ejs-scripts></ejs-scripts>
+</body>
+</html>

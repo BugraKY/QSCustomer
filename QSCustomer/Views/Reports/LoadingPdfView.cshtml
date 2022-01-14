@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewData["Title"] = "LoadingPdfView";
+}
+
+
+
+
+<div class="container">
+    <div id="spinner-loading">
+        <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh" id="sectionArea">
+            <div class="text-center">
+                <div id="large-indicator">
+                </div>
+                <h6>Your pdf report is being prepared...</h6>
+            </div>
+
+        </section>
+    </div>
+</div>
+<div class="container" hidden>
+    <form asp-action="PDFviewTest" asp-controller="Reports" asp-route-projectCode="@Model" id="renderedform" method="get" hidden>
+        <div asp-validation-summary="All"></div>
+        <input type="text" class="form-control form-text" value="@Model" />
+    </form>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            @*
+        var id='@Model';
+        $.ajax({
+            url: '/Reports/download',
+            data: { id: id },
+            type:"get"
+        }).done(function () {
+
+        });
+            *@
+            @*window.location.href = '@Url.Action("download", "Reports")/' + '@Model';*@
+            $('#renderedform').submit();
+            $('#large-indicator').dxLoadIndicator({
+                height: 60,
+                width: 60,
+            });
+    });
+    </script>
+}
+
+
