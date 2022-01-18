@@ -25,6 +25,7 @@ using QSCustomer.Extensions;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using QSCustomer.Utility;
+using static QSCustomer.Utility.ProjectConstant;
 //using iTextSharp.text;
 //using iTextSharp.text.pdf;
 //using iTextSharp.text.html.simpleparser;
@@ -68,7 +69,7 @@ namespace QSCustomer.Controllers
                 //var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email);//ORIGINAL
                 var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com");//TEST
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
-                    return RedirectToAction("Unconfirmed","Home");
+                    return RedirectToAction("Unconfirmed", "Home");
                 return View(Company.idMusteriTanim);
             }
             else
@@ -80,7 +81,7 @@ namespace QSCustomer.Controllers
         {
             Response.Cookies.Append("_kj6ght", open.ToString());
             Response.Cookies.Append("_h4k9xp", close.ToString());
-            
+
 
 
             #region Authentication Json
@@ -171,8 +172,8 @@ namespace QSCustomer.Controllers
 
                         };
                         ProjectList.Add(ProjectItem);*/
-                        
-                        var ProjeDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == item.id).Where(p=>p.idProforma == 0).Count();
+
+                        var ProjeDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == item.id).Where(p => p.idProforma == 0).Count();
                         if (ProjeDetailCount > 0)
                         {
                             var ProjectItem = new ProjectList()
@@ -196,7 +197,7 @@ namespace QSCustomer.Controllers
                             };
                             ProjectList.Add(ProjectItem);
                         }
-                        
+
                     }
                 }
                 if (close)
@@ -386,17 +387,17 @@ namespace QSCustomer.Controllers
             var deg_2 = projedetay_say;*/
             ProjectState states = new ProjectState()
             {
-                Close=close,
-                Open=open,
-                Problematic=problematic
+                Close = close,
+                Open = open,
+                Problematic = problematic
             };
             PdfReport report = new PdfReport()
             {
                 _ProjectCode = projectCode,
                 _ProjeHataTanimCount = ProjeHataTanim.Count(),
-                _ProjectState=states
+                _ProjectState = states
             };
-            
+
             if (SelectedProject != null)
                 return View("Details", report);
             else
@@ -433,12 +434,12 @@ namespace QSCustomer.Controllers
             #endregion Authentication
 
             Console.WriteLine("Section 2");
-            if (AuthSelectedProject.idProjeDurumu==4)
+            if (AuthSelectedProject.idProjeDurumu == 4)
             {
                 open = false;
                 close = true;
             }
-            if(AuthSelectedProject.idProjeDurumu == 1)
+            if (AuthSelectedProject.idProjeDurumu == 1)
             {
                 open = true;
                 close = false;
@@ -446,14 +447,14 @@ namespace QSCustomer.Controllers
 
             ProjectState state = new ProjectState()
             {
-                Close=close,
-                Open=open,
-                Problematic=problematic
+                Close = close,
+                Open = open,
+                Problematic = problematic
             };
             PdfReport report = new PdfReport()
             {
-                _ProjectCode=projectCode,
-                _ProjectState =state,
+                _ProjectCode = projectCode,
+                _ProjectState = state,
                 _SelectedProject = AuthSelectedProject,
             };
             PdfReport StatusOpenProjects = new PdfReport();
@@ -462,7 +463,7 @@ namespace QSCustomer.Controllers
 
             PdfReport AllReports = new PdfReport();
             Console.WriteLine("Section 3");
-            GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow,report);
+            GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report);
 
             if (open == true && close == true)
             {
@@ -476,17 +477,17 @@ namespace QSCustomer.Controllers
                 AllReports._OverTime100Total += StatusCloseProjects._OverTime100Total;
                 AllReports._OverTime50Total += StatusCloseProjects._OverTime50Total;
                 AllReports._PartNrTanimlari.AddRange(StatusCloseProjects._PartNrTanimlari);
-                AllReports._PPMTotal+= StatusCloseProjects._PPMTotal;
+                AllReports._PPMTotal += StatusCloseProjects._PPMTotal;
                 AllReports._ProjectDetails.AddRange(StatusCloseProjects._ProjectDetails);
                 AllReports._ProjectTotalsOnebyDate.AddRange(StatusCloseProjects._ProjectTotalsOnebyDate);
                 AllReports._ProjeHataTanim.AddRange(StatusCloseProjects._ProjeHataTanim);
-                AllReports._ProjeHataTanimCount+=StatusCloseProjects._ProjeHataTanimCount;
-                AllReports._ReworkedTotal+=StatusCloseProjects._ReworkedTotal;
-                AllReports._SpentHours+=StatusCloseProjects._SpentHours;
-                AllReports._SpentHoursTotal+=StatusCloseProjects._SpentHoursTotal;
+                AllReports._ProjeHataTanimCount += StatusCloseProjects._ProjeHataTanimCount;
+                AllReports._ReworkedTotal += StatusCloseProjects._ReworkedTotal;
+                AllReports._SpentHours += StatusCloseProjects._SpentHours;
+                AllReports._SpentHoursTotal += StatusCloseProjects._SpentHoursTotal;
                 return Json(AllReports);
             }
-            if(open==true)
+            if (open == true)
             {
                 StatusOpenProjects = await getProjectDetail.GetStatusOpen();
                 return Json(StatusOpenProjects);
@@ -884,135 +885,8 @@ namespace QSCustomer.Controllers
         //[ValidateInput(false)]
         public IActionResult Renderedpdf(PdfReport renderedHtmlStr)
         {
-
-            string htmlString_Before = @"
-<!DOCTYPE html>
-<html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
-<head>
-    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8;' />
-    <link rel='stylesheet' href='/mdb5/css/mdb.min.css' />
-    <link rel='stylesheet' href='~/css/barchart.css' />
-    <link rel='stylesheet' href='~/css/site.css' type='text/css' media='screen' runat='server' />
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css' />
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap' />
-
-
-
-    <!--TEST-->
-    <!--Dev Extreme StyleSheet-->
-    <!-- Diagram and Gantt stylesheets -->
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.css' rel='stylesheet'>
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.css' rel='stylesheet'>
-    <!-- Theme stylesheets (reference only one of them) -->
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/css/dx.light.css' rel='stylesheet'>
-    <script src='~/lib/jquery/dist/jquery.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
-    <script src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js'></script>
-    <script src='~/lib/bootstrap/dist/js/bootstrap.bundle.min.js'></script>
-    <script src='~/js/site.js' asp-append-version='true'></script>
-    <!-- Diagram and Gantt development stylesheets -->
-    <!--Dev Extreme StyleSheet End-->
-    <!--Dev Extreme-->
-    <!-- Diagram and Gantt -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.js'></script>
-
-    <!-- DevExtreme Quill (required by the HtmlEditor UI component) -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/devextreme-quill/1.5.5/dx-quill.min.js'></script>
-
-    <!-- DevExtreme library -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/js/dx.all.js'></script>
-
-    <!-- DevExpress.AspNet.Data -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.min.js'></script>
-
-    <style>
-        table {
-            font-size: 8.5px !important;
-            font-weight: 900 !important;
-            color: black !important;
-            width: 100% !important;
-            text-align:center;
-            border-color:black!important;
-        }
-
-        .table > :not(caption) > * > * {
-            padding: 0.2rem 0.2rem !important;
-        }
-/*
-            table.rotate-table-grid {
-                box-sizing: border-box;
-                border-collapse: collapse;
-            }
-
-            .rotate-table-grid tr, .rotate-table-grid td, .rotate-table-grid th {
-                border: 1px solid #ddd;
-                position: relative;
-                padding: 10px;
-            }
-
-                .rotate-table-grid th span {
-                    transform-origin: 0 50%;
-                    -moz-transform-origin: 0 50%;
-                    -webkit-transform-origin: 0 50%;
-                    transform: rotate(-90deg);
-                    -moz-transform: rotate(-90deg);
-                    -webkit-transform: rotate(-90deg);
-                    white-space: nowrap;
-                    display: block;
-                    position: absolute;
-                    bottom: 0;
-                    left: 50%;
-                }*/
-/*
-            table.rotate-table-grid {
-                box-sizing: border-box;
-                border-collapse: collapse;
-            }
-
-            .rotate-table-grid tr, .rotate-table-grid td, .rotate-table-grid th {
-                border: 1px solid #ddd;
-                position: relative;
-                padding: 10px;
-            }
-
-                .rotate-table-grid th span {
-                    transform-origin: 0 50%;
-                    -moz-transform-origin: 0 50%;
-                    -webkit-transform-origin: 0 50%;
-                    writing-mode: vertical-rl;
-                    -moz-writing-mode: vertical-rl;
-                    -webkit-writing-mode: vertical-rl;
-                    white-space: nowrap;
-                    display: block;
-                    position: absolute;
-                    bottom: 0;
-                    left: 50%;
-                }*/
-
-        .verticalTableHeader span {
-            -webkit-writing-mode: vertical-rl;
-            white-space:nowrap;
-            text-align: left;
-            height: 95px;
-            overflow: hidden; 
-        }
-    </style>
-</head>
-<body>
-
-    <section class='container' id='renderedSection'>
-";
-            string htmlString_After = @"
-
-    </section>
-
-</body>
-</html>
-";
-
             #region MainCode
-            string derlenmisweb = htmlString_Before + renderedHtmlStr._HtmlString + htmlString_After;
+            string derlenmisweb = PDFString.Before + renderedHtmlStr._HtmlString + PDFString.After;
             string _url = "https://localhost:5001/pdfviewtest/" + renderedHtmlStr._SelectedProject.projeCode + "?";
 
 
@@ -1038,9 +912,208 @@ namespace QSCustomer.Controllers
             ms.Position = 0;
             #endregion MainCode
 
-            return File(ms, "application/pdf",renderedHtmlStr._SelectedProject.projeCode+".pdf",true);// Download Directly Pdf
+            return File(ms, "application/pdf", renderedHtmlStr._SelectedProject.projeCode + ".pdf", true);// Download Directly Pdf
             //return File(ms, "application/pdf",renderedHtmlStr._SelectedProject.projeCode+".pdf");// Open Pdf File in Web
         }
+
+        [Obsolete]
+        [HttpPost("DownloadPDF")]
+        public async Task<IActionResult> DownloadPdf(PdfReport renderedHtmlStr)
+        {
+            string MainTab_Chart = renderedHtmlStr._HtmlString;
+
+            PdfReport StatusOpenProjects = new PdfReport();
+            PdfReport StatusCloseProjects = new PdfReport();
+
+            string projectCode = renderedHtmlStr._SelectedProject.projeCode;
+            //string projectCode = "FR21-25";
+
+            #region Authentication
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if (projectCode == null)
+                return Json(HttpStatusCode.NoContent);
+            var AuthSelectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
+            var AuthProjeHataTanim = _uow.ProjeHataTanimi.GetAll(i => i.idProje == AuthSelectedProject.id);
+            var AuthCustomer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == AuthSelectedProject.idMusteri);
+            if (Claims != null)
+            {
+                var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
+                //var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email); //ORIGINAL
+                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com"); //TEST
+                if (AuthSelectedProject.idMusteri != CompanyAuth.idMusteriTanim)
+                    return Json(HttpStatusCode.NoContent);
+                if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
+                    return Json(HttpStatusCode.Unauthorized);
+            }
+            else
+                return Json(HttpStatusCode.NoContent);
+            #endregion Authentication
+
+            PdfReport report = new PdfReport()
+            {
+                _ProjectCode = projectCode,
+                _SelectedProject = AuthSelectedProject,
+            };
+            PdfReport StatusProblematicProjects = new PdfReport();
+
+            PdfReport AllReports = new PdfReport();
+            Console.WriteLine("Section 3");
+            GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report);
+            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
+
+            StatusOpenProjects = await getProjectDetail.GetStatusOpen();
+            //StatusCloseProjects = getProjectDetail.GetStatusClose();
+
+            string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects,MainTab_Chart);
+
+            string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
+            //string baseUrl = string.Empty;
+            //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
+            string baseUrl = "https://localhost:5001/baseurlforpdfconvert/";
+
+
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+            WebKitConverterSettings webkitConverterSettings = new WebKitConverterSettings();
+            webkitConverterSettings.WebKitPath = Path.Combine(_hostingEnvironment.ContentRootPath, "ExtensionLibs/QtBinariesDotNetCore");
+
+            webkitConverterSettings.Orientation = PdfPageOrientation.Landscape;
+            webkitConverterSettings.EnableRepeatTableHeader = true;
+            webkitConverterSettings.MediaType = MediaType.Print;
+            //webkitConverterSettings.Margin.Bottom = 40;
+            webkitConverterSettings.Margin.Bottom = 30;
+            webkitConverterSettings.Margin.Top = 20;
+            htmlConverter.ConverterSettings = webkitConverterSettings;
+            PdfDocument document = new PdfDocument();
+            document = htmlConverter.Convert(_PdfString, baseUrl);
+            MemoryStream ms = new MemoryStream();
+
+            document.Save(ms);
+            document.Close(true);
+            ms.Position = 0;
+
+
+            //return File(ms, "application/pdf", projectCode + ".pdf", true);// Download Directly Pdf
+            return File(ms, "application/pdf",true);// Open Pdf File in Web
+            /*
+            MemoryStream ms = new MemoryStream();
+            iText.Html2pdf.HtmlConverter.ConvertToElements(_PdfString);*/
+        }
+        //[HttpGet("baseurlforpdfconvert/{projectCode}")]
+        [Route("baseurlforpdfconvert/{projectCode}")]
+        public IActionResult BaseUrlforPdfConvert(string projectCode)
+        {
+            //projectCode = "FR21-25";
+            #region Authentication
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if (projectCode == null)
+                return NotFound();
+            var AuthSelectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
+            var AuthProjeHataTanim = _uow.ProjeHataTanimi.GetAll(i => i.idProje == AuthSelectedProject.id);
+            var AuthCustomer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == AuthSelectedProject.idMusteri);
+            if (Claims != null)
+            {
+                var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
+                //var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email); //ORIGINAL
+                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com"); // TEST
+                if (AuthSelectedProject.idMusteri != CompanyAuth.idMusteriTanim)
+                    return NotFound();
+                if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
+                    return RedirectToAction("Unconfirmed", "Home");
+            }
+            else
+                return Json(HttpStatusCode.NoContent);
+            #endregion Authentication
+
+
+            #region API_CHART_and_Rework
+            var ProjectTotalsOneBydate = new ProjectTotalsOneByDate();
+            var SelectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
+            var ProjeHataTanim = _uow.ProjeHataTanimi.GetAll(i => i.idProje == SelectedProject.id);
+
+            var Customer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == SelectedProject.idMusteri);
+            var Operation = _uow.FabrikaTanim.GetFirstOrDefault(i => i.id == SelectedProject.idOprArea);
+            var Currency = _uow.ParaBirimi.GetFirstOrDefault(i => i.id == SelectedProject.fiyatIdParaBirimi);
+            var ProjectStatus = _uow.ProjeDurumu.GetFirstOrDefault(i => i.id == SelectedProject.idProjeDurumu);
+            var ProjectControlType = _uow.ProjeKontrolTipi.GetFirstOrDefault(i => i.id == SelectedProject.fiyatIdKontrolTipi);
+            var PartNrTanimlari = _uow.ProjePartNrTanimi.GetAll(i => i.idProje == SelectedProject.id);
+
+
+            var GetProjeDetay = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id);
+            int s = 0;
+            int say = 0;
+            double Checked = 0;
+            int Reworked = 0;
+            double Nok = 0;
+            double SpentHours = 0;
+            double Overtime100 = 0;
+
+
+            int projedetay_say = 0;
+            foreach (var ProjeDetayItem in GetProjeDetay)
+            {
+                if (ProjeDetayItem.idProforma == 0)
+                {
+                    var ProjectTotals = new ProjectTotalsOneByDate()
+                    {
+                        hataAdeti = ProjeDetayItem.tHataAdeti,
+                        kontrolAdedi = ProjeDetayItem.tKontrolAdedi,
+                        kontrolTarihi = ProjeDetayItem.kontrolTarihi.ToString()
+                    };
+                    projectTotalsOneByDateList.Add(ProjectTotals);
+
+                    Checked += (double)ProjectTotals.kontrolAdedi;
+                    Nok += (double)ProjectTotals.hataAdeti;
+                    SpentHours += ProjeDetayItem.harcananSaat;
+                    Reworked += (int)ProjeDetayItem.tTamirAdedi;
+                    Overtime100 += ProjeDetayItem.harcananGirilenMesai;
+                }
+
+                /*
+                var GetProjeDetays = _uow.ProjeDetays.GetAll(i => i.idProjeDetay == ProjeDetayItem.id);
+                foreach (var item in GetProjeDetays)
+                {
+                    if ((item.toplamSuredk == 0) && (item.idReferansPartNr == 0) && (item.KontrolAdedi == 0) && (item.SaatUcreti == 0))
+                    {
+                        Checked += (double)item.KontrolAdedi;
+                        Nok += (double)item.HataAdeti;
+                        if (ProjeDetayItem.mesaiHesapla100)
+                            SpentHours += item.harcananGirilenMesai;
+                        Reworked += (int)item.TamirAdedi;
+                    }
+
+                }
+                */
+            }
+            double ppm = (Nok / Checked) * 1000000;
+            List<qprojepartNrTanimi> qprojepartNrTanimiList = new List<qprojepartNrTanimi>();
+            qprojepartNrTanimiList.AddRange(PartNrTanimlari);
+            List<qprojehataTanimi> qprojehataTanimiList = new List<qprojehataTanimi>();
+            qprojehataTanimiList.AddRange(ProjeHataTanim);
+
+            var pdfrepor = new PdfReport()
+            {
+                _ProjectTotalsOnebyDate = projectTotalsOneByDateList,
+                _SelectedProject = SelectedProject,
+                _Operation=Operation,
+                _Customer = Customer,
+                _PartNrTanimlari = qprojepartNrTanimiList,
+                _ProjeHataTanim = qprojehataTanimiList,
+                _SpentHours = (SpentHours - Overtime100),
+                _PPMTotal= Convert.ToInt32(ppm),
+                _NokTotal=Nok,
+                _CheckedTotal=Checked,
+                _OverTime100Total=Overtime100,
+                _SpentHoursTotal = SpentHours
+            };
+
+            #endregion API_CHART_and_Rework
+
+
+            return View(pdfrepor);
+        }
+
 
         public IActionResult requestUrl()
         {
@@ -1050,7 +1123,7 @@ namespace QSCustomer.Controllers
         [HttpGet("progressbarval")]
         public async Task<JsonResult> ProgressbarAsync()
         {
-            
+
             await Task.Delay(10);
             double rate = 1;
             /*
@@ -1059,7 +1132,7 @@ namespace QSCustomer.Controllers
                 Task.
                 return Json(ProjectVariables.CountProgress);
             });*/
-            if(ProjectVariables.LengthProgress > 0 && ProjectVariables.CountProgress > 0)
+            if (ProjectVariables.LengthProgress > 0 && ProjectVariables.CountProgress > 0)
                 rate = (ProjectVariables.CountProgress) / (ProjectVariables.LengthProgress) * 100;
 
             return Json((int)rate);

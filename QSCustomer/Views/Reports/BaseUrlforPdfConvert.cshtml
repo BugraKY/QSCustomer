@@ -1,0 +1,513 @@
+﻿<!--using static QSCustomer.Extensions.HttpContextExtension-->
+@{
+    Layout = null;
+    int productRef_count = 0, projectDetails_count = 0;
+    double spent = (Model._SpentHours * 100) / 100;
+    double OverTime100 = (Model._OverTime100Total * 100) / 100;
+    double SpentHoursTotal = (Model._SpentHoursTotal * 100) / 100;
+
+    DateTime begDate = Convert.ToDateTime(Model._SelectedProject.baslangicTarihi);
+    List<string> CheckDate = new List<string>();
+    List<long> ValTotal = new List<long>();
+    long ValItem = 0;
+    bool FirstAction = true, FirstDateAction = true;
+    int DateCount = 0;
+    string RenderedHtml = "";
+}
+@model QSCustomer.Models.ViewModels.PdfReport
+@addTagHelper *, Syncfusion.EJ2
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
+    <link rel="stylesheet" href="/mdb5/css/mdb.min.css" />
+    <link rel="stylesheet" href="~/css/barchart.css" />
+    <link rel="stylesheet" href="~/css/site.css" type="text/css" media="screen" runat="server" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+
+
+
+    <!--TEST-->
+    <!--Dev Extreme StyleSheet-->
+    <!-- Diagram and Gantt stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.css" rel="stylesheet">
+    <!-- Theme stylesheets (reference only one of them) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/css/dx.light.css" rel="stylesheet">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Diagram and Gantt development stylesheets -->
+    <!--Dev Extreme StyleSheet End-->
+    <!--Dev Extreme-->
+    <!-- Diagram and Gantt -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-diagram/2.1.37/dx-diagram.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devexpress-gantt/3.1.24/dx-gantt.min.js"></script>
+
+    <!-- DevExtreme Quill (required by the HtmlEditor UI component) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-quill/1.5.5/dx-quill.min.js"></script>
+
+    <!-- DevExtreme library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.3/js/dx.all.js"></script>
+
+    <!-- DevExpress.AspNet.Data -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.min.js"></script>
+
+    <style>
+
+        table {
+            /*font-size: 8.5px !important;*/
+            font-size: 8.5px !important;
+            font-weight: 900 !important;
+            color: black !important;
+            width: 100% !important;
+            border-color: black !important;
+            /*FONT SIZE ları tek tek ayarlamak gerekiyor!*/
+        }
+
+        .table > :not(caption) > * > * {
+            padding: 0.2rem 0.2rem !important;
+        }
+
+        .modal {
+            min-height: 100vh;
+            min-width: 100vh;
+            background-color: azure;
+            z-index: 9999 !important;
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        .txtcustom {
+            -moz-transform: rotate(90deg) !important;
+            -webkit-transform: rotate(90deg) !important;
+            color: red !important;
+        }
+        @*
+        table.rotate-table-grid {
+            box-sizing: border-box;
+            border-collapse: collapse;
+        }
+
+        .rotate-table-grid tr, .rotate-table-grid td, .rotate-table-grid th {
+            border: 1px solid #ddd;
+            position: relative;
+            padding: 10px;
+        }
+
+            .rotate-table-grid th span {
+                transform-origin: 0 50%;
+                -moz-transform-origin: 0 50%;
+                -webkit-transform-origin: 0 50%;
+                transform: rotate(-90deg);
+                -moz-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
+                white-space: nowrap;
+                display: block;
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+            }*@
+        .verticalTableHeader span {
+            writing-mode: vertical-rl;
+            -webkit-writing-mode: vertical-rl;
+            white-space: nowrap;
+            text-align: left;
+            height: 95px;
+            overflow: hidden;
+            /*
+            min-height: 10px;
+            height:auto;
+            max-height: 150px;*/
+        }
+        .smalltx{
+            font-size:3px!important;
+        }
+        @@media print {
+            #renderedSection * {
+                visibility: visible;
+            }
+
+            .modal {
+                visibility: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <cache expires-after="@TimeSpan.FromSeconds(30)">
+        <section class="container">
+            <div id="renderedSection">
+
+                <div style="padding-bottom: 4rem!important;">
+                    <table class='table table-bordered border-expert'>
+                        <thead>
+                            <tr>
+                                <th scope='col' class='mediumtx' style='width:90px;'>EXPRERT</th>
+                                <th scope='col' class='table-active text-center mediumtx' colspan='5'>KALITE KONTROL & ROTUS RAPORU / QUALITY CONTROL & REWORK REPORT</th>
+                                <th scope='col' class='smalltx'>
+                                    OPR. NO<br />
+                                    Opr.Nr#
+                                </th>
+                                <th scope='col' class='mediumtx text-center' colspan='2'>@Model._SelectedProject.projeCode</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class='table-active'>
+                                <th scope='row' class='smalltx'>
+                                    Başlangıç Tarihi<br />
+                                    Start Date
+                                </th>
+                                <td class='mediumtx'>
+                                    <span id='beg_date'>
+                                        @begDate.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
+                                <td class='mediumtx' style='min-width:160px;'>
+                                    ÜRÜN REFERANS<br />
+                                    Product Ref #
+                                </td>
+                                <td class='mediumtx' style='min-width:160px;'>
+                                    HATA TANIMLARI<br />
+                                    Nok Descriptions
+                                </td>
+                                <td class='smalltx' style='min-width:160px;'>
+                                    ŞİKAYET NO<br />
+                                    Complaint Nr#
+                                </td>
+                                <td class='mediumtx'>
+                                    PPM
+
+                                </td>
+                                <td class='smalltx'>
+                                    KONTROL ADET<br />
+                                    Checked Qty
+
+                                </td>
+                                <td class='smalltx'>
+                                    HATALI ADET<br />
+                                    NOK Qty
+
+                                </td>
+                                <td class='smalltx'>
+                                    RÖTÜŞ ADET<br />
+                                    Reworked Qty
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>
+                                    MÜŞTERİ<br />
+                                    Customer
+                                </th>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='customer'>
+                                        @Model._Customer.musteriAdi
+                                    </span>
+                                </td>
+                                <td rowspan='3' style='text-align:center;'>
+                                    @if (Model._PartNrTanimlari.Count() > 21)
+                                    {
+                                        for (int i = 0; i < 15; i++)
+                                        {
+                                            productRef_count++;
+                                            if (Model._PartNrTanimlari[i].partNrTanimi != "")
+                                            {
+                                                if (productRef_count % 3 == 0)
+                                                {
+                                                    <span>@Model._PartNrTanimlari[i].partNrTanimi,</span><br /> }
+                                                else
+                                                {
+                                                    <span>@Model._PartNrTanimlari[i].partNrTanimi,</span>}
+                                            }
+                                        }
+                                        <span>...</span>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model._PartNrTanimlari)
+                                        {
+                                            productRef_count++;
+                                            if (productRef_count % 3 == 0)
+                                            {
+                                                <span>@item.partNrTanimi,</span><br /> }
+                                            else
+                                            {
+                                                <span>@item.partNrTanimi,</span>}
+                                        }
+                                    }
+
+
+                                </td>
+                                <td rowspan='3' style='text-align:center;'>
+                                    @if (Model._ProjeHataTanim.Count() > 14)
+                                    {
+                                        for (int i = 0; i < 10; i++)
+                                        {
+                                            productRef_count++;
+                                            if (productRef_count % 2 == 0)
+                                            {
+                                                <span>@Model._ProjeHataTanim[i].hataTanimi,</span><br /> }
+                                            else
+                                            {
+
+                                                <span>@Model._ProjeHataTanim[i].hataTanimi,</span>}
+                                        }
+                                        <span>...</span>
+
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model._ProjeHataTanim)
+                                        {
+                                            productRef_count++;
+                                            if (productRef_count % 3 == 0)
+                                            {
+                                                <span>@item.hataTanimi,</span><br /> }
+                                            else
+                                            {
+                                                <span>@item.hataTanimi,</span>}
+                                        }
+                                    }
+
+                                </td>
+                                <td rowspan='3' style='text-align:center;'>
+                                    <span id='comp_nr'>@Model._SelectedProject.sikayetNo</span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='ppm'>@Model._PPMTotal</span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='checked'>@Model._CheckedTotal</span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='nok'>@Model._NokTotal</span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='reworked'>@Model._ReworkedTotal</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>
+                                    OPR. ALANI
+                                    Opr. Area
+                                </th>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='opr_area'>
+                                        @Model._Operation.fabrikaAdi
+                                    </span>
+                                </td>
+
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    HARCANAN SÜRE
+                                    Spent Hours
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    %50 FAZLA MESAI
+                                    %50 overtime
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    %100 FAZLA MESAI
+                                    %100 overtime
+                                </td>
+
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    TOPLAM HARCANAN SÜRE
+                                    Total Spent Hours
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>
+                                    PARÇA TANIMI
+                                    Name of Product
+                                </th>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='nameofProduct'>@Model._SelectedProject.materyel</span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='spent_hr'>
+                                        @spent
+                                    </span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='overtime50'></span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='overtime100'>@OverTime100</span>
+                                </td>
+                                <td style='text-align:center; vertical-align: middle;'>
+                                    <span id='totalSpent_hr'>
+                                        @SpentHoursTotal
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class='demo-container'>
+                    <div id='chart'>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div>
+                <table class="table table-bordered rotate-table-grid">
+                    <thead>
+                        <tr>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Control Date</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Product Date</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Ürün Referansları Prod</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>lotNo</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Seri No Serial Number</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Harcanan Süre Spent</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>%50 Fazla Mesai</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>%100 Fazla Mesai</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Kontrol Adet Checked</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Rötüş Adet Reworker</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Hatalı Adet Nok</span></th>
+                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px; min-height:10px;height:10px;max-height:150px;"><span></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </cache>
+</body>
+</html>
+
+<div class="container" hidden>
+    <form asp-action="DownloadPdf" asp-controller="Reports" asp-route-renderedHtmlStr="@Model._HtmlString" id="renderedform">
+        <div asp-validation-summary="All"></div>
+        <input type="text" id="rendVal" class="form-control form-text" asp-for="@Model._HtmlString" />
+        <input type="text" id="urlVal" class="form-control form-text" asp-for="@Model._Url" />
+        <input type="text" id="projeCode" class="form-control form-text" asp-for="@Model._SelectedProject.projeCode" value="@Model._SelectedProject.projeCode" />
+    </form>
+</div>
+
+
+
+<script asp-append-version="true">
+    $(document).ready(function () {
+        $('#large-indicator').dxLoadIndicator({
+            height: 60,
+            width: 60,
+        });
+        // TEST
+     @*
+        $(function () {
+            var header_height = 0;
+            $('.rotate-table-grid th span').each(function () {
+                if ($(this).outerWidth() > header_height) header_height = $(this).outerWidth();
+            });
+
+            $('.rotate-table-grid th').height(header_height);
+        });*@
+        //TEST
+
+
+                $.fn.myfunction = function () {
+                    $(() => {
+                        $('#chart').dxChart({
+                            dataSource,
+                            commonSeriesSettings: {
+                                argumentField: 'state',
+                                type: 'bar',
+                                hoverMode: 'allArgumentPoints',
+                                selectionMode: 'allArgumentPoints',
+                                label: {
+                                    visible: true,
+                                    format: {
+                                        type: 'fixedPoint',
+                                        precision: 0,
+                                    },
+                                },
+                            },
+                            size: {
+                                width: 930,
+                            },
+                            animation: {
+                                enabled: false,
+                            },/*
+                            render: {
+                                force: true,
+                                animate: false,
+                            },*/
+                            series: [
+                                { valueField: 'year2018', name: 'Kontrol Adedi' },
+                                { valueField: 'year2017', name: 'Hata Adedi' },
+                            ],
+                            title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                            legend: {
+                                verticalAlignment: 'bottom',
+                                horizontalAlignment: 'center',
+                            },
+
+                            /*
+                            export: {
+                                enabled: true,
+                            },*/
+                            onPointClick(e) {
+                                e.target.select();
+                            },
+                        });
+                    });
+                };
+
+                $().myfunction();
+                const dataSource = [
+            @foreach (var item in Model._ProjectTotalsOnebyDate)
+            {
+                <text>
+                    {
+                        state: '@item.kontrolTarihi',
+                        year2017: @item.hataAdeti,
+                        year2018: @item.kontrolAdedi,
+                    },
+                </text>
+            }
+        ];
+
+                setTimeout(function () {
+                    $(document).trigger('afterready');
+                }, 1000);
+
+            });
+
+    $(document).bind('afterready', function () {
+        //alert("window loaded with trigger");
+
+        //var form = $('#__AjaxAntiForgeryForm');
+        //var token = $('input[name="__RequestVerificationToken"]', form).val();
+        var htmlString = $('#renderedSection').html();
+
+        $('#rendVal').val(htmlString);
+        $('#urlVal').val('');
+        $('#renderedform').submit();
+        /*window.print();
+        window.close();*/
+    });
+</script>
