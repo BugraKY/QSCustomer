@@ -11,8 +11,12 @@ namespace QSCustomer.Extensions
     public class RenderHtmlTableExtensions
     {
         private IEnumerable<qprojehataTanimi> ProjeHataTanim;
-        public async Task<string> GetTableString(PdfReport _report,string MainTab_Chart)
+        bool secPage;
+        int s = 0;
+        int i = 0;
+        public async Task<string> GetTableString(PdfReport _report, string MainTab_Chart)
         {
+
             string Table = "";
             await Task.Run(() =>
             {
@@ -41,14 +45,11 @@ namespace QSCustomer.Extensions
                 string SECTION_TWO_ProjeHataTanimString = "";
                 foreach (var item in _report._ProjeHataTanim)
                 {
-                    if (_report._ProjeHataTanimCount > 5)
-                    {
-                        SECTION_TWO_ProjeHataTanimString += "<th class='verticalTableHeader' style=' min-width: 1px; width: 1px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'><span>" + item.hataTanimi + "</span></th>";
-                    }
+                    if (s < 37)
+                        SECTION_TWO_ProjeHataTanimString += "<th class='verticalTableHeader' style='min-width: 5px; width: 5px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'><span>" + item.hataTanimi + "</span></th>";
                     else
-                    {
-                        SECTION_TWO_ProjeHataTanimString += "<th class='verticalTableHeader' style=' min-width: 1px; width: 1px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'><span>" + item.hataTanimi + "</span></th>";
-                    }
+                        break;
+                    s++;
                 }
                 string SECTION_THREE = "</tr></thead><tbody>";
                 string SECTION_FOUR = "";
@@ -74,14 +75,21 @@ namespace QSCustomer.Extensions
                     {
                         foreach (var FaultItem in item.Faults)
                         {
-                            if (FaultItem == null)
+                            if (i < 37)
                             {
-                                SECTION_FOUR += "<td></td>";
+                                if (FaultItem == null)
+                                {
+                                    SECTION_FOUR += "<td style=' min-width: 1px; width: 1px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'></td>";
+                                }
+                                else
+                                {
+                                    SECTION_FOUR += "<td class='text-center smalltx'>" + FaultItem.Adet + "</td>";
+                                }
                             }
                             else
-                            {
-                                SECTION_FOUR += "<td class='text-center smalltx'>" + FaultItem.Adet + "</td>";
-                            }
+                                break;
+                            i++;
+
                         }
                     }
                     else
@@ -92,9 +100,84 @@ namespace QSCustomer.Extensions
                         }
                     }
                     SECTION_FOUR += "</tr>";
+                    i = 0;
                 }
                 string SECTION_FIVE = "</tbody></table></div>";
-                Table = MainTab_Chart+SECTION_ONE + SECTION_TWO_ProjeHataTanimString + SECTION_THREE + SECTION_FOUR + SECTION_FIVE;
+                Table = MainTab_Chart + SECTION_ONE + SECTION_TWO_ProjeHataTanimString + SECTION_THREE + SECTION_FOUR + SECTION_FIVE;
+
+                SECTION_TWO_ProjeHataTanimString = "";
+                SECTION_THREE = "";
+                SECTION_FOUR = "";
+                SECTION_FIVE = "";
+
+
+
+
+
+
+
+                if (_report._ProjeHataTanim.Count() >= 37)
+                {
+                    for (int s = 37; s < 74; s++)
+                    {
+                        if (_report._ProjeHataTanim.Count() < s)
+                            SECTION_TWO_ProjeHataTanimString += "<th class='verticalTableHeader' style='min-width: 5px; width: 5px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'><span>" + _report._ProjeHataTanim[s].hataTanimi + "</span></th>";
+                        else
+                            break;
+                    }
+                    SECTION_THREE = "</tr></thead><tbody>";
+                    foreach (var item in _report._ProjectDetails)
+                    {
+                        SECTION_FOUR += @"<tr>
+                    <td class='text-center smalltx'>" + item.KontrolTarihi + @"</td>
+                    <td class='text-center smalltx'>" + item.UretimTarihi + @"</td>
+                    <td class='text-center smalltx'>" + item.PartNrTanimi + @"</td>
+                    <td class='text-center smalltx'>" + item.IotNo + @"</td>
+                    <td class='text-center smalltx'>" + item.SeriNo + @"</td>
+                    <td class='text-center smalltx'>" + Math.Round(item.Harcanansaat, 2) + @"</td>
+                    <td class='text-center smalltx'>" + item.Mesai50Hesapla + @"</td>
+                    <td class='text-center smalltx'>" + item.Harcanangirilenmesai + @"</td>
+                    <td class='text-center smalltx'>" + item.KontrolAdedi + @"</td>
+                    <td class='text-center smalltx'>" + item.TamirAdedi + @"</td>
+                    <td class='text-center smalltx'>" + item.HataAdeti + "</td>";
+                        if (item.KontrolAdedi == 0)
+                        {
+
+                        }
+                        if (item.Faults != null)
+                        {
+                            for (int i = 37; i < 74; i++)
+                            {
+                                if (item.Faults.Count() < i)
+                                {
+                                    if (item.Faults[i] == null)
+                                    {
+                                        SECTION_FOUR += "<td style=' min-width: 1px; width: 1px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'></td>";
+                                    }
+                                    else
+                                    {
+                                        SECTION_FOUR += "<td class='text-center smalltx'>" + item.Faults[i].Adet + "</td>";
+                                    }
+                                }
+                                else
+                                    break;
+
+                            }
+                        }
+                        else
+                        {
+                            foreach (var empty in _report._ProjeHataTanim)
+                            {
+                                SECTION_FOUR += "<td></td>";
+                            }
+                        }
+                        SECTION_FOUR += "</tr>";
+                        i = 0;
+                    }
+                    SECTION_FIVE = "</tbody></table></div>";
+
+                    Table += SECTION_ONE + SECTION_TWO_ProjeHataTanimString + SECTION_THREE + SECTION_FOUR + SECTION_FIVE;
+                }
 
             });
 

@@ -970,7 +970,7 @@ namespace QSCustomer.Controllers
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
-            string baseUrl = "https://localhost:5001/baseurlforpdfconvert/";
+            string baseUrl = "https://localhost:5001/baseurlforpdfconvert";
 
 
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
@@ -983,6 +983,7 @@ namespace QSCustomer.Controllers
             //webkitConverterSettings.Margin.Bottom = 40;
             webkitConverterSettings.Margin.Bottom = 30;
             webkitConverterSettings.Margin.Top = 20;
+
             htmlConverter.ConverterSettings = webkitConverterSettings;
             PdfDocument document = new PdfDocument();
             document = htmlConverter.Convert(_PdfString, baseUrl);
