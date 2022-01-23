@@ -120,7 +120,7 @@ namespace QSCustomer.Extensions
                 {
                     for (int s = 37; s < 74; s++)
                     {
-                        if (_report._ProjeHataTanim.Count() < s)
+                        if (s< _report._ProjeHataTanim.Count())
                             SECTION_TWO_ProjeHataTanimString += "<th class='verticalTableHeader' style='min-width: 5px; width: 5px; max-width: 10px;' min-height: 10px;height:10px;max-height:150px;'><span>" + _report._ProjeHataTanim[s].hataTanimi + "</span></th>";
                         else
                             break;
@@ -148,7 +148,7 @@ namespace QSCustomer.Extensions
                         {
                             for (int i = 37; i < 74; i++)
                             {
-                                if (item.Faults.Count() < i)
+                                if (i< item.Faults.Count())
                                 {
                                     if (item.Faults[i] == null)
                                     {
