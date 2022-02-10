@@ -59,6 +59,11 @@
     .complete .dx-progressbar-range {
         background-color: green;
     }
+    .container-expert {
+        padding-right: 25px;
+        padding-left: 25px;
+        width: 100%;
+    }
 </style>
 <div class="container">
     <div class="container pb-5 pt-5">
@@ -238,22 +243,22 @@
 
 
 @*
-<div class="modal">
-    <div id="spinner-loading">
-        <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh" id="sectionArea">
-            <div class="text-center">
-                <div id="large-indicator"></div>
-                <h6>Loading..</h6>
+    <div class="modal">
+        <div id="spinner-loading">
+            <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh" id="sectionArea">
+                <div class="text-center">
+                    <div id="large-indicator"></div>
+                    <h6>Loading..</h6>
 
-                <div class="form">
-                    <div id="progress-button"></div>
-                    <div class="progress-info"> Time left 00:00:<span id="timer">10</span> </div>
-                    <div id="progress"><div id="progressBarStatus"></div></div>
+                    <div class="form">
+                        <div id="progress-button"></div>
+                        <div class="progress-info"> Time left 00:00:<span id="timer">10</span> </div>
+                        <div id="progress"><div id="progressBarStatus"></div></div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
-</div>
 *@
 
 
@@ -266,7 +271,7 @@
         //import ProgressBar from "";
 
 
-        
+
         /*
         var ajax = function (url, data, callback, type) {
             url = "/progressbarval"
@@ -304,7 +309,7 @@
 
 
 
-        
+
         var w;
 
         function startWorker() {
@@ -324,9 +329,9 @@
             w.terminate();
             w = undefined;
         }
-        
+
         $(document).ready(function () {
-            
+
             startWorker();
 
 
@@ -373,6 +378,7 @@
                 height: 60,
                 width: 60,
             });
+            console.log("Sıra - 1 ");
         $.ajax({
             type: "get",
             url: "/detailTest/" + '@Model._ProjectCode' + "?&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic',
@@ -396,17 +402,23 @@
                     for (let i = 0; i < _PartNrTanimlariArr; i++) {
                         if (!(data._PartNrTanimlari[i].partNrTanimi == "")) {
                             s++;
-                            if (s % 3 == 0)
-                                $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + "," + "<br>");
-                            else
-                                $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + ",");
+                            if (i < 16)
+                                if (s % 3 == 0)
+                                    $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + "," + "<br>");
+                                else
+                                    $("#product_ref").append(data._PartNrTanimlari[i].partNrTanimi + ",");
+                            if (i == 16)
+                                $('#product_ref').append('...');
                         }
                     }
                     var z = 0;
                     //_PartNrTanimlari
                     for (let i = 0; i < _ProjeHataTanimArr; i++) {
                         if (!(data._ProjeHataTanim[i].hataTanimi == ""))
-                            $("#nok_desc").append(data._ProjeHataTanim[i].hataTanimi + ",");
+                            if (i < 16)
+                                $("#nok_desc").append(data._ProjeHataTanim[i].hataTanimi + ",");
+                        if (i == 16)
+                            $('#nok_desc').append('...');
                     }
                     $("#comp_nr").text(data._SelectedProject.sikayetNo);
                     $("#checked").text(data._CheckedTotal);

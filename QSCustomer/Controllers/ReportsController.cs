@@ -313,12 +313,93 @@ namespace QSCustomer.Controllers
         //[HttpPost("project")]
         //[HttpGet("reports/project={projectCode}&open={open}&close={close}")]
         [HttpGet("reports/project")]
-        public IActionResult Details(string projectCode, bool open, bool close, bool problematic)
+        public IActionResult Details(string startDate, string finishDate, string projectCode, bool open, bool close, bool problematic)
         //public IActionResult Details(string projectCode)
         {
+            string[] startDateArr = startDate.Split(' ');
+        
+            string Weak_str = startDateArr[0];
+            string Month_str = startDateArr[1];
+            string Day_str = startDateArr[2];
+            string Yearstr = startDateArr[3];
+
+            int Day = int.Parse(Day_str);
+            int Month = 0;
+            int Year = int.Parse(Yearstr);
+
+            if (Month_str == "Jan")
+                Month = 1;
+            if (Month_str == "Feb")
+                Month = 2;
+            if (Month_str == "Mar")
+                Month = 3;
+            if (Month_str == "Apr")
+                Month = 4;
+            if (Month_str == "May")
+                Month = 5;
+            if (Month_str == "Jun")
+                Month = 6;
+            if (Month_str == "Jul")
+                Month = 7;
+            if (Month_str == "Aug")
+                Month = 8;
+            if (Month_str == "Sep")
+                Month = 9;
+            if (Month_str == "Oct")
+                Month = 10;
+            if (Month_str == "Nov")
+                Month = 11;
+            if (Month_str == "Dec")
+                Month = 12;
+
+            DateTime _startDate = new DateTime(Year, Month, Day);
+
+            string[] finishDateArr = finishDate.Split(' ');
+
+            Weak_str = finishDateArr[0];
+            Month_str = finishDateArr[1];
+            Day_str = finishDateArr[2];
+            Yearstr = finishDateArr[3];
+
+
+            Day = int.Parse(Day_str);
+            Month = 0;
+            Year = int.Parse(Yearstr);
+
+            if (Month_str == "Jan")
+                Month = 1;
+            if (Month_str == "Feb")
+                Month = 2;
+            if (Month_str == "Mar")
+                Month = 3;
+            if (Month_str == "Apr")
+                Month = 4;
+            if (Month_str == "May")
+                Month = 5;
+            if (Month_str == "Jun")
+                Month = 6;
+            if (Month_str == "Jul")
+                Month = 7;
+            if (Month_str == "Aug")
+                Month = 8;
+            if (Month_str == "Sep")
+                Month = 9;
+            if (Month_str == "Oct")
+                Month = 10;
+            if (Month_str == "Nov")
+                Month = 11;
+            if (Month_str == "Dec")
+                Month = 12;
+
+            DateTime _finishDate = new DateTime(Year, Month, Day);
+
+            //_dateTime.Date.Month = DateTime.Parse(Month).Month;
+
+
             #region Authentication
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
             if (projectCode == null)
                 return NotFound();
             var SelectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
@@ -347,6 +428,12 @@ namespace QSCustomer.Controllers
             var GetProjeDetay = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id);
             #endregion Queries
 
+
+
+            var searchbyDate = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id).Where(d=>d.kontrolTarihi>=_startDate);
+            searchbyDate.Where(d => d.kontrolTarihi <= _finishDate);
+
+            return NoContent();
             #region MainCode
             /*
             int s = 0;
@@ -385,6 +472,7 @@ namespace QSCustomer.Controllers
 
             var deg = s;
             var deg_2 = projedetay_say;*/
+
             ProjectState states = new ProjectState()
             {
                 Close = close,
@@ -407,7 +495,7 @@ namespace QSCustomer.Controllers
 
         }
         [HttpGet("detailTest/{projectCode}")]
-        public async Task<JsonResult> DetailTest(string projectCode, bool open, bool close, bool problematic)
+        public async Task<JsonResult> DetailTest(string projectCode, bool open, bool close, bool problematic,string startDate,string endDate)
         {
             Console.WriteLine("Section 1");
 
@@ -970,7 +1058,7 @@ namespace QSCustomer.Controllers
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
-            string baseUrl = "https://localhost:5001/baseurlforpdfconvert";
+            string baseUrl = "/baseurlforpdfconvert";
 
 
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
