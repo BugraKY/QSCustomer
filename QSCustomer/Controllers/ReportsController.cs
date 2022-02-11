@@ -317,7 +317,7 @@ namespace QSCustomer.Controllers
         //public IActionResult Details(string projectCode)
         {
             string[] startDateArr = startDate.Split(' ');
-        
+
             string Weak_str = startDateArr[0];
             string Month_str = startDateArr[1];
             string Day_str = startDateArr[2];
@@ -430,10 +430,10 @@ namespace QSCustomer.Controllers
 
 
 
-            var searchbyDate = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id).Where(d=>d.kontrolTarihi>=_startDate);
-            searchbyDate.Where(d => d.kontrolTarihi <= _finishDate);
+            var FilteredProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id).Where(d => d.kontrolTarihi >= _startDate).Where(d => d.kontrolTarihi <= _finishDate);
 
-            return NoContent();
+
+
             #region MainCode
             /*
             int s = 0;
@@ -472,7 +472,11 @@ namespace QSCustomer.Controllers
 
             var deg = s;
             var deg_2 = projedetay_say;*/
-
+            ProjectFilter projectFilter = new ProjectFilter()
+            {
+                StartDate= _startDate,
+                FinishDate= _finishDate
+            };
             ProjectState states = new ProjectState()
             {
                 Close = close,
@@ -483,7 +487,8 @@ namespace QSCustomer.Controllers
             {
                 _ProjectCode = projectCode,
                 _ProjeHataTanimCount = ProjeHataTanim.Count(),
-                _ProjectState = states
+                _ProjectState = states,
+                _ProjectFilter=projectFilter
             };
 
             if (SelectedProject != null)
@@ -495,7 +500,7 @@ namespace QSCustomer.Controllers
 
         }
         [HttpGet("detailTest/{projectCode}")]
-        public async Task<JsonResult> DetailTest(string projectCode, bool open, bool close, bool problematic,string startDate,string endDate)
+        public async Task<JsonResult> DetailTest(string projectCode, string startDate, string finishDate, bool open, bool close, bool problematic)
         {
             Console.WriteLine("Section 1");
 
@@ -555,7 +560,7 @@ namespace QSCustomer.Controllers
 
             if (open == true && close == true)
             {
-                StatusOpenProjects = await getProjectDetail.GetStatusOpen();
+                StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate, finishDate);
                 StatusCloseProjects = getProjectDetail.GetStatusClose();
 
                 AllReports = StatusOpenProjects;
@@ -577,7 +582,7 @@ namespace QSCustomer.Controllers
             }
             if (open == true)
             {
-                StatusOpenProjects = await getProjectDetail.GetStatusOpen();
+                StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate, finishDate);
                 return Json(StatusOpenProjects);
             }
             if (close == true)
@@ -1009,7 +1014,8 @@ namespace QSCustomer.Controllers
         public async Task<IActionResult> DownloadPdf(PdfReport renderedHtmlStr)
         {
             string MainTab_Chart = renderedHtmlStr._HtmlString;
-
+            string startDate = "";
+            string finishDate = "";
             PdfReport StatusOpenProjects = new PdfReport();
             PdfReport StatusCloseProjects = new PdfReport();
 
@@ -1050,10 +1056,10 @@ namespace QSCustomer.Controllers
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report);
             RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
 
-            StatusOpenProjects = await getProjectDetail.GetStatusOpen();
+            StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate,finishDate);
             //StatusCloseProjects = getProjectDetail.GetStatusClose();
 
-            string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects,MainTab_Chart);
+            string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects, MainTab_Chart);
 
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
@@ -1083,7 +1089,7 @@ namespace QSCustomer.Controllers
 
 
             //return File(ms, "application/pdf", projectCode + ".pdf", true);// Download Directly Pdf
-            return File(ms, "application/pdf",true);// Open Pdf File in Web
+            return File(ms, "application/pdf", true);// Open Pdf File in Web
             /*
             MemoryStream ms = new MemoryStream();
             iText.Html2pdf.HtmlConverter.ConvertToElements(_PdfString);*/
@@ -1185,15 +1191,15 @@ namespace QSCustomer.Controllers
             {
                 _ProjectTotalsOnebyDate = projectTotalsOneByDateList,
                 _SelectedProject = SelectedProject,
-                _Operation=Operation,
+                _Operation = Operation,
                 _Customer = Customer,
                 _PartNrTanimlari = qprojepartNrTanimiList,
                 _ProjeHataTanim = qprojehataTanimiList,
                 _SpentHours = (SpentHours - Overtime100),
-                _PPMTotal= Convert.ToInt32(ppm),
-                _NokTotal=Nok,
-                _CheckedTotal=Checked,
-                _OverTime100Total=Overtime100,
+                _PPMTotal = Convert.ToInt32(ppm),
+                _NokTotal = Nok,
+                _CheckedTotal = Checked,
+                _OverTime100Total = Overtime100,
                 _SpentHoursTotal = SpentHours
             };
 

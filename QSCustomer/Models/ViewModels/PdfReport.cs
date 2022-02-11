@@ -17,6 +17,7 @@ namespace QSCustomer.Models.ViewModels
         public List<qprojehataTanimi> _ProjeHataTanim { get; set; }
         public List<ProjectDetails> _ProjectDetails { get; set; }
         public ProjectState _ProjectState { get; set; }
+        public ProjectFilter _ProjectFilter { get; set; }
         public string _ProjectCode { get; set; }
         public int _ProjeHataTanimCount { get; set; }
         public double _CheckedTotal { get; set; }

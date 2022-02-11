@@ -59,6 +59,7 @@
     .complete .dx-progressbar-range {
         background-color: green;
     }
+
     .container-expert {
         padding-right: 25px;
         padding-left: 25px;
@@ -381,7 +382,7 @@
             console.log("Sıra - 1 ");
         $.ajax({
             type: "get",
-            url: "/detailTest/" + '@Model._ProjectCode' + "?&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic',
+            url: "/detailTest/" + '@Model._ProjectCode' + "?&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate'  + "&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic',
                 success: function (data) {
 
                     //return data;

@@ -38,7 +38,7 @@ namespace QSCustomer.Extensions
             _uow = uow;
             _report = report;
         }
-        public async Task<PdfReport> GetStatusOpen()
+        public async Task<PdfReport> GetStatusOpen(string startDate, string endDate)
         {
             Console.WriteLine("Section 4");
 
@@ -90,12 +90,15 @@ namespace QSCustomer.Extensions
                     if (item.idProjeDurumu == 1)
                         SelectedProject = item;
                 }
+
+                var FilteredProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id).Where(d => d.kontrolTarihi >= DateTime.Parse(startDate)).Where(d => d.kontrolTarihi <= DateTime.Parse(endDate));
+
                 Console.WriteLine("Section 8");
                 Console.WriteLine("Status Open/");
                 Console.WriteLine("Process Begining..");
 
 
-                foreach (var ProjeDetayItem in GetProjeDetay)
+                foreach (var ProjeDetayItem in FilteredProjectDetails)
                 {
                     var GetProjeDetaysLength = _uow.ProjeDetays.GetAll(i => i.idProjeDetay == ProjeDetayItem.id).Count();
                     if (ProjeDetayItem.idProforma == 0)
@@ -105,7 +108,7 @@ namespace QSCustomer.Extensions
                 }
                 ProjectVariables.LengthProgress = ProjectDetCount;
 
-                foreach (var ProjeDetayItem in GetProjeDetay)
+                foreach (var ProjeDetayItem in FilteredProjectDetails)
                 {
 
 
