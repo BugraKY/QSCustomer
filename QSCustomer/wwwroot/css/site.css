@@ -81,15 +81,9 @@ html {
         min-height: 100%;
     }
 
-    body {
-        /* Margin bottom by footer height */
-        margin-bottom: 60px;
-        font-family: "Gill Sans", sans-serif !important;
-    }
 
     .table tbody {
         font-weight: 400 !important;
-        font-family: "Gill Sans", sans-serif !important;
     }
 
     .footer {
@@ -120,7 +114,7 @@ html {
         font-weight: 900 !important;
     }
     .bg-expert {
-        background: #37b38385;
+        background: #2aa377;
     }
 }
 
@@ -128,7 +122,6 @@ html {
 
     .table tbody {
         font-weight: 400 !important;
-        font-family: "Gill Sans", sans-serif !important;
         font-size: 5px;
     }
 }
@@ -136,7 +129,6 @@ html {
 @media (max-width:500px) {
     .table tbody {
         font-weight: 400 !important;
-        font-family: "Gill Sans", sans-serif !important;
         font-size: 3px;
     }
 }

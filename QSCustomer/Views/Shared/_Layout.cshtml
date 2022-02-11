@@ -5,52 +5,185 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>@ViewData["Title"] - QSCustomer</title>
     <!--<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />-->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicons/favicon-16x16.png" />
     <link rel="stylesheet" href="/mdb5/css/mdb.min.css" />
     <link rel="stylesheet" href="~/css/site.css" type="text/css" media="screen" runat="server" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="~/assets/vendors/animate/animate.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/animate/custom-animate.css" />
+    <link rel="stylesheet" href="~/assets/vendors/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/jarallax/jarallax.css" />
+    <link rel="stylesheet" href="~/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css" />
+    <link rel="stylesheet" href="~/assets/vendors/nouislider/nouislider.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/nouislider/nouislider.pips.css" />
+    <link rel="stylesheet" href="~/assets/vendors/odometer/odometer.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/swiper/swiper.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/conult-icons/style.css">
+    <link rel="stylesheet" href="~/assets/vendors/tiny-slider/tiny-slider.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/reey-font/stylesheet.css" />
+    <link rel="stylesheet" href="~/assets/vendors/owl-carousel/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/owl-carousel/owl.theme.default.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/bxslider/jquery.bxslider.css" />
+    <link rel="stylesheet" href="~/assets/vendors/bootstrap-select/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/vegas/vegas.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/jquery-ui/jquery-ui.css" />
+    <link rel="stylesheet" href="~/assets/vendors/timepicker/timePicker.css" />
+
+    <link rel="stylesheet" href="~/assets/css/conult-responsive.css" />
     <!--Dev Extreme StyleSheet-->
     <!-- Diagram and Gantt stylesheets -->
+
     <link href="/lib/devextreme/dist/css/dx-diagram.min.css" rel="stylesheet">
     <link href="/lib/devextreme/dist/css/dx-gantt.min.css" rel="stylesheet">
-    <link href="/css/expert-table.css" rel="stylesheet">
+    @*<link href="/css/expert-table.css" rel="stylesheet">*@
+    <link href="~/css/dx.greenmist.compact.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/assets/css/conult.css" />
     <!--Dev Extreme StyleSheet End-->
 </head>
 <body>
-    <header onmousedown="return false">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/assets/img/logo.png" alt="logo" height="50" width="220"/></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />@*
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>*@
+
+    <div class="preloader">
+        <img class="preloader__image" width="60" src="~/assets/images/loader.png" alt="" />
+    </div>
+    <div class="page-wrapper">
+        <header class="main-header-two clearfix">
+            <div class="main-header-two__top clearfix">
+                <div class="container">
+                    <div class="main-header-two__top-inner clearfix">
+                        <div class="main-header-two__top-left">
+                            <ul class="list-unstyled main-header-two__top-address">
+                                <li>
+                                    <div class="icon">
+                                        <span class="icon-email"></span>
+                                    </div>
+                                    <div class="text">
+                                        <p><a href="mailto:info@expert-qs.com">info@expert-qs.com</a></p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="icon">
+                                        <span class="icon-telephone"></span>
+                                    </div>
+                                    <div class="text">
+                                        <p><a href="tel:(0224) 230 00 99">(0224) 230 00 99</a></p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="main-header-two__top-right">
+                            <div class="main-header-two__top-right-social">
+                                <a href="https://www.linkedin.com/company/expert-quality-services/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://tr-tr.facebook.com/expertquality" target="_blank"><i class="fab fa-facebook"></i></a>
+                                <a href="https://www.instagram.com/expertqualityservices/?hl=tr" target="_blank"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="pb-lg-5">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+            <nav class="main-menu main-menu-two clearfix">
+                <div class="main-menu-two__wrapper clearfix">
+                    <div class="container clearfix">
+                        <div class="main-menu-two__wrapper-left">
+                            <div class="main-menu-two__wrapper-logo">
+                                <a href="/"><img src="~/assets/images/resources/logo-3.png" alt=""></a>
+                            </div>
+                            <div class="main-menu-two__wrapper-main-menu">
+                                <a href="#" class="mobile-nav__toggler"><i class="fa fa-bars"></i></a>
+                                @*<ul class="main-menu__list">
+                                    <li class="active">
+                                        <a href="index.php">Anasayfa</a>
+                                    </li>
+                                </ul>*@
+                            </div>
+                        </div>
+                        <div class="main-menu-wrapper__right">
+                            <div class="main-menu-wrapper__call">
+                                <div class="main-menu-wrapper__call-icon">
+                                    <span><i class="fas fa-user-friends"></i></span>
+                                </div>
+                                <div class="main-menu-wrapper__call-number">
+                                    <partial name="_LoginPartial.cshtml" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    <div class="stricky-header stricked-menu main-menu main-menu-two">
+        <div class="sticky-header__content"></div>
     </div>
-    <footer class="border-top footer text-muted">
+    <main role="main">
+        @RenderBody()
+    </main>
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2021 - QSCustomer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-xl-5 col-lg-5 wow fadeInUp" data-wow-delay="100ms" style="display: flex; justify-content: left; align-items: end;">
+                    <div class="site-footer__top-left">
+                        <div class="site-footer__top-logo-content">
+                            <a href="index.php">
+                                <img src="~/assets/images/logo-light-1.png" width="250"alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 wow fadeInUp" data-wow-delay="100ms">
+                    <div class="site-footer__top-contact-details">
+                        <div class="site-footer__top-right-social">
+                            <a href="https://www.linkedin.com/company/expert-quality-services/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://tr-tr.facebook.com/expertquality" target="_blank"><i class="fab fa-facebook"></i></a>
+                            <a href="https://www.instagram.com/expertqualityservices/?hl=tr" target="_blank"><i class="fab fa-instagram"></i></a>
+                        </div>
+                        <div class="site-footer__top-right-phone">
+                            <p class="site-footer__top-right-phone-tagline">Customer Services</p>
+                            <a href="tel:(0224) 230 00 99">(0224) 230 00 99</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="site-footer__bottom">
+                <p class="site-footer__bottom-text">
+                    All rights to this site belong to Expert Human Resources Company.
+                </p>
+            </div>
         </div>
     </footer>
 
+
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/vendors/jarallax/jarallax.min.js"></script>
+    <script src="~/assets/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js"></script>
+    <script src="~/assets/vendors/jquery-appear/jquery.appear.min.js"></script>
+    <script src="~/assets/vendors/jquery-circle-progress/jquery.circle-progress.min.js"></script>
+    <script src="~/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js"></script>
+    <script src="~/assets/vendors/jquery-validate/jquery.validate.min.js"></script>
+    <script src="~/assets/vendors/nouislider/nouislider.min.js"></script>
+    <script src="~/assets/vendors/odometer/odometer.min.js"></script>
+    <script src="~/assets/vendors/swiper/swiper.min.js"></script>
+    <script src="~/assets/vendors/tiny-slider/tiny-slider.min.js"></script>
+    <script src="~/assets/vendors/wnumb/wNumb.min.js"></script>
+    <script src="~/assets/vendors/wow/wow.js"></script>
+    <script src="~/assets/vendors/isotope/isotope.js"></script>
+    <script src="~/assets/vendors/countdown/countdown.min.js"></script>
+    <script src="~/assets/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="~/assets/vendors/bxslider/jquery.bxslider.min.js"></script>
+    <script src="~/assets/vendors/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <script src="~/assets/vendors/vegas/vegas.min.js"></script>
+    <script src="~/assets/vendors/jquery-ui/jquery-ui.js"></script>
+    <script src="~/assets/vendors/timepicker/timePicker.js"></script>
+
+
+
+    <script src="~/assets/js/conult.js"></script>
+
+
     <script src="~/mdb5/js/mdb.min.js"></script>
 
     <script src="~/lib/devextreme/dist/js/dx-diagram.min.js"></script>

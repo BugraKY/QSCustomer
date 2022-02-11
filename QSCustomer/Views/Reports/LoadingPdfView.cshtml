@@ -2,8 +2,7 @@
 @{
     ViewData["Title"] = "LoadingPdfView";
 }
-
-
+@model QSCustomer.Models.ViewModels.PdfReport
 
 
 <div class="container">
@@ -19,9 +18,11 @@
     </div>
 </div>
 <div class="container" hidden>
-    <form asp-action="PDFviewTest" asp-controller="Reports" asp-route-projectCode="@Model" id="renderedform" method="get" hidden>
-        <div asp-validation-summary="All"></div>
-        <input type="text" class="form-control form-text" value="@Model" />
+    <form asp-action="PDFviewTest" asp-controller="Reports" asp-route-projectCode="@Model" id="renderedform" method="post" hidden>
+
+        <input type="text" class="form-control form-text" value="@Model._SelectedProject.projeCode" />
+        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.StartDate" />
+        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.FinishDate" />
     </form>
 </div>
 
@@ -38,7 +39,7 @@
 
         });
             *@
-            @*window.location.href = '@Url.Action("download", "Reports")/' + '@Model';*@
+           window.location.href = '@Url.Action("download", "Reports")/' + '@Model';
             $('#renderedform').submit();
             $('#large-indicator').dxLoadIndicator({
                 height: 60,

@@ -968,9 +968,10 @@ namespace QSCustomer.Controllers
 
             //return Content();
         }
-        public IActionResult LoadingPdfView(string id)
+        [HttpPost]
+        public IActionResult LoadingPdfView(PdfReport pdfReport)
         {
-            return View("loadingPdfView", id);
+            return View("loadingPdfView", pdfReport);
         }
 
         [HttpPost]

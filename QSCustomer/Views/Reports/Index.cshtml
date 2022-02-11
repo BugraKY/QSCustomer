@@ -16,7 +16,7 @@
     bool problematic = false;
     var _aaaaaa = close; }
 
-<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+
 
 <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
 
@@ -24,13 +24,8 @@
 <style>
     th {
         cursor: pointer;
-        background-color: coral;
     }
 
-    .btn-dx {
-        background-color: #f05b41;
-        color: white;
-    }
 
     body {
         padding-right: 0px !important;
@@ -235,12 +230,12 @@
 *@
 
 <form method="get" id="frmCode" asp-action="Details" asp-controller="Reports">
-    <button id="datebtn" class="btn dx-button-default" type="button">Test</button>
-    <input type="text" id="dateStartinp" name="startDate" asp-for="@startDate" />
-    <input type="text" id="dateFinishinp" name="finishDate" asp-for="@finishDate" />
+    <button id="datebtn" class="btn dx-button-default" type="button" hidden>Test</button>
+    <input type="text" id="dateStartinp" name="startDate" asp-for="@startDate" hidden/>
+    <input type="text" id="dateFinishinp" name="finishDate" asp-for="@finishDate" hidden/>
 
     <input hidden type="text" id="selectedVal" value="" asp-for="@projectCode" />
-    <div class="container d-flex justify-content-end bg-expert mb-3 p-3 shadow-3">
+    <div class="container d-flex justify-content-end mt-5 mb-3 p-3 shadow-3">
 
         <!-- Default checkbox -->
         <div class="form-check m-1">
@@ -260,11 +255,10 @@
         @*<input hidden class="form-check-input" type="checkbox" value="@problematic.ToString()" id="problematic" asp-for="@problematic" />*@
 
     </div>
-    <div class="container bg-expert mb-2 p-3 shadow-3">
+    <div class="container p-0 mb-5">
         <div id="spinner-loading">
             <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh" id="sectionArea">
-                <div id="large-indicator">
-                </div>
+                <img class="preloader__image" width="60" src="assets/images/loader.png" alt="" />
             </section>
         </div>
         <div id="expertgrid">
@@ -298,27 +292,33 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Report Details</h5>
                     <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
                             <div class="dx-field">
-                                <div class="dx-field-label">Starting Date</div>
-                                <div class="dx-field-value">
-                                    <div id="dateStarting"></div>
-                                </div>
-                                <div class="dx-field-label">Finish Date</div>
-                                <div class="dx-field-value">
-                                    <div id="dateFinish"></div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="dx-field-label">Starting Date</div>
+                                        <div class="dx-field-value">
+                                            <div id="dateStarting"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <div class="dx-field-label">Finish Date</div>
+                                        <div class="dx-field-value">
+                                            <div id="dateFinish"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            You are about to open report, Project code: <span id="projectCode"></span>
+                        <div class="col-12 mt-4">
+                            <p class="m-0">You are about to open report, Project code: <span id="projectCode"></span></p>
                         </div>
                     </div>
 
