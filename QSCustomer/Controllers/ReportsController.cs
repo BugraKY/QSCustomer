@@ -316,6 +316,7 @@ namespace QSCustomer.Controllers
         public IActionResult Details(string startDate, string finishDate, string projectCode, bool open, bool close, bool problematic)
         //public IActionResult Details(string projectCode)
         {
+            #region Variables
             string[] startDateArr = startDate.Split(' ');
 
             string Weak_str = startDateArr[0];
@@ -394,7 +395,7 @@ namespace QSCustomer.Controllers
             DateTime _finishDate = new DateTime(Year, Month, Day);
 
             //_dateTime.Date.Month = DateTime.Parse(Month).Month;
-
+            #endregion Variables
 
             #region Authentication
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -428,11 +429,7 @@ namespace QSCustomer.Controllers
             var GetProjeDetay = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id);
             #endregion Queries
 
-
-
             var FilteredProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id).Where(d => d.kontrolTarihi >= _startDate).Where(d => d.kontrolTarihi <= _finishDate);
-
-
 
             #region MainCode
             /*
@@ -477,7 +474,7 @@ namespace QSCustomer.Controllers
                 StartDate= _startDate,
                 FinishDate= _finishDate
             };
-            ProjectState states = new ProjectState()
+            ProjectState states = new ProjectState()    
             {
                 Close = close,
                 Open = open,
@@ -981,6 +978,7 @@ namespace QSCustomer.Controllers
         {
             #region MainCode
             string derlenmisweb = PDFString.Before + renderedHtmlStr._HtmlString + PDFString.After;
+            return Redirect("/reports/project?startDate=Fri+Jan+01+2021+00%3A00%3A00+GMT%2B0300+%28GMT%2B03%3A00%29&finishDate=Mon+Feb+14+2022+14%3A30%3A02+GMT%2B0300+%28GMT%2B03%3A00%29&projectCode=FR22-8&open=True&open=false&close=false");
             string _url = "https://localhost:5001/pdfviewtest/" + renderedHtmlStr._SelectedProject.projeCode + "?";
 
 
@@ -1015,12 +1013,12 @@ namespace QSCustomer.Controllers
         public async Task<IActionResult> DownloadPdf(PdfReport renderedHtmlStr)
         {
             string MainTab_Chart = renderedHtmlStr._HtmlString;
-            string startDate = "";
-            string finishDate = "";
+            string startDate = renderedHtmlStr._ProjectFilter.StartDate.ToString();
+            string finishDate = renderedHtmlStr._ProjectFilter.FinishDate.ToString();
             PdfReport StatusOpenProjects = new PdfReport();
             PdfReport StatusCloseProjects = new PdfReport();
 
-            string projectCode = renderedHtmlStr._SelectedProject.projeCode;
+            string projectCode = renderedHtmlStr._ProjectCode;
             //string projectCode = "FR21-25";
 
             #region Authentication
@@ -1065,7 +1063,7 @@ namespace QSCustomer.Controllers
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
-            string baseUrl = "/baseurlforpdfconvert";
+            string baseUrl = "https://localhost:5001/baseurlforpdfconvert/"+projectCode;
 
 
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
@@ -1081,7 +1079,7 @@ namespace QSCustomer.Controllers
 
             htmlConverter.ConverterSettings = webkitConverterSettings;
             PdfDocument document = new PdfDocument();
-            document = htmlConverter.Convert(_PdfString, baseUrl);
+            document = htmlConverter.Convert(_PdfString, string.Empty);
             MemoryStream ms = new MemoryStream();
 
             document.Save(ms);
@@ -1096,7 +1094,7 @@ namespace QSCustomer.Controllers
             iText.Html2pdf.HtmlConverter.ConvertToElements(_PdfString);*/
         }
         //[HttpGet("baseurlforpdfconvert/{projectCode}")]
-        [Route("baseurlforpdfconvert/{projectCode}")]
+        [Route("/baseurlforpdfconvert/{projectCode}")]
         public IActionResult BaseUrlforPdfConvert(string projectCode)
         {
             //projectCode = "FR21-25";

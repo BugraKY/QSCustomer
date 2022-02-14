@@ -9,7 +9,8 @@
 @model QSCustomer.Models.ViewModels.PdfReport
 
 @inject IHttpContextAccessor HttpContextAccessor
-@{ int count = 0; }
+@{ int count = 0;
+}
 <link rel="stylesheet" href="/css/barchart.css" />
 <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
 <style type="text/css">
@@ -78,9 +79,23 @@
         padding-left: 25px;
         width: 100%;
     }
-    .dx-datagrid-nowrap, .dx-datagrid-nowrap .dx-header-row > td > .dx-datagrid-text-content {
-        white-space:normal;
+    .dx-widget.dx-visibility-change-handler{
+        margin-right: auto;
+        margin-left: auto;
     }
+    @if (Model._ProjeHataTanimCount > 10)
+    {
+      <text>
+    .dx-datagrid-action {
+        writing-mode: vertical-lr;
+        white-space: nowrap;
+        text-align: left !important;
+        height: auto;
+        overflow: hidden;
+    }
+      </text>
+    }
+
 </style>
 <div class="container">
     <div class="container-xxl pb-5 pt-5">
@@ -111,9 +126,8 @@
             <output id="result"></output>
         </div>
     </div>
-
-    <p><strong>Note:</strong> Internet Explorer 9 and earlier versions do not support Web Workers.</p>
 </div>
+<br />
 
 <section class="container-xxl project-details report-det-sect">
     <div class="pb-lg-5">
@@ -489,30 +503,46 @@
                              mode: 'single',
 							},
                             paging: {
-                             pageSize: 50,
+                                pageSize: 20,
                             },
+                            scrolling: {
+                                useNative: false,
+                                scrollByContent: true,
+                                scrollByThumb: true,
+                                mode: "standard",
+                                showScrollbar: "onHover" // or "onScroll" | "always" | "never"
+                            },
+                            /*
+                            customizeColumns(columns) {
+                                columns[1].width = 68;
+                                columns[2].width = 68;
+                                columns[3].width = 60;
+                                columns[4].width = 60;
+                                columns[5].width = 70;
+                            },*/
+                            columnMinWidth:0,
                             hoverStateEnabled: true,
                             //columns: [html]
 
                             columns: [
-                                { dataField: 'id', caption:'id' },// visible: false
-                                { dataField: 'kontrolTarihi', caption: 'Control Date' },
-                                { dataField: 'uretimTarihi', caption: 'Product Date' },
-                                { dataField: 'partNrTanimi', caption: 'Ürün Referansları Prod' },
-                                { dataField: 'iotNo', caption: 'lotNo' },
-                                { dataField: 'seriNo', caption: 'Seri No Serial Number' },
-                                { dataField: 'harcanansaat', caption: 'Harcanan Süre Spent' },
-								{ dataField: 'mesai50Hesapla', caption: '%50 Fazla Mesai' },
-                                { dataField: 'harcanangirilenmesai', caption: '%100 Fazla Mesai' },
-								{ dataField: 'kontrolAdedi', caption: 'Kontrol Adet Checked' },
-                                { dataField: 'tamirAdedi', caption: 'Rötüş Adet Reworker' },
-                                { dataField: 'hataAdeti', caption: 'Hatalı Adet Nok' },
+                                { dataField: 'id', caption: 'id', width: 'auto' },// visible: false
+                                { dataField: 'kontrolTarihi', caption: 'Control Date', width: 'auto'},
+                                { dataField: 'uretimTarihi', caption: 'Product Date', width: 'auto' },
+                                { dataField: 'partNrTanimi', caption: 'Ürün Referansları Prod', width: 'auto' },
+                                { dataField: 'iotNo', caption: 'lotNo', width: 'auto' },
+                                { dataField: 'seriNo', caption: 'Seri No Serial Number', width: 'auto' },
+                                { dataField: 'harcanansaat', caption: 'Harcanan Süre Spent', width: 'auto' },
+                                { dataField: 'mesai50Hesapla', caption: '%50 Fazla Mesai', width: 'auto' },
+                                { dataField: 'harcanangirilenmesai', caption: '%100 Fazla Mesai', width: 'auto' },
+                                { dataField: 'kontrolAdedi', caption: 'Kontrol Adet Checked', width: 'auto' },
+                                { dataField: 'tamirAdedi', caption: 'Rötüş Adet Reworker', width: 'auto' },
+                                { dataField: 'hataAdeti', caption: 'Hatalı Adet Nok', width: 'auto' },
                                 @if (count > 0)
                                 {
                                     @for (int i = 0; i < count; i++)
                                     {
                                         <text>
-                                        { dataField: 'faults[@i].adet', caption: data._ProjeHataTanim[@i].hataTanimi },
+                                { dataField: 'faults[@i].adet', caption: data._ProjeHataTanim[@i].hataTanimi, width: 'auto', minWidth: 0 },
                                         </text>
                                     }
                                 }

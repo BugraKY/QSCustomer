@@ -96,6 +96,7 @@
         }
 
         .txtcustom {
+            transform: rotate(90deg) !important;
             -moz-transform: rotate(90deg) !important;
             -webkit-transform: rotate(90deg) !important;
             color: red !important;
@@ -371,90 +372,90 @@
                 </div>
             </div>
 
-            <div>
-                <table class="table table-bordered rotate-table-grid">
-                    <thead>
-                        <tr>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Control Date</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Product Date</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Ürün Referansları Prod</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>lotNo</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Seri No Serial Number</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Harcanan Süre Spent</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>%50 Fazla Mesai</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>%100 Fazla Mesai</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Kontrol Adet Checked</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Rötüş Adet Reworker</span></th>
-                            <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Hatalı Adet Nok</span></th>
-                            @foreach (var item in Model._ProjeHataTanim)
-                            {
-                                if (Model._ProjeHataTanimCount > 5)
-                                {
-
-                                    <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;" min-height: 10px;height:10px;max-height:150px;"><span>@item.hataTanimi</span></th>
-                                }
-                                else
-                                {
-                                    <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;" min-height: 10px;height:10px;max-height:150px;"><span>@item.hataTanimi</span></th>
-
-                                }
-
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @foreach (var item in Model._ProjectDetails)
-                        {
-                            <tr>
-                                @*<td class="text-center">@item.Id</td>*@
-                                <td class="text-center">@item.KontrolTarihi</td>
-                                <td class="text-center">@item.UretimTarihi</td>
-                                <td class="text-center">@item.PartNrTanimi</td>
-                                <td class="text-center">@item.IotNo</td>
-                                <td class="text-center">@item.SeriNo</td>
-                                <td class="text-center">@Math.Round(item.Harcanansaat, 2)</td>
-                                <td class="text-center">@item.Mesai50Hesapla</td>
-                                <td class="text-center">@item.Harcanangirilenmesai</td>
-                                <td class="text-center">@item.KontrolAdedi</td>
-                                <td class="text-center">@item.TamirAdedi</td>
-                                <td class="text-center">@item.HataAdeti</td>
-                                @if (item.KontrolAdedi == 0)
-                                {
-                                    var aafasdf = item.HataAdeti;
-                                }
-                                @if (item.Faults != null)
-                                {
-
-                                    @foreach (var FaultItem in item.Faults)
-                                    {
-                                        if (FaultItem == null)
-                                        {
-                                            <td></td>
-                                        }
-                                        else
-                                        {
-                                            <td class="text-center">@FaultItem.Adet</td>
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    foreach (var empty in Model._ProjeHataTanim)
-                                    {
-                                        <td></td>
-                                    }
-                                }
-
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-
-            </div>
 
 
         </section>
+        <div>
+            <table class="table table-bordered rotate-table-grid">
+                <thead>
+                    <tr>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Control Date</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Product Date</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Ürün Referansları Prod</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>lotNo</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Seri No Serial Number</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Harcanan Süre Spent</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>%50 Fazla Mesai</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>%100 Fazla Mesai</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Kontrol Adet Checked</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Rötüş Adet Reworker</span></th>
+                        <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;"><span>Hatalı Adet Nok</span></th>
+                        @foreach (var item in Model._ProjeHataTanim)
+                        {
+                            if (Model._ProjeHataTanimCount > 5)
+                            {
+
+                                <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;" min-height: 10px;height:10px;max-height:150px;"><span>@item.hataTanimi</span></th>
+                            }
+                            else
+                            {
+                                <th class="verticalTableHeader" style=" min-width: 1px; width: 1px; max-width: 10px;" min-height: 10px;height:10px;max-height:150px;"><span>@item.hataTanimi</span></th>
+
+                            }
+
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model._ProjectDetails)
+                    {
+                        <tr>
+                            @*<td class="text-center">@item.Id</td>*@
+                            <td class="text-center">@item.KontrolTarihi</td>
+                            <td class="text-center">@item.UretimTarihi</td>
+                            <td class="text-center">@item.PartNrTanimi</td>
+                            <td class="text-center">@item.IotNo</td>
+                            <td class="text-center">@item.SeriNo</td>
+                            <td class="text-center">@Math.Round(item.Harcanansaat, 2)</td>
+                            <td class="text-center">@item.Mesai50Hesapla</td>
+                            <td class="text-center">@item.Harcanangirilenmesai</td>
+                            <td class="text-center">@item.KontrolAdedi</td>
+                            <td class="text-center">@item.TamirAdedi</td>
+                            <td class="text-center">@item.HataAdeti</td>
+                            @if (item.KontrolAdedi == 0)
+                            {
+                                var aafasdf = item.HataAdeti;
+                            }
+                            @if (item.Faults != null)
+                            {
+
+                                @foreach (var FaultItem in item.Faults)
+                                {
+                                    if (FaultItem == null)
+                                    {
+                                        <td></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center">@FaultItem.Adet</td>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var empty in Model._ProjeHataTanim)
+                                {
+                                    <td></td>
+                                }
+                            }
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
     </cache>
 
 

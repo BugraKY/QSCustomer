@@ -18,11 +18,11 @@
     </div>
 </div>
 <div class="container" hidden>
-    <form asp-action="PDFviewTest" asp-controller="Reports" asp-route-projectCode="@Model" id="renderedform" method="post" hidden>
+    <form asp-action="DownloadPdf" asp-controller="Reports" id="renderedform" method="post" hidden>
 
-        <input type="text" class="form-control form-text" value="@Model._SelectedProject.projeCode" />
-        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.StartDate" />
-        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.FinishDate" />
+        <input type="text" class="form-control form-text" value="@Model._ProjectCode" asp-for="_ProjectCode"/>
+        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.StartDate" asp-for="_ProjectFilter.StartDate"/>
+        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.FinishDate" asp-for="_ProjectFilter.FinishDate"/>
     </form>
 </div>
 
@@ -39,7 +39,7 @@
 
         });
             *@
-           window.location.href = '@Url.Action("download", "Reports")/' + '@Model';
+           @*window.location.href = '@Url.Action("download", "Reports")/' + '@Model';*@
             $('#renderedform').submit();
             $('#large-indicator').dxLoadIndicator({
                 height: 60,
