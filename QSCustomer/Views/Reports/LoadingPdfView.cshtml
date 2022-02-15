@@ -3,7 +3,19 @@
     ViewData["Title"] = "LoadingPdfView";
 }
 @model QSCustomer.Models.ViewModels.PdfReport
-
+@{ 
+    int productRef_count = 0, projectDetails_count = 0;
+    double spent = (Model._SpentHours * 100) / 100;
+    double OverTime100 = (Model._OverTime100Total * 100) / 100;
+    double SpentHoursTotal = (Model._SpentHoursTotal * 100) / 100;
+    DateTime begDate = Convert.ToDateTime(Model._SelectedProject.baslangicTarihi);
+    List<string> CheckDate = new List<string>();
+    List<long> ValTotal = new List<long>();
+    long ValItem = 0;
+    bool FirstAction = true, FirstDateAction = true;
+    int DateCount = 0;
+    string RenderedHtml = "";
+}
 
 <div class="container">
     <div id="spinner-loading">
@@ -17,36 +29,328 @@
         </section>
     </div>
 </div>
+<section class="container" id="renderedSection">
+    <div class="pb-lg-5">
+        <table class="table table-bordered border-expert">
+            <thead>
+                <tr>
+                    <th scope="col" class="mediumtx" style="width:90px;">EXPRERT</th>
+                    <th scope="col" class="table-active text-center mediumtx" colspan="5">KALITE KONTROL & ROTUS RAPORU / QUALITY CONTROL & REWORK REPORT</th>
+                    <th scope="col" class="smalltx">
+                        OPR. NO<br />
+                        Opr.Nr#
+                    </th>
+                    <th scope="col" class="mediumtx text-center" colspan="2">@Model._SelectedProject.projeCode</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-active">
+                    <th scope="row" class="smalltx">
+                        Başlangıç Tarihi<br />
+                        Start Date
+                    </th>
+                    <td class="mediumtx">
+                        <span id="beg_date">
+                            @begDate.ToString("dd/MM/yyyy")
+                        </span>
+                    </td>
+                    <td class="mediumtx" style="min-width:160px;">
+                        ÜRÜN REFERANS<br />
+                        Product Ref #
+                    </td>
+                    <td class="mediumtx" style="min-width:160px;">
+                        HATA TANIMLARI<br />
+                        Nok Descriptions
+                    </td>
+                    <td class="smalltx" style="min-width:160px;">
+                        ŞİKAYET NO<br />
+                        Complaint Nr#
+                    </td>
+                    <td class="mediumtx">
+                        PPM
+
+                    </td>
+                    <td class="smalltx">
+                        KONTROL ADET<br />
+                        Checked Qty
+
+                    </td>
+                    <td class="smalltx">
+                        HATALI ADET<br />
+                        NOK Qty
+
+                    </td>
+                    <td class="smalltx">
+                        RÖTÜŞ ADET<br />
+                        Reworked Qty
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        MÜŞTERİ<br />
+                        Customer
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="customer">
+                            @Model._Customer.musteriAdi
+                        </span>
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        @if (Model._PartNrTanimlari.Count() > 21)
+                        {
+                            for (int i = 0; i < 21; i++)
+                            {
+                                productRef_count++;
+                                if (productRef_count % 3 == 0)
+                                {
+                                    <span>@Model._PartNrTanimlari[i].partNrTanimi,</span><br /> }
+                                else
+                                {
+                                    <span>@Model._PartNrTanimlari[i].partNrTanimi,</span>}
+                            }
+                            <span>...</span>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model._PartNrTanimlari)
+                            {
+                                productRef_count++;
+                                if (productRef_count % 3 == 0)
+                                {
+                                    <span>@item.partNrTanimi,</span><br /> }
+                                else
+                                {
+                                    <span>@item.partNrTanimi,</span>}
+                            }
+                        }
+
+
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        @if (Model._ProjeHataTanim.Count() > 14)
+                        {
+                            for (int i = 0; i < 20; i++)
+                            {
+                                productRef_count++;
+                                if (productRef_count % 2 == 0)
+                                {
+                                    <span>@Model._ProjeHataTanim[i].hataTanimi,</span><br /> }
+                                else
+                                {
+
+                                    <span>@Model._ProjeHataTanim[i].hataTanimi,</span>}
+                            }
+                            <span>...</span>
+
+                        }
+                        else
+                        {
+                            @foreach (var item in Model._ProjeHataTanim)
+                            {
+                                productRef_count++;
+                                if (productRef_count % 3 == 0)
+                                {
+                                    <span>@item.hataTanimi,</span><br /> }
+                                else
+                                {
+                                    <span>@item.hataTanimi,</span>}
+                            }
+                        }
+
+                    </td>
+                    <td rowspan="3" style="text-align:center;">
+                        <span id="comp_nr">@Model._SelectedProject.sikayetNo</span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="ppm">@Model._PPMTotal</span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="checked">@Model._CheckedTotal</span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="nok">@Model._NokTotal</span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="reworked">@Model._ReworkedTotal</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        OPR. ALANI
+                        Opr. Area
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="opr_area">
+                            @Model._Operation.fabrikaAdi
+                        </span>
+                    </td>
+
+                    <td style="text-align:center; vertical-align: middle;">
+                        HARCANAN SÜRE
+                        Spent Hours
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        %50 FAZLA MESAI
+                        %50 overtime
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        %100 FAZLA MESAI
+                        %100 overtime
+                    </td>
+
+                    <td style="text-align:center; vertical-align: middle;">
+                        TOPLAM HARCANAN SÜRE
+                        Total Spent Hours
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        PARÇA TANIMI
+                        Name of Product
+                    </th>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="nameofProduct">@Model._SelectedProject.materyel</span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="spent_hr">
+                            @spent
+                        </span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="overtime50"></span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="overtime100">@OverTime100</span>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <span id="totalSpent_hr">
+                            @SpentHoursTotal
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="demo-container">
+        <div id="chart">
+        </div>
+    </div>
+
+
+
+</section>
 <div class="container" hidden>
     <form asp-action="DownloadPdf" asp-controller="Reports" id="renderedform" method="post" hidden>
 
-        <input type="text" class="form-control form-text" value="@Model._ProjectCode" asp-for="_ProjectCode"/>
-        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.StartDate" asp-for="_ProjectFilter.StartDate"/>
-        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.FinishDate" asp-for="_ProjectFilter.FinishDate"/>
+        <input type="text" class="form-control form-text" value="@Model._ProjectCode" asp-for="_ProjectCode" />
+        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.StartDate" asp-for="_ProjectFilter.StartDate" />
+        <input type="text" class="form-control form-text" value="@Model._ProjectFilter.FinishDate" asp-for="_ProjectFilter.FinishDate" />
+        <input type="text" id="rendVal" class="form-control form-text" asp-for="@Model._HtmlString" />
     </form>
 </div>
 
-@section Scripts{
-    <script>
-        $(document).ready(function () {
-            @*
-        var id='@Model';
-        $.ajax({
-            url: '/Reports/download',
-            data: { id: id },
-            type:"get"
-        }).done(function () {
-
+<script asp-append-version="true">
+    $(document).ready(function () {
+        $('#large-indicator').dxLoadIndicator({
+            height: 60,
+            width: 60,
         });
-            *@
-           @*window.location.href = '@Url.Action("download", "Reports")/' + '@Model';*@
-            $('#renderedform').submit();
-            $('#large-indicator').dxLoadIndicator({
-                height: 60,
-                width: 60,
+        // TEST
+     @*
+        $(function () {
+            var header_height = 0;
+            $('.rotate-table-grid th span').each(function () {
+                if ($(this).outerWidth() > header_height) header_height = $(this).outerWidth();
             });
+
+            $('.rotate-table-grid th').height(header_height);
+        });*@
+        //TEST
+
+
+                $.fn.myfunction = function () {
+                    $(() => {
+                        $('#chart').dxChart({
+                            dataSource,
+                            commonSeriesSettings: {
+                                argumentField: 'state',
+                                type: 'bar',
+                                hoverMode: 'allArgumentPoints',
+                                selectionMode: 'allArgumentPoints',
+                                label: {
+                                    visible: true,
+                                    format: {
+                                        type: 'fixedPoint',
+                                        precision: 0,
+                                    },
+                                },
+                            },
+                            size: {
+                                width: 930,
+                            },
+                            animation: {
+                                enabled: false,
+                            },/*
+                            render: {
+                                force: true,
+                                animate: false,
+                            },*/
+                            series: [
+                                { valueField: 'year2018', name: 'Kontrol Adedi' },
+                                { valueField: 'year2017', name: 'Hata Adedi' },
+                            ],
+                            title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                            legend: {
+                                verticalAlignment: 'bottom',
+                                horizontalAlignment: 'center',
+                            },
+
+                            /*
+                            export: {
+                                enabled: true,
+                            },*/
+                            onPointClick(e) {
+                                e.target.select();
+                            },
+                        });
+                    });
+                };
+
+                $().myfunction();
+                const dataSource = [
+            @foreach (var item in Model._ProjectTotalsOnebyDate)
+            {
+                <text>
+                    {
+                        state: '@item.kontrolTarihi',
+                        year2017: @item.hataAdeti,
+                        year2018: @item.kontrolAdedi,
+                    },
+                </text>
+            }
+        ];
+
+                setTimeout(function () {
+                    $(document).trigger('afterready');
+                }, 1000);
+
+            });
+
+    $(document).bind('afterready', function () {
+        //alert("window loaded with trigger");
+
+        //var form = $('#__AjaxAntiForgeryForm');
+        //var token = $('input[name="__RequestVerificationToken"]', form).val();
+        var htmlString = $('#renderedSection').html();
+
+        $('#rendVal').val(htmlString);
+        $('#urlVal').val('');
+        $('#renderedform').submit();
+        /*window.print();
+        window.close();*/
     });
-    </script>
-}
+</script>
 
 

@@ -83,6 +83,16 @@
         margin-right: auto;
         margin-left: auto;
     }
+    .far{
+        color:white;
+    }
+    .btn-expert:hover .far {
+        color: #2AA377 !important;
+    }
+
+    .btn-expert:hover {
+        color: #2AA377!important;
+    }
     @if (Model._ProjeHataTanimCount > 10)
     {
       <text>
@@ -105,7 +115,7 @@
                     <input type="text" asp-for="_ProjectCode" value="@Model._ProjectCode" />
                     <input type="text" asp-for="_ProjectFilter.StartDate" value="@Model._ProjectFilter.StartDate" />
                     <input type="text" asp-for="_ProjectFilter.FinishDate" value="@Model._ProjectFilter.FinishDate" />
-                    <button id='pdf-report' class="btn btn-expert waves-effect waves-dark" target="_blank" draggable="false" type="submit"><i class="fas fa-file-pdf"></i></button>
+                    <button id='pdf-report' class="btn btn-expert waves-effect waves-dark" target="_blank" draggable="false" type="submit"><i class="far fa-lg fa-file-pdf"></i></button>
                 </form>
             </div>
         </div>
