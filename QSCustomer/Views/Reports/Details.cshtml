@@ -112,9 +112,9 @@
         <div class="row">
             <div class="col-md-12">
                 <form method="post" asp-controller="Reports" asp-action="LoadingPdfView">
-                    <input type="text" asp-for="_ProjectCode" value="@Model._ProjectCode" />
-                    <input type="text" asp-for="_ProjectFilter.StartDate" value="@Model._ProjectFilter.StartDate" />
-                    <input type="text" asp-for="_ProjectFilter.FinishDate" value="@Model._ProjectFilter.FinishDate" />
+                    <input type="text" asp-for="_ProjectCode" value="@Model._ProjectCode" hidden/>
+                    <input type="text" asp-for="_ProjectFilter.StartDate" value="@Model._ProjectFilter.StartDate" hidden/>
+                    <input type="text" asp-for="_ProjectFilter.FinishDate" value="@Model._ProjectFilter.FinishDate" hidden/>
                     <button id='pdf-report' class="btn btn-expert waves-effect waves-dark" target="_blank" draggable="false" type="submit"><i class="far fa-lg fa-file-pdf"></i></button>
                 </form>
             </div>

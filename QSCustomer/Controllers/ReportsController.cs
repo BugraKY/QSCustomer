@@ -968,6 +968,9 @@ namespace QSCustomer.Controllers
         [HttpPost]
         public IActionResult LoadingPdfView(PdfReport pdfReport)
         {
+            var _projectTotalsOneByDate = new List<ProjectTotalsOneByDate>();
+            #region TEST
+            /*
             var SelectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == pdfReport._ProjectCode);
             var ProjeHataTanim = _uow.ProjeHataTanimi.GetAll(i => i.idProje == SelectedProject.id).Where(e=>e.hataTanimi!="");
 
@@ -1009,108 +1012,18 @@ namespace QSCustomer.Controllers
                     PPM += ProjeDetayItem.ppm;
                     Overtime100 += ProjeDetayItem.harcananGirilenMesai;
                     projedetay_say++;
-                    var harcanansaat = ProjeDetayItem.harcananSaat;//ProjeDetaysItem ın içerisinde birkere yazılacak
-                    var harcanangirilenmesai = ProjeDetayItem.harcananGirilenMesai;//ProjeDetaysItem ın içerisinde birkere yazılacak
+                    var harcanansaat = ProjeDetayItem.harcananSaat;
+                    var harcanangirilenmesai = ProjeDetayItem.harcananGirilenMesai;
                     foreach (var ProjeDetaysItem in GetProjeDetays)
                     {
 
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+
                         qprojepartNrTanimi? getPartNrItem = _uow.ProjePartNrTanimi.GetFirstOrDefault(i => i.id == ProjeDetaysItem.idReferansPartNr);
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+
                         List<qprojeHataDetay?> getHataDetay = (List<qprojeHataDetay?>)_uow.ProjeHataDetay.GetAll(i => i.idProjeDetays == ProjeDetaysItem.id).OrderBy(x => x.idHataTanimi).ToList();
-                        /*
-                        if ((ProjeDetaysItem.toplamSuredk == 0) && (ProjeDetaysItem.idReferansPartNr == 0) && (ProjeDetaysItem.KontrolAdedi == 0) && (ProjeDetaysItem.SaatUcreti == 0))
-                        {
 
-                            _ProjectDetailsId++;
-                            var _projectDetails = new ProjectDetails
-                            {
-                                Id = _ProjectDetailsId,
-                                KontrolTarihi = ProjeDetayItem.kontrolTarihi.ToString("dd/MM/yyyy"),
-                                UretimTarihi = ProjeDetaysItem.uretimTarihi.ToString("dd/MM/yyyy"),
-                                PartNrTanimi = "",
-                                IotNo = "",
-                                SeriNo = "",
-                                Harcanansaat = 0,
-                                Mesai50Hesapla = 0,
-                                Harcanangirilenmesai = 0,
-                                KontrolAdedi = 0,
-                                TamirAdedi = 0,
-                                HataAdeti = 0,
-                            };
-                            projectDetailsList.Add(_projectDetails);
-                        }
-                        else
-                        {
-                            var HatalarCount = 0;
-                            #region HataTanimsDuzen
-                            foreach (var itemm in ProjeHataTanim)
-                            {
-
-                                qprojeHataDetay item = new qprojeHataDetay();
-
-
-
-                                if (HatalarCount < getHataDetay.Count)
-                                {
-                                    item = getHataDetay[HatalarCount];
-                                }
-
-                                if (item.idHataTanimi == itemm.id)
-                                {
-                                    var _FaultStr = _uow.ProjeHataTanimi.GetFirstOrDefault(i => i.id == item.idHataTanimi);
-                                    var _projectFaults = new FaultString
-                                    {
-                                        id = item.id,
-                                        idProje = item.idProje,
-                                        idProjeDetay = item.idProjeDetay,
-                                        idProjeDetays = item.idProjeDetays,
-                                        idHataTanimi = item.idHataTanimi,
-                                        Adet = item.Adet,
-                                        hataTanimi = _FaultStr.hataTanimi,
-                                    };
-                                    FaultStringsList.Add(_projectFaults);
-                                    HatalarCount++;
-                                }
-
-                                else
-                                    FaultStringsList.Add(null);
-                            }
-                            #endregion HataTanimsDuzen
-
-                            _ProjectDetailsId++;
-
-                            if (ProjeDetayItem.mesaiHesapla100)
-                                ProjeDetaysItem.harcananGirilenMesai = Convert.ToInt64(harcanansaat);
-                            var _projectDetails = new ProjectDetails
-                            {
-                                Id = _ProjectDetailsId,
-                                KontrolTarihi = ProjeDetayItem.kontrolTarihi.ToString("dd/MM/yyyy"),
-                                UretimTarihi = ProjeDetaysItem.uretimTarihi.ToString("dd/MM/yyyy"),
-                                PartNrTanimi = getPartNrItem.partNrTanimi,
-                                IotNo = ProjeDetaysItem.lotNo,
-                                SeriNo = ProjeDetaysItem.seriNo,
-                                Harcanansaat = harcanansaat,
-                                Mesai50Hesapla = ProjeDetaysItem.mesai50Hesapla,
-                                Harcanangirilenmesai = ProjeDetaysItem.harcananGirilenMesai,
-                                KontrolAdedi = ProjeDetaysItem.KontrolAdedi,
-                                TamirAdedi = ProjeDetaysItem.TamirAdedi,
-                                HataAdeti = ProjeDetaysItem.HataAdeti,
-                                Faults = FaultStringsList.ToList()
-
-                            };
-                            FaultStringsList.Clear();
-                            projectDetailsList.Add(_projectDetails);
-                            Checked += _projectDetails.KontrolAdedi;
-                            Reworked += _projectDetails.TamirAdedi;
-                            Nok += _projectDetails.HataAdeti;
-                            SpentHours += _projectDetails.Harcanansaat;
-                            Overtime50 += _projectDetails.Mesai50Hesapla;
-                            SpentHr += _projectDetails.Harcanangirilenmesai;
-                        }
-                        */
-                        harcanansaat = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
-                        harcanangirilenmesai = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
+                        harcanansaat = 0;
+                        harcanangirilenmesai = 0;
                         s++;
                     }
                 }
@@ -1198,9 +1111,31 @@ namespace QSCustomer.Controllers
             //return Json(projectDetailsList.ToList());
             ViewBag.dataSource = projectTotalsOneByDateList;
             var _aaaaaaa = Test;
-
+            */
             //pdfReport.
-            return View("loadingPdfView", PdfReport);
+            #endregion TEST
+            var _selectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == pdfReport._ProjectCode);
+            var _ProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == _selectedProject.id);
+
+           foreach(var item in _ProjectDetails)
+            {
+                var _chartvalues = new ProjectTotalsOneByDate()
+                {
+                    kontrolTarihi =  item.kontrolTarihi.ToString(),
+                    hataAdeti =  item.tHataAdeti,
+                    kontrolAdedi = item.tKontrolAdedi
+                };
+                _projectTotalsOneByDate.Add(_chartvalues);
+            }
+            var _pdfReport = new PdfReport()
+            {
+                _ProjectCode=pdfReport._ProjectCode,
+                _ProjectFilter=pdfReport._ProjectFilter,
+                _ProjectTotalsOnebyDate= _projectTotalsOneByDate
+            };
+            
+            //return NoContent();
+            return View("loadingPdfView", _pdfReport);
         }
 
         [HttpPost]
