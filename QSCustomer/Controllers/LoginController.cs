@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,11 +52,19 @@ namespace QSCustomer.Controllers
         [Route("login")]
         public IActionResult Index()
         {
-            
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if (Claims != null)
+            {
+                return Redirect("/");
+            }
+            return View();
+            /*
             #region Test Section
             EmailSenderExtension.TestRun("bugrakaya16@gmail.com", "/");
             #endregion Test Section
-            return View();
+            */
+
         }
         /*
         [HttpPost("loginpost")]

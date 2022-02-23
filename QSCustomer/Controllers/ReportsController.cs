@@ -65,7 +65,7 @@ namespace QSCustomer.Controllers
             var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             if (Claims != null)
             {
-                var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
+                var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value,includeProperties: "UserTypes");
                 //var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email);//ORIGINAL
                 var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com");//TEST
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
@@ -1115,13 +1115,13 @@ namespace QSCustomer.Controllers
             //pdfReport.
             #endregion TEST
             var _selectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == pdfReport._ProjectCode);
-            var _ProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == _selectedProject.id);
+            var _ProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == _selectedProject.id).Where(d => d.kontrolTarihi >= pdfReport._ProjectFilter.StartDate).Where(d => d.kontrolTarihi <= pdfReport._ProjectFilter.FinishDate);
 
-           foreach(var item in _ProjectDetails)
+            foreach (var item in _ProjectDetails)
             {
                 var _chartvalues = new ProjectTotalsOneByDate()
                 {
-                    kontrolTarihi =  item.kontrolTarihi.ToString(),
+                    kontrolTarihi =  item.kontrolTarihi.ToString("dd/MM/yyyy"),
                     hataAdeti =  item.tHataAdeti,
                     kontrolAdedi = item.tKontrolAdedi
                 };

@@ -360,6 +360,12 @@ namespace QSCustomer.Extensions
 
 
             });
+            var _projectFilter = new ProjectFilter()
+            {
+                StartDate = DateTime.Parse(startDate),
+                FinishDate=DateTime.Parse(endDate)
+
+            };
 
             var PdfReport = new PdfReport()
             {
@@ -379,7 +385,8 @@ namespace QSCustomer.Extensions
                 _OverTime50Total = Overtime50,
                 _OverTime100Total = Overtime100,
                 _PPMTotal = convertedPpm,
-                _DataFields = DataFields
+                _DataFields = DataFields,
+                _ProjectFilter=_projectFilter
             };
 
             var deg = s;
@@ -649,8 +656,6 @@ namespace QSCustomer.Extensions
                 ptd_count++;
             }
 
-
-
             var PdfReport = new PdfReport()
             {
                 _SelectedProject = SelectedProject,
@@ -669,7 +674,7 @@ namespace QSCustomer.Extensions
                 _OverTime50Total = Overtime50,
                 _OverTime100Total = Overtime100,
                 _PPMTotal = convertedPpm,
-                _DataFields = DataFields
+                _DataFields = DataFields,
             };
 
             var deg = s;

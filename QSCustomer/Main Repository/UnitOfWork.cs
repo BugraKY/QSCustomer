@@ -17,6 +17,7 @@ namespace QSCustomer.MainRepository
             _dbSec = dbSec;
             _dbApp = dbApp;
             ApplicationUser = new ApplicationUserRepository(_dbApp);
+            UserType = new UserTypeRepository(_dbApp);
 
             MusteriYetkili = new MusteriYetkiliRepository(_dbSec);
             MusteriTanim = new MusteriTanimRepository(_dbSec);
@@ -24,6 +25,7 @@ namespace QSCustomer.MainRepository
             ProjeDetay = new ProjeDetayRepository(_dbSec);
             ProjeDetays = new ProjeDetaysRepository(_dbSec);
             FabrikaTanim = new FabrikaTanimRepository(_dbSec);
+            FabrikaTanimYetkili = new FabrikaTanimYetkiliRepository(_dbSec);
             ProjeDurumu = new ProjeDurumuRepository(_dbSec);
             ProjeKontrolTipi = new ProjeKontrolTipiRepository(_dbSec);
             ProjePartNrTanimi = new ProjePartNrTanimiRepository(_dbSec);
@@ -44,6 +46,7 @@ namespace QSCustomer.MainRepository
         public IProjeDetayRepository ProjeDetay { get; private set; }
         public IProjeDetaysRepository ProjeDetays { get; private set; }
         public IFabrikaTanimRepository FabrikaTanim { get; private set; }
+        public IFabrikaTanimYetkiliRepository FabrikaTanimYetkili { get; private set; }
         public IProjeDurumuRepository ProjeDurumu { get; private set; }
         public IProjeKontrolTipiRepository ProjeKontrolTipi { get; private set; }
         public IProjePartNrTanimiRepository ProjePartNrTanimi { get; private set; }
@@ -51,6 +54,7 @@ namespace QSCustomer.MainRepository
         public IProjeHataDetayRepository ProjeHataDetay { get; private set; }
         public IParaBirimiRepository ParaBirimi { get; private set; }
         public IUlkeRepository Ulke { get; private set; }
+        public IUserTypeRepository UserType { get; private set; }
         public void Dispose()
         {
            //if (_dbSec != null)

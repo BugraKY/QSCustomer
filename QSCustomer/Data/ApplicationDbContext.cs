@@ -12,6 +12,7 @@ namespace QSCustomer.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options){}
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<UserType> UserTypes { get; set; }
     }
 
     public class SecondDbContext : DbContext
@@ -20,6 +21,7 @@ namespace QSCustomer.Data
             : base(options){}
 
         public DbSet<musteriYetkili> musteriYetkili { get; set; }
+        public DbSet<fabrikatanimyetkili> fabrikatanimyetkili { get; set; }
         public DbSet<musteritanim> musteritanim { get; set; }
         public DbSet<qprojetanim> qprojetanim { get; set; }
         public DbSet<qprojeDetay> qprojedetay { get; set; }

@@ -53,6 +53,7 @@ namespace QSCustomer.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            ApplicationUser user = new ApplicationUser();
             bool posted = true;
             //Input.IsCompany=Convert.ToBoolean(RegCheck) ;
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -61,58 +62,81 @@ namespace QSCustomer.Controllers
             if (ModelState.IsValid)
             {
                 //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                var user = new ApplicationUser
-                {
-                    UserName = Input.Email,
-                    Email = Input.Email,
-                    Status = false,
-                };
 
-                var IsCustomer = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == user.Email);
+
+                var IsCustomer = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
                 if (IsCustomer == null)
                 {
-                    ModelState.AddModelError(string.Empty, "You are not our Customers with this mail: " + user.Email);
+                    var IsOperationArea = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
+                    if (IsOperationArea==null)
+                    {
+                        ModelState.AddModelError(string.Empty, "You are not our Customers with this mail: " + user.Email);
+                    }
+                    else
+                    {
+                        var _user = new ApplicationUser
+                        {
+                            UserName = Input.Email,
+                            Email = Input.Email,
+                            Status = false,
+                            EmailConfirmed = true,
+                            DefinitionId = IsOperationArea.idFabrikaTanim,
+                            UserTypeId = 1
+                        };
+                        user = _user;
+                    }
+
                     return View("Index");
                 }
                 else
                 {
-                    var result = await _userManager.CreateAsync(user, Input.Password);
-
-                    if (result.Succeeded)
+                    var _user = new ApplicationUser
                     {
-                        _logger.LogInformation("Kullanıcı Kayıt işlemi yaptı. Email gönderiliyor..");
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                        Status = false,
+                        EmailConfirmed=true,
+                        DefinitionId=IsCustomer.idMusteriTanim,
+                        UserTypeId = 0
+                    };
+                    user = _user;
+                }
+                var result = await _userManager.CreateAsync(user, Input.Password);
 
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-                        
-                        EmailSenderExtension.SendEmail(Input.Email, callbackUrl);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("Kullanıcı Kayıt işlemi yaptı. Email gönderiliyor..");
 
-                        /*Email Send*/
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        protocol: Request.Scheme);
+
+                    EmailSenderExtension.SendEmail(Input.Email, callbackUrl);
+
+                    /*Email Send*/
 
 
 
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = "~/" });
-                            return RedirectToAction("SuccessResult", posted);
-                            //return Redirect("~/");
-                        }
-                        else
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
-                        }
-                    }
-
-                    foreach (var error in result.Errors)
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = "~/" });
+                        return RedirectToAction("SuccessResult", posted);
+                        //return Redirect("~/");
                     }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
 
             }

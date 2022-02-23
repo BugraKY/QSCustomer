@@ -37,12 +37,26 @@ namespace QSCustomer
             options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
 
+            /*
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>();*/
 
             services.AddDbContext<SecondDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("QsMainConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredUniqueChars = 0;
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             /*services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<SecondDbContext>();*/

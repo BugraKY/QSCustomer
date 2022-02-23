@@ -9,6 +9,7 @@ namespace QSCustomer.IMainRepository
     {
         IApplicationUserRepository ApplicationUser { get; }
         IMusteriYetkiliRepository MusteriYetkili { get; }
+        IFabrikaTanimYetkiliRepository FabrikaTanimYetkili { get; }
         IMusteriTanimRepository MusteriTanim { get; }
         IProjeTanimRepository ProjeTanim { get; }
         IProjeDetayRepository ProjeDetay { get; }
@@ -21,6 +22,7 @@ namespace QSCustomer.IMainRepository
         IProjeHataDetayRepository ProjeHataDetay { get; }
         IParaBirimiRepository ParaBirimi { get; }
         IUlkeRepository Ulke { get; }
+        IUserTypeRepository UserType { get; }
         void Save();
     }
 }
