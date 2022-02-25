@@ -65,19 +65,44 @@ namespace QSCustomer.Controllers
             var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             if (Claims != null)
             {
-                var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value,includeProperties: "UserTypes");
+                var AppUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value, includeProperties: "UserTypes");
+                return View("Index",AppUser.Id);
+
+                /*
+                                if (AppUser.UserTypes.Name == UserTypeConst.Customer)
+                                {
+                                    var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);
+                                    var _userDefinition = new UserDefinition()
+                                    {
+                                        DefinitionId = AppUser.DefinitionId,
+                                        UserTypeId = AppUser.UserTypeId
+                                    };
+                                    return View(_userDefinition);
+                                }
+                                else if(AppUser.UserTypes.Name == UserTypeConst.Operation_Area)
+                                {
+                                    var O_Area = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);
+                                    var _userDefinition = new UserDefinition()
+                                    {
+                                        DefinitionId = AppUser.DefinitionId,
+                                        UserTypeId = AppUser.UserTypeId
+                                    };
+                                    return View(_userDefinition);
+                                }
+                                else*/
                 //var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email);//ORIGINAL
-                var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com");//TEST
-                if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
+                //TEST
+                if (AppUser != null && AppUser.EmailConfirmed == false)
                     return RedirectToAction("Unconfirmed", "Home");
-                return View(Company.idMusteriTanim);
+
             }
             else
                 return NotFound();
+            return View(null);
             #endregion Authentication Index
         }
         [HttpPost]
-        public JsonResult GetAllReportJson(int id, bool open, bool close, bool problematic)
+        public JsonResult GetAllReportJson(string id, bool open, bool close, bool problematic)
         {
             Response.Cookies.Append("_kj6ght", open.ToString());
             Response.Cookies.Append("_h4k9xp", close.ToString());
@@ -87,14 +112,20 @@ namespace QSCustomer.Controllers
             #region Authentication Json
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            ApplicationUser AppUser;
             if (Claims != null)
             {
-                var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
-                //var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email);//ORIGINAL
-                var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com");//TEST
-                if (Company.idMusteriTanim != id)
-                    return Json(HttpStatusCode.NoContent);
-                if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
+                AppUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value,includeProperties:"UserTypes");
+                if (AppUser.UserTypes.Name == UserTypeConst.Customer)
+                {
+                    var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);//TEST
+                }
+                if (AppUser.UserTypes.Name == UserTypeConst.Operation_Area)
+                {
+                    var Company = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);//TEST
+                }
+
+                if (AppUser != null && AppUser.EmailConfirmed == false)
                     return Json(HttpStatusCode.NoContent);
             }
             else
@@ -136,9 +167,30 @@ namespace QSCustomer.Controllers
             }
             #endregion MainCode
             */
-
+            //IEnumerable<qprojetanim> GetAllProject=null;
+            var firstdef = _uow.DefinitionUser.GetAll(i => i.UserId == AppUser.Id);
+            List<qprojetanim> GetAllProject = new List<qprojetanim>();
             #region MainCode
-            var GetAllProject = _uow.ProjeTanim.GetAll(i => i.idMusteri == id);
+            if (AppUser.UserTypes.Name == UserTypeConst.Customer)
+            {
+                foreach (var item in firstdef)
+                {
+                    var _customer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == item.DefinitionId);
+                    var deger = _uow.ProjeTanim.GetAll(i => i.idMusteri == _customer.id);
+                    GetAllProject.AddRange(deger);
+                }
+
+            }
+            if (AppUser.UserTypes.Name == UserTypeConst.Operation_Area)
+            {
+                foreach (var item in firstdef)
+                {
+                    //GetAllProject.AddRange(_uow.ProjeTanim.GetAll(i => i.idOprArea == item.DefinitionId));
+                }
+            }
+            //GetAllProject = _uow.ProjeTanim.GetAll(i => i.idMusteri == firstdef.DefinitionId);
+
+
             foreach (var item in GetAllProject)
             {
                 if (open)

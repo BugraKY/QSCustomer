@@ -23,6 +23,7 @@ namespace QSCustomer.IMainRepository
         IParaBirimiRepository ParaBirimi { get; }
         IUlkeRepository Ulke { get; }
         IUserTypeRepository UserType { get; }
+        IDefinitionUserRepository DefinitionUser { get; }
         void Save();
     }
 }

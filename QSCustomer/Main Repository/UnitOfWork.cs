@@ -18,6 +18,8 @@ namespace QSCustomer.MainRepository
             _dbApp = dbApp;
             ApplicationUser = new ApplicationUserRepository(_dbApp);
             UserType = new UserTypeRepository(_dbApp);
+            DefinitionUser = new DefinitionUserRepository(_dbApp);
+
 
             MusteriYetkili = new MusteriYetkiliRepository(_dbSec);
             MusteriTanim = new MusteriTanimRepository(_dbSec);
@@ -32,8 +34,7 @@ namespace QSCustomer.MainRepository
             ProjeHataTanimi = new ProjeHataTanimiRepository(_dbSec);
             ProjeHataDetay = new ProjeHataDetayRepository(_dbSec);
             ParaBirimi = new ParaBirimiRepository(_dbSec);
-            Ulke = new UlkeRepository(_dbSec);
-        }
+            Ulke = new UlkeRepository(_dbSec);        }
         /*
         public UnitOfWork()
         {
@@ -55,6 +56,7 @@ namespace QSCustomer.MainRepository
         public IParaBirimiRepository ParaBirimi { get; private set; }
         public IUlkeRepository Ulke { get; private set; }
         public IUserTypeRepository UserType { get; private set; }
+        public IDefinitionUserRepository DefinitionUser { get; private set; }
         public void Dispose()
         {
            //if (_dbSec != null)

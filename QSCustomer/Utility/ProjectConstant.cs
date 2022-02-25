@@ -136,5 +136,10 @@ namespace QSCustomer.Utility
 </html>
 ";
         }
+        public static class UserTypeConst
+        {
+            public const string Operation_Area = "Operation Area";
+            public const string Customer = "Customer";
+        }
     }
 }

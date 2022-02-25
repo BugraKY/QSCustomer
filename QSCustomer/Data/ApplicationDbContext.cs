@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QSCustomer.Models.DbModels;
 using System;
@@ -13,6 +14,7 @@ namespace QSCustomer.Data
             : base(options){}
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<UserType> UserTypes { get; set; }
+        public DbSet<DefinitionUsers> DefinitionUsers { get; set; }
     }
 
     public class SecondDbContext : DbContext

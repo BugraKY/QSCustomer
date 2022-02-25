@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{ }
-@*@model List<QSCustomer.Models.ViewModels.CustomerReports>*@
+@model string
 @using Microsoft.AspNetCore.Http
 @using static QSCustomer.Extensions.ProjectExtensions
 @{string projectCode = "", _Url = "/";
@@ -567,7 +567,7 @@
                         width: 0,
                     });
                 },
-                timeout: 30000,*/
+                timeout: 60000,*/
             });
 
 
@@ -611,7 +611,8 @@
                         focusedRowEnabled: true,
                         columns: [
                             /*{ dataField: 'id', caption: 'ID', "width": "0"},*/
-                            { dataField: 'operationArea', caption: 'Operation Area', "width": "auto" },
+                            { dataField: 'customerName', caption: 'Customers', "width": "auto" },
+                            { dataField: 'operationArea', caption: 'Customers', "width": "auto" },
                             /*{ dataField: 'customerName', caption: 'Customer' },*/
                             { dataField: 'projectCode', caption: 'Code', "width": "75px" },
                             @*
@@ -719,7 +720,7 @@
                         width: 0,
                     });
                 },
-                timeout:30000,
+                timeout:60000,
                 });
 
 

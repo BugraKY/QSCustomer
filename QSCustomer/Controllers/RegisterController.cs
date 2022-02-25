@@ -64,11 +64,13 @@ namespace QSCustomer.Controllers
                 //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
 
 
+
+                var IsOperationArea = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
                 var IsCustomer = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
-                if (IsCustomer == null)
+                if (IsOperationArea != null)
                 {
-                    var IsOperationArea = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
-                    if (IsOperationArea==null)
+
+                    if (IsOperationArea == null && IsCustomer==null)
                     {
                         ModelState.AddModelError(string.Empty, "You are not our Customers with this mail: " + user.Email);
                     }
@@ -80,7 +82,6 @@ namespace QSCustomer.Controllers
                             Email = Input.Email,
                             Status = false,
                             EmailConfirmed = true,
-                            DefinitionId = IsOperationArea.idFabrikaTanim,
                             UserTypeId = 1
                         };
                         user = _user;
@@ -88,16 +89,16 @@ namespace QSCustomer.Controllers
 
                     return View("Index");
                 }
-                else
+                else if(IsCustomer != null)
                 {
+
                     var _user = new ApplicationUser
                     {
                         UserName = Input.Email,
                         Email = Input.Email,
                         Status = false,
-                        EmailConfirmed=true,
-                        DefinitionId=IsCustomer.idMusteriTanim,
-                        UserTypeId = 0
+                        EmailConfirmed = true,
+                        UserTypeId = 2
                     };
                     user = _user;
                 }
@@ -119,6 +120,35 @@ namespace QSCustomer.Controllers
 
                     /*Email Send*/
 
+                    if (IsOperationArea != null)
+                    {
+                        var _definitionUserOperation = new DefinitionUsers()
+                        {
+                            UserId = user.Id,
+                            DefinitionId = IsOperationArea.idFabrikaTanim
+                        };
+                        if (IsCustomer != null)
+                        {
+                            var _definitionUserCustomer = new DefinitionUsers()
+                            {
+                                UserId = user.Id,
+                                DefinitionId = IsCustomer.idMusteriTanim
+                            };
+                            _uow.DefinitionUser.Add(_definitionUserCustomer);
+                        }
+                        _uow.DefinitionUser.Add(_definitionUserOperation);
+                    }
+                    else if (IsCustomer != null)
+                    {
+
+                        var _definitionUserCustomer = new DefinitionUsers()
+                        {
+                            UserId = user.Id,
+                            DefinitionId = IsCustomer.idMusteriTanim
+                        };
+                        _uow.DefinitionUser.Add(_definitionUserCustomer);
+                    }
+                    _uow.Save();
 
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

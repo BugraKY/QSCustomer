@@ -105,8 +105,8 @@
                                     <span><i class="fas fa-user-friends"></i></span>
                                 </div>
                                 <div class="main-menu-wrapper__call-number">
-                                    <partial name="_LoginPartial.cshtml" />
-
+                                    @*<partial name="_LoginPartial.cshtml" />*@
+                                    @await Component.InvokeAsync("GetUser")
                                 </div>
                             </div>
                         </div>
