@@ -64,8 +64,8 @@ namespace QSCustomer.Controllers
                 //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
 
 
-
                 var IsOperationArea = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
+
                 var IsCustomer = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == Input.Email);
                 if (IsOperationArea != null)
                 {
@@ -82,12 +82,13 @@ namespace QSCustomer.Controllers
                             Email = Input.Email,
                             Status = false,
                             EmailConfirmed = true,
+                            DefinitionId=IsOperationArea.idFabrikaTanim,
                             UserTypeId = 1
                         };
                         user = _user;
                     }
 
-                    return View("Index");
+                    //return View("Index");
                 }
                 else if(IsCustomer != null)
                 {
@@ -98,6 +99,7 @@ namespace QSCustomer.Controllers
                         Email = Input.Email,
                         Status = false,
                         EmailConfirmed = true,
+                        DefinitionId = IsCustomer.id,
                         UserTypeId = 2
                     };
                     user = _user;

@@ -59,11 +59,13 @@ namespace QSCustomer.MainRepository
         public IDefinitionUserRepository DefinitionUser { get; private set; }
         public void Dispose()
         {
-           //if (_dbSec != null)
                 _dbSec.Dispose();
-            //else
                 _dbApp.Dispose();
-
+        }
+        public async void DisposeAsync()
+        {
+            await _dbSec.DisposeAsync();
+            await _dbApp.DisposeAsync();
         }
         public void Save()
         {
@@ -71,6 +73,11 @@ namespace QSCustomer.MainRepository
                 _dbSec.SaveChanges();
             //else
                 _dbApp.SaveChanges();
+        }
+        public async void SaveAsync()
+        {
+            await _dbSec.SaveChangesAsync();
+            await _dbApp.SaveChangesAsync();
         }
     }
 }

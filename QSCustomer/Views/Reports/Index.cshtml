@@ -9,6 +9,8 @@
     //bool open = true, close = false, problematic;
     DateTime dateVal = DateTime.Now;
     DateTime startDate = DateTime.Now;
+    //string startDate = "";
+
     DateTime finishDate = DateTime.Now;
 
     bool open = Convert.ToBoolean(Context.Request.Cookies["_kj6ght"]);
@@ -369,31 +371,44 @@
         $(document).ready(function () {
             var open = false;
             var close = false;
-
+            var selectedDate = new Date('@DateTime.Now.Date');
             if ($('#open').is(":checked")) {
                 open = true;
             }
             if ($('#close').is(":checked")) {
                 close = true;
             }
+
+            /*
             $(() => {
                 const now = new Date();
                 $('#dateStarting').dxDateBox({
                     type: 'date',
-                    value: now,
-                    placeholder: '@DateTime.Now.ToString("dd/MM/yyyy")',
+                    value: now.getDay()+'/'+now.getMonth()+"/"+now.getFullYear(),
+                    placeholder: 'DateTime.Now.ToString("dd/MM/yyyy")',
                     showClearButton: true,
                     useMaskBehavior: true,
-                    displayFormat: "dd/MM/yyyy",
-                    onValueChanged(data) {
-                        console.log("value changed :" + new Date(data.value));
+                    displayFormat: 'dd/MM/yyyy',
+                    onValueChanged(data) {/*
+                        const dateVal = new Date(data.value);
+                        var year = dateVal.getFullYear();
+                        var month = dateVal.getMonth() + 1;
+                        var day = dateVal.getDate();
+                        var datestr = day.toString() + '/' + month.toString() + "/" + year.toString();
+                        console.log(day);
+                        console.log(month);
+                        console.log(year);
+                        console.log("value changeddd :" + data.value);
                         $('#dateStartinp').val(data.value);
+
                     },
                 });
-
+                
                 var dateVal = $("#dateStarting").dxDateBox("instance").option("value");
                 $('#dateStartinp').val(dateVal);
             });
+            */
+
 
             $(() => {
                 const now = new Date();
@@ -601,7 +616,7 @@
                             visible: true,
                         },
                         pager: {
-                            allowedPageSizes: [5, 10,20,50],
+                            allowedPageSizes: [10,20,50,100],
                             showPageSizeSelector: true,
                             showNavigationButtons: true,
                         },
@@ -611,8 +626,8 @@
                         focusedRowEnabled: true,
                         columns: [
                             /*{ dataField: 'id', caption: 'ID', "width": "0"},*/
-                            { dataField: 'customerName', caption: 'Customers', "width": "auto" },
-                            { dataField: 'operationArea', caption: 'Customers', "width": "auto" },
+                            { dataField: 'customerName', caption: 'Customers', "width": "auto" },//Görünecek alan
+                            { dataField: 'operationArea', caption: 'Opr Area', "width": "auto" },//Görünmeyecek Alan
                             /*{ dataField: 'customerName', caption: 'Customer' },*/
                             { dataField: 'projectCode', caption: 'Code', "width": "75px" },
                             @*
@@ -689,14 +704,43 @@
                         onSelectionChanged(selectedItems) {
                             const data = selectedItems.selectedRowsData[0];
 
+                            console.log("data: " + data.startDate);
                             if (data) {
                                 //$('input[name=selectedVal]').val(data.projectCode);
                                 //$('#selectedVal').val('435');
                                 $('#selectedVal').attr("value", data.projectCode);
                                 console.log("seçilen Proje: "+data.projectCode);
                                 $('#selectionMessage').modal('toggle');
-                                $('#projectCode').empty();
+                                selectedDate = data.startDate;
+                                console.log("Json string: "+JSON.stringify(selectedDate));
+                                $('#dateStartinp').val(selectedDate);
+                                $('#projectCode').empty(data.startDate);
                                 $('#projectCode').append(data.projectCode);
+                                $(() => {
+                                    const startDateFormat = new Date(data.startDate);
+                                    var startDateStr = startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear();
+                                    console.log(startDateStr);
+                                    $('#dateStarting').dxDateBox({
+                                        type: 'date',
+                                        //value: getFormattedDate(startDateFormat),
+                                        value: startDateStr,
+                                        placeholder: selectedDate,
+                                        showClearButton: true,
+                                        useMaskBehavior: true,
+                                        displayFormat: 'dd/MM/yyyy',
+                                        
+                                        onValueChanged(datechanged) {
+                                            console.log("datechanged: " + JSON.stringify(datechanged));
+                                            var startDateChanged = new Date(datechanged.value);
+                                            var startDateChangedStr = startDateChanged.getDate() + '.' + (startDateChanged.getMonth() + 1) + "." + startDateChanged.getFullYear();
+                                            console.log("value changed: " + startDateChangedStr);
+                                            $('#dateStartinp').val(startDateChangedStr);
+                                        },
+                                    });
+
+                                });
+
+                                //$('#dateStartinp').val();YAPILACAK
                                 $("#submitCode").click(function () {
                                     /*$("#frmCode").submit();*/
                                     $('#frmCode').submit(function (event) {
@@ -727,6 +771,31 @@
             }
 
             ajaxCall();
+            var rowCount = $('.dx-datagrid-table >tbody >tr').length;
+            console.log("Dx Row Count: " + rowCount);
+
+            function getFormattedDate(date) {
+                var year = date.getFullYear();
+
+                var month = (1 + date.getMonth()).toString();
+                month = month.length > 1 ? month : '0' + month;
+
+                var day = date.getDate().toString();
+                day = day.length > 1 ? day : '0' + day;
+
+                return day + '/' + month + '/' + year;
+            }
+            function getFormattedDateRevReg(date) {
+                var year = date.getFullYear();
+
+                var month = (1 + date.getMonth()).toString();
+                month = month.length > 1 ? month : '0' + month;
+
+                var day = date.getDate().toString();
+                day = day.length > 1 ? day : '0' + day;
+
+                return year + '/' + month + '/' + day;
+            }
 
             /*
             $("#searchinput").on("keyup", function () {

@@ -15,6 +15,13 @@ namespace QSCustomer.IMainRepository
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = null);
 
+        
+        IAsyncEnumerable<T> GetAllAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = null);
+        
+
 
         T GetFirstOrDefault(Expression<Func<T, bool>> filter = null,
             string includeProperties = null);
@@ -23,8 +30,5 @@ namespace QSCustomer.IMainRepository
         void Remove(int id);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entity);
-        //Bu interface Repository classına implement ediyoruz. Ders 39
-
-        //Düzeltme -----  Func<IQueryable<T>, IQueryable<T>> orderBy = null,
     }
 }

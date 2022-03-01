@@ -13,8 +13,8 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <p asp-area="Identity" asp-page="/Account/Manage/Index">@Model.NameField!</p>
-    <p asp-area="Identity" asp-page="/Account/Manage/Index">@Model.UserType</p>
+    <p>@Model.UserType</p>
+    <p>@Model.NameField</p>
     <h5><a asp-controller="Account" asp-action="Logout">Logout</a></h5>
 }
 else

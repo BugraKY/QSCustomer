@@ -62,6 +62,30 @@ namespace QSCustomer.MainRepository
             }
             return query.ToList();
         }
+        
+        public IAsyncEnumerable<T> GetAllAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(item);
+                }
+            }
+
+            if (orderBy != null)
+            {
+                return (IAsyncEnumerable<T>)orderBy(query).ToList();
+            }
+            return (IAsyncEnumerable<T>)query.ToList();
+        }
 
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
         {

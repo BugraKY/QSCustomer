@@ -56,6 +56,8 @@ namespace QSCustomer.Extensions
             qprojetanim SelectedProject = new qprojetanim();
             ProjectVariables.LengthProgress = 0;
 
+            qprojepartNrTanimi getPartNrItem = null;
+
             var _SelectedProject = _uow.ProjeTanim.GetAll(i => i.projeCode == _report._ProjectCode);
 
             int s = 0;
@@ -124,7 +126,7 @@ namespace QSCustomer.Extensions
                         foreach (var ProjeDetaysItem in GetProjeDetays)
                         {
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-                            qprojepartNrTanimi? getPartNrItem = _uow.ProjePartNrTanimi.GetFirstOrDefault(i => i.id == ProjeDetaysItem.idReferansPartNr);
+                            getPartNrItem = _uow.ProjePartNrTanimi.GetFirstOrDefault(i => i.id == ProjeDetaysItem.idReferansPartNr);
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
                             List<qprojeHataDetay?> getHataDetay = (List<qprojeHataDetay?>)_uow.ProjeHataDetay.GetAll(i => i.idProjeDetays == ProjeDetaysItem.id).OrderBy(x => x.idHataTanimi).ToList();
 
@@ -266,31 +268,63 @@ namespace QSCustomer.Extensions
 
                                 if (ProjeDetayItem.mesaiHesapla100)
                                     ProjeDetaysItem.harcananGirilenMesai = Convert.ToInt64(harcanansaat);
-                                var _projectDetails = new ProjectDetails
-                                {
-                                    Id = _ProjectDetailsId,
-                                    KontrolTarihi = ProjeDetayItem.kontrolTarihi.ToString("dd/MM/yyyy"),
-                                    UretimTarihi = ProjeDetaysItem.uretimTarihi.ToString("dd/MM/yyyy"),
-                                    PartNrTanimi = getPartNrItem.partNrTanimi,
-                                    IotNo = ProjeDetaysItem.lotNo,
-                                    SeriNo = ProjeDetaysItem.seriNo,
-                                    Harcanansaat = harcanansaat,
-                                    Mesai50Hesapla = ProjeDetaysItem.mesai50Hesapla,
-                                    Harcanangirilenmesai = ProjeDetaysItem.harcananGirilenMesai,
-                                    KontrolAdedi = ProjeDetaysItem.KontrolAdedi,
-                                    TamirAdedi = ProjeDetaysItem.TamirAdedi,
-                                    HataAdeti = ProjeDetaysItem.HataAdeti,
-                                    Faults = FaultStringsList.ToList()
 
-                                };
-                                FaultStringsList.Clear();
-                                projectDetailsList.Add(_projectDetails);
-                                Checked += _projectDetails.KontrolAdedi;
-                                Reworked += _projectDetails.TamirAdedi;
-                                Nok += _projectDetails.HataAdeti;
-                                SpentHours += _projectDetails.Harcanansaat;
-                                Overtime50 += _projectDetails.Mesai50Hesapla;
-                                SpentHr += _projectDetails.Harcanangirilenmesai;
+                                if (getPartNrItem == null)
+                                {
+                                    var _projectDetails = new ProjectDetails
+                                    {
+                                        Id = _ProjectDetailsId,
+                                        KontrolTarihi = ProjeDetayItem.kontrolTarihi.ToString("dd/MM/yyyy"),
+                                        UretimTarihi = ProjeDetaysItem.uretimTarihi.ToString("dd/MM/yyyy"),
+                                        IotNo = ProjeDetaysItem.lotNo,
+                                        SeriNo = ProjeDetaysItem.seriNo,
+                                        Harcanansaat = harcanansaat,
+                                        Mesai50Hesapla = ProjeDetaysItem.mesai50Hesapla,
+                                        Harcanangirilenmesai = ProjeDetaysItem.harcananGirilenMesai,
+                                        KontrolAdedi = ProjeDetaysItem.KontrolAdedi,
+                                        TamirAdedi = ProjeDetaysItem.TamirAdedi,
+                                        HataAdeti = ProjeDetaysItem.HataAdeti,
+                                        Faults = FaultStringsList.ToList()
+
+                                    };
+                                    FaultStringsList.Clear();
+                                    projectDetailsList.Add(_projectDetails);
+                                    Checked += _projectDetails.KontrolAdedi;
+                                    Reworked += _projectDetails.TamirAdedi;
+                                    Nok += _projectDetails.HataAdeti;
+                                    SpentHours += _projectDetails.Harcanansaat;
+                                    Overtime50 += _projectDetails.Mesai50Hesapla;
+                                    SpentHr += _projectDetails.Harcanangirilenmesai;
+                                }
+                                else
+                                {
+                                    var _projectDetails = new ProjectDetails
+                                    {
+                                        Id = _ProjectDetailsId,
+                                        KontrolTarihi = ProjeDetayItem.kontrolTarihi.ToString("dd/MM/yyyy"),
+                                        UretimTarihi = ProjeDetaysItem.uretimTarihi.ToString("dd/MM/yyyy"),
+                                        PartNrTanimi = getPartNrItem.partNrTanimi,
+                                        IotNo = ProjeDetaysItem.lotNo,
+                                        SeriNo = ProjeDetaysItem.seriNo,
+                                        Harcanansaat = harcanansaat,
+                                        Mesai50Hesapla = ProjeDetaysItem.mesai50Hesapla,
+                                        Harcanangirilenmesai = ProjeDetaysItem.harcananGirilenMesai,
+                                        KontrolAdedi = ProjeDetaysItem.KontrolAdedi,
+                                        TamirAdedi = ProjeDetaysItem.TamirAdedi,
+                                        HataAdeti = ProjeDetaysItem.HataAdeti,
+                                        Faults = FaultStringsList.ToList()
+
+                                    };
+                                    FaultStringsList.Clear();
+                                    projectDetailsList.Add(_projectDetails);
+                                    Checked += _projectDetails.KontrolAdedi;
+                                    Reworked += _projectDetails.TamirAdedi;
+                                    Nok += _projectDetails.HataAdeti;
+                                    SpentHours += _projectDetails.Harcanansaat;
+                                    Overtime50 += _projectDetails.Mesai50Hesapla;
+                                    SpentHr += _projectDetails.Harcanangirilenmesai;
+                                }
+
                             }
 
                             harcanansaat = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
@@ -460,7 +494,7 @@ namespace QSCustomer.Extensions
             var _SelectedProject = _uow.ProjeTanim.GetAll(i => i.projeCode == _report._ProjectCode);
             foreach (var item in _SelectedProject)
             {
-                if (item.idProjeDurumu == 1)
+                if (item.idProjeDurumu == 4)
                     SelectedProject = item;
             }
 

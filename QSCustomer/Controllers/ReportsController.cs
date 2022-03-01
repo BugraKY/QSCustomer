@@ -66,7 +66,7 @@ namespace QSCustomer.Controllers
             if (Claims != null)
             {
                 var AppUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value, includeProperties: "UserTypes");
-                return View("Index",AppUser.Id);
+                return View("Index", AppUser.Id);
 
                 /*
                                 if (AppUser.UserTypes.Name == UserTypeConst.Customer)
@@ -115,7 +115,8 @@ namespace QSCustomer.Controllers
             ApplicationUser AppUser;
             if (Claims != null)
             {
-                AppUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value,includeProperties:"UserTypes");
+                AppUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value, includeProperties: "UserTypes");
+                /*
                 if (AppUser.UserTypes.Name == UserTypeConst.Customer)
                 {
                     var Company = _uow.MusteriYetkili.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);//TEST
@@ -124,7 +125,7 @@ namespace QSCustomer.Controllers
                 {
                     var Company = _uow.FabrikaTanimYetkili.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);//TEST
                 }
-
+                */
                 if (AppUser != null && AppUser.EmailConfirmed == false)
                     return Json(HttpStatusCode.NoContent);
             }
@@ -176,17 +177,49 @@ namespace QSCustomer.Controllers
                 foreach (var item in firstdef)
                 {
                     var _customer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == item.DefinitionId);
-                    var deger = _uow.ProjeTanim.GetAll(i => i.idMusteri == _customer.id);
-                    GetAllProject.AddRange(deger);
+
+                    #region TEST
+                    var _oprArea = _uow.FabrikaTanim.GetFirstOrDefault(n => n.fabrikaAdi == _customer.musteriAdi);
+                    if (_oprArea != null)
+                    {
+                        var exampledate = Convert.ToDateTime("01.01.2021");
+                        var _projects = _uow.ProjeTanim.GetAll(i => i.idMusteri == _customer.id).Where(n => n.idOprArea == _oprArea.id).OrderByDescending(o => o.id);
+                        GetAllProject.AddRange(_projects);
+                    }
+                    else
+                    {
+                        var _projects = _uow.ProjeTanim.GetAll(i => i.idMusteri == _customer.id);
+                        GetAllProject.AddRange(_projects);
+                    }
+                    #endregion TEST
+
+                    /*
+                    #region Original
+                    var _projects = _uow.ProjeTanim.GetAll(i => i.idMusteri == _customer.id);
+                    GetAllProject.AddRange(_projects);
+                    #endregion Original*/
                 }
 
             }
             if (AppUser.UserTypes.Name == UserTypeConst.Operation_Area)
             {
+                /*
                 foreach (var item in firstdef)
                 {
+                    #region TEST
+                    var _oprArea = _uow.FabrikaTanim.GetFirstOrDefault(i => i.id == item.DefinitionId);
+                    var exampledate = Convert.ToDateTime("01.01.2021");
+                    var _projects = _uow.ProjeTanim.GetAll(i => i.idOprArea == _oprArea.id).OrderByDescending(o => o.id);
+                    GetAllProject.AddRange(_projects);
+
+                    #endregion TEST
                     //GetAllProject.AddRange(_uow.ProjeTanim.GetAll(i => i.idOprArea == item.DefinitionId));
-                }
+                }*/
+                var _oprArea = _uow.FabrikaTanim.GetFirstOrDefault(i => i.id == AppUser.DefinitionId);
+                var exampledate = Convert.ToDateTime("01.01.2021");
+                var _projects = _uow.ProjeTanim.GetAll(i => i.idOprArea == _oprArea.id).OrderByDescending(o => o.id);
+                GetAllProject.AddRange(_projects);
+
             }
             //GetAllProject = _uow.ProjeTanim.GetAll(i => i.idMusteri == firstdef.DefinitionId);
 
@@ -369,12 +402,12 @@ namespace QSCustomer.Controllers
         //public IActionResult Details(string projectCode)
         {
             #region Variables
-            string[] startDateArr = startDate.Split(' ');
+            string[] finishDateArr = finishDate.Split(' ');
 
-            string Weak_str = startDateArr[0];
-            string Month_str = startDateArr[1];
-            string Day_str = startDateArr[2];
-            string Yearstr = startDateArr[3];
+            string Weak_str = finishDateArr[0];
+            string Month_str = finishDateArr[1];
+            string Day_str = finishDateArr[2];
+            string Yearstr = finishDateArr[3];
 
             int Day = int.Parse(Day_str);
             int Month = 0;
@@ -405,45 +438,9 @@ namespace QSCustomer.Controllers
             if (Month_str == "Dec")
                 Month = 12;
 
-            DateTime _startDate = new DateTime(Year, Month, Day);
 
-            string[] finishDateArr = finishDate.Split(' ');
-
-            Weak_str = finishDateArr[0];
-            Month_str = finishDateArr[1];
-            Day_str = finishDateArr[2];
-            Yearstr = finishDateArr[3];
-
-
-            Day = int.Parse(Day_str);
-            Month = 0;
-            Year = int.Parse(Yearstr);
-
-            if (Month_str == "Jan")
-                Month = 1;
-            if (Month_str == "Feb")
-                Month = 2;
-            if (Month_str == "Mar")
-                Month = 3;
-            if (Month_str == "Apr")
-                Month = 4;
-            if (Month_str == "May")
-                Month = 5;
-            if (Month_str == "Jun")
-                Month = 6;
-            if (Month_str == "Jul")
-                Month = 7;
-            if (Month_str == "Aug")
-                Month = 8;
-            if (Month_str == "Sep")
-                Month = 9;
-            if (Month_str == "Oct")
-                Month = 10;
-            if (Month_str == "Nov")
-                Month = 11;
-            if (Month_str == "Dec")
-                Month = 12;
-
+            startDate = DateTime.Parse(startDate).ToString("dd/MM/yyyy");
+            DateTime _startDate = Convert.ToDateTime(startDate);
             DateTime _finishDate = new DateTime(Year, Month, Day);
 
             //_dateTime.Date.Month = DateTime.Parse(Month).Month;
@@ -462,9 +459,14 @@ namespace QSCustomer.Controllers
             {
                 var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
                 //var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email);//ORGINAL
-                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com");//TEST
+
+
+                /*
+                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.id == Customer.id);//TEST
                 if (SelectedProject.idMusteri != CompanyAuth.idMusteriTanim)
-                    return NotFound();
+                    return NotFound();*/
+
+
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
                     return RedirectToAction("Unconfirmed", "Home");
             }
@@ -523,10 +525,10 @@ namespace QSCustomer.Controllers
             var deg_2 = projedetay_say;*/
             ProjectFilter projectFilter = new ProjectFilter()
             {
-                StartDate= _startDate,
-                FinishDate= _finishDate
+                StartDate = _startDate,
+                FinishDate = _finishDate
             };
-            ProjectState states = new ProjectState()    
+            ProjectState states = new ProjectState()
             {
                 Close = close,
                 Open = open,
@@ -537,7 +539,7 @@ namespace QSCustomer.Controllers
                 _ProjectCode = projectCode,
                 _ProjeHataTanimCount = ProjeHataTanim.Count(),
                 _ProjectState = states,
-                _ProjectFilter=projectFilter
+                _ProjectFilter = projectFilter
             };
 
             if (SelectedProject != null)
@@ -565,9 +567,11 @@ namespace QSCustomer.Controllers
             {
                 var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
                 //var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email); //ORIGINAL
+                /*
                 var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com"); //TEST
                 if (AuthSelectedProject.idMusteri != CompanyAuth.idMusteriTanim)
                     return Json(HttpStatusCode.NoContent);
+                */
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
                     return Json(HttpStatusCode.Unauthorized);
             }
@@ -1173,19 +1177,19 @@ namespace QSCustomer.Controllers
             {
                 var _chartvalues = new ProjectTotalsOneByDate()
                 {
-                    kontrolTarihi =  item.kontrolTarihi.ToString("dd/MM/yyyy"),
-                    hataAdeti =  item.tHataAdeti,
+                    kontrolTarihi = item.kontrolTarihi.ToString("dd/MM/yyyy"),
+                    hataAdeti = item.tHataAdeti,
                     kontrolAdedi = item.tKontrolAdedi
                 };
                 _projectTotalsOneByDate.Add(_chartvalues);
             }
             var _pdfReport = new PdfReport()
             {
-                _ProjectCode=pdfReport._ProjectCode,
-                _ProjectFilter=pdfReport._ProjectFilter,
-                _ProjectTotalsOnebyDate= _projectTotalsOneByDate
+                _ProjectCode = pdfReport._ProjectCode,
+                _ProjectFilter = pdfReport._ProjectFilter,
+                _ProjectTotalsOnebyDate = _projectTotalsOneByDate
             };
-            
+
             //return NoContent();
             return View("loadingPdfView", _pdfReport);
         }
@@ -1252,11 +1256,12 @@ namespace QSCustomer.Controllers
             {
                 var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
                 //var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email); //ORIGINAL
-                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == "Goezde.Avci@fst.com"); //TEST
+                /*
+                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.id == "Goezde.Avci@fst.com"); //TEST
                 if (AuthSelectedProject.idMusteri != CompanyAuth.idMusteriTanim)
                     return Json(HttpStatusCode.NoContent);
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
-                    return Json(HttpStatusCode.Unauthorized);
+                    return Json(HttpStatusCode.Unauthorized);*/
             }
             else
                 return Json(HttpStatusCode.NoContent);
@@ -1274,7 +1279,7 @@ namespace QSCustomer.Controllers
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report);
             RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
 
-            StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate,finishDate);
+            StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate, finishDate);
             //StatusCloseProjects = getProjectDetail.GetStatusClose();
 
             string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects, MainTab_Chart);

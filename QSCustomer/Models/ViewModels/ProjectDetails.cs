@@ -12,7 +12,7 @@ namespace QSCustomer.Models.ViewModels
         public int Id { get; set; }
         public string? KontrolTarihi { get; set; }
         public string? UretimTarihi { get; set; }
-        public string  PartNrTanimi { get; set; }
+        public string PartNrTanimi { get; set; }
         public string IotNo { get; set; }
         public string SeriNo { get; set; }
         public double Harcanansaat { get; set; }
