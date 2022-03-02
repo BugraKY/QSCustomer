@@ -614,7 +614,7 @@ namespace QSCustomer.Controllers
             if (open == true && close == true)
             {
                 StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate, finishDate);
-                StatusCloseProjects = getProjectDetail.GetStatusClose();
+                StatusCloseProjects = await getProjectDetail.GetStatusClose(startDate, finishDate);
 
                 AllReports = StatusOpenProjects;
 
@@ -640,7 +640,7 @@ namespace QSCustomer.Controllers
             }
             if (close == true)
             {
-                StatusCloseProjects = getProjectDetail.GetStatusClose();
+                StatusCloseProjects = await getProjectDetail.GetStatusClose(startDate, finishDate);
                 return Json(StatusCloseProjects);
             }
             return Json(StatusProblematicProjects);
@@ -1250,6 +1250,7 @@ namespace QSCustomer.Controllers
             if (projectCode == null)
                 return Json(HttpStatusCode.NoContent);
             var AuthSelectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
+            var ProjectStatus = _uow.ProjeDurumu.GetFirstOrDefault(i => i.id == AuthSelectedProject.idProjeDurumu);
             var AuthProjeHataTanim = _uow.ProjeHataTanimi.GetAll(i => i.idProje == AuthSelectedProject.id);
             var AuthCustomer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == AuthSelectedProject.idMusteri);
             if (Claims != null)
@@ -1279,7 +1280,15 @@ namespace QSCustomer.Controllers
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report);
             RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
 
-            StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate, finishDate);
+            if (ProjectStatus.sıra == 1)
+            {
+                StatusOpenProjects = await getProjectDetail.GetStatusOpen(startDate, finishDate);
+            }
+            else if(ProjectStatus.sıra == 4)
+            {
+                StatusOpenProjects = await getProjectDetail.GetStatusClose(startDate, finishDate);
+            }
+
             //StatusCloseProjects = getProjectDetail.GetStatusClose();
 
             string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects, MainTab_Chart);

@@ -28,19 +28,39 @@
         cursor: pointer;
     }
 
-
     body {
         padding-right: 0px !important;
     }
-    .page-wrapper{
-        position:relative;
+
+    main {
+        min-height: 300px;
+        max-height: 1000px;
+        height: auto;
     }
+
+    .page-wrapper {
+        position: relative;
+    }
+
     .spinner-loading {
         position: absolute;
     }
+
     .dx-datagrid-filter-row {
         display: none !important;
     }
+
+    .page-wrapper {
+        /*position: relative;*/
+        min-height: 100vh;
+    }
+    /*
+    .site-footer {
+
+        position: absolute;
+        width: 100%;
+        bottom: 0 !important;
+    }*/
 </style>
 @*
     <div class="p-4 border rounded">
@@ -242,11 +262,11 @@
 
 <form method="get" id="frmCode" asp-action="Details" asp-controller="Reports">
     <button id="datebtn" class="btn dx-button-default" type="button" hidden>Test</button>
-    <input type="text" id="dateStartinp" name="startDate" asp-for="@startDate" hidden/>
-    <input type="text" id="dateFinishinp" name="finishDate" asp-for="@finishDate" hidden/>
+    <input type="text" id="dateStartinp" name="startDate" asp-for="@startDate" hidden />
+    <input type="text" id="dateFinishinp" name="finishDate" asp-for="@finishDate" hidden />
 
     <input hidden type="text" id="selectedVal" value="" asp-for="@projectCode" />
-    <div class="container d-flex justify-content-end mt-5 mb-3 p-3 shadow-3">
+    <div class="container d-flex justify-content-end mt-5 mb-3 p-3 shadow-3" style="background-color: #f5f5f5">
 
         <!-- Default checkbox -->
         <div class="form-check m-1">
@@ -279,21 +299,21 @@
             </div>
         </div>
         @*
-        <div class="row pt-5">
+            <div class="row pt-5">
 
-            <div class="col-md-2">Checked: <span id="checkedVal"></span></div>
-            <div class="col-md-2">Nok: <span id="nokVal"></span></div>
-            <div class="col-md-2">Rework: <span id="reworkVal"></span></div>
-            <div class="col-md-2">Opr: <span id="oprVal"></span></div>
-            <div class="col-md-2">Spent Min: <span id="spentMin"></span></div>
-            <div class="col-md-2">Actual Min: <span id="actualMin"></span></div>
+                <div class="col-md-2">Checked: <span id="checkedVal"></span></div>
+                <div class="col-md-2">Nok: <span id="nokVal"></span></div>
+                <div class="col-md-2">Rework: <span id="reworkVal"></span></div>
+                <div class="col-md-2">Opr: <span id="oprVal"></span></div>
+                <div class="col-md-2">Spent Min: <span id="spentMin"></span></div>
+                <div class="col-md-2">Actual Min: <span id="actualMin"></span></div>
 
-        </div>
+            </div>
 
-        <div class="row pt-5">
-            <div class="col-md-4">Spent Hours: <span id="spentHour"></span></div>
-            <div class="col-md-4">Grand Totals: <span id="grandTotal"></span></div>
-        </div>
+            <div class="row pt-5">
+                <div class="col-md-4">Spent Hours: <span id="spentHour"></span></div>
+                <div class="col-md-4">Grand Totals: <span id="grandTotal"></span></div>
+            </div>
         *@
     </div>
 
@@ -313,13 +333,13 @@
                             <div class="dx-field">
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="dx-field-label">Starting Date</div>
+                                        <div class="dx-field-label">First Date</div>
                                         <div class="dx-field-value">
                                             <div id="dateStarting"></div>
                                         </div>
                                     </div>
                                     <div class="col-12 mt-2">
-                                        <div class="dx-field-label">Finish Date</div>
+                                        <div class="dx-field-label">Last Date</div>
                                         <div class="dx-field-value">
                                             <div id="dateFinish"></div>
                                         </div>
@@ -327,6 +347,22 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-check-m1">
+                        <input type="checkbox" class="form-check-input" name="today" id="today" />
+                        <label class="form-check-label" for="today">Today</label>
+                    </div>
+                    <div class="form-check-m1">
+                        <input type="checkbox" class="form-check-input" name="yesterday" id="yesterday" />
+                        <label class="form-check-label" for="yesterday">Yestarday</label>
+                    </div>
+                    <div class="form-check-m1">
+                        <input type="checkbox" class="form-check-input" name="week" id="week" />
+                        <label class="form-check-label" for="week">This Week</label>
+                    </div>
+                    <div class="form-check-m1">
+                        <input type="checkbox" class="form-check-input" name="month" id="month" />
+                        <label class="form-check-label" for="month">This Month</label>
                     </div>
                     <div class="row">
                         <div class="col-12 mt-4">
@@ -356,7 +392,7 @@
 *@
 
 @section Scripts{
-
+    <script src="https://cdn3.devexpress.com/jslib/21.2.5/js/localization/dx.messages.tr.js"></script>
     <script>
 
         $("#datebtn").click(function () {
@@ -369,6 +405,7 @@
         });
 
         $(document).ready(function () {
+            console.clear();
             var open = false;
             var close = false;
             var selectedDate = new Date('@DateTime.Now.Date');
@@ -403,7 +440,7 @@
 
                     },
                 });
-                
+
                 var dateVal = $("#dateStarting").dxDateBox("instance").option("value");
                 $('#dateStartinp').val(dateVal);
             });
@@ -643,7 +680,7 @@
                             },*@
                             { dataField: 'state', caption: 'State',"width":"auto" },
                             { dataField: 'approvalState', caption: 'Approval State',"width":"auto" },
-                            { dataField: 'startDate', caption: 'Date', "width": "85px" },
+                            { dataField: 'startDate', caption: 'Start Date', "width": "85px" },
                             /*{ dataField: 'finishDate', caption: 'Finish Date' },*/
                             /*{ dataField: 'approvalDate', caption: 'Approval Date' },*/
                             { dataField: 'responsible', caption: 'Responsible', "width": "auto" },
@@ -702,9 +739,20 @@
                                 *@
                         ],
                         onSelectionChanged(selectedItems) {
+                            console.clear();
                             const data = selectedItems.selectedRowsData[0];
 
+                            const now = new Date("11.2.2021");
+
+                            console.log('working format: ' + now);
+
                             console.log("data: " + data.startDate);
+
+                            /*
+                            var match = /(\d+)\/(\d+)\/(\d+)/.exec(JSON.stringify(data.startDate));
+                            var start_date = new Date(match[3], match[2], match[1]);*/
+
+
                             if (data) {
                                 //$('input[name=selectedVal]').val(data.projectCode);
                                 //$('#selectedVal').val('435');
@@ -717,24 +765,50 @@
                                 $('#projectCode').empty(data.startDate);
                                 $('#projectCode').append(data.projectCode);
                                 $(() => {
-                                    const startDateFormat = new Date(data.startDate);
-                                    var startDateStr = startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear();
-                                    console.log(startDateStr);
+                                    var dateStr = JSON.stringify(data.startDate);
+                                    var dateAr = dateStr.split('.');
+
+                                    var day = dateAr[0];
+                                    var month = dateAr[1];
+                                    var year = dateAr[2];
+
+                                    console.log("Testing: " + day + '.' + month + '.' + year);
+                                    console.log("dateStr: " + year);
+
+                                    var startDateFormat = new Date(JSON.stringify(data.startDate));
+                                    var datestr = JSON.stringify(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
+                                    const startDateDxVal2 = new Date(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
+                                    const startDateDxVal = month + '.' + day + '.' + year;
+                                    //const startDateStrAlt = new Date(startDateStr);
+                                    console.log("Checking: " + startDateFormat);
+
+                                    /*
+                                    console.log("data.startDate: " + data.startDate);
+                                    console.log("datestr: " + datestr);
+                                    console.log("startDateFormat: " + startDateFormat);
+                                    console.log("Before Convert Date: " + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getDate() + '.' + startDateFormat.getFullYear());
+                                    console.log("Must work: " + startDateDxVal);
+                                    */
+                                    var working_Date =
+                                        //console.log("Nan gelen Tarih: " + startDateStr);
+
                                     $('#dateStarting').dxDateBox({
                                         type: 'date',
                                         //value: getFormattedDate(startDateFormat),
-                                        value: startDateStr,
+                                        displayFormat: 'dd/MM/yyyy',
+                                        value: startDateDxVal,
                                         placeholder: selectedDate,
                                         showClearButton: true,
-                                        useMaskBehavior: true,
-                                        displayFormat: 'dd/MM/yyyy',
-                                        
+                                        useMaskBehavior: false,
+
                                         onValueChanged(datechanged) {
-                                            console.log("datechanged: " + JSON.stringify(datechanged));
+                                            console.log("value changed :" + new Date(datechanged.value));
+                                            /*
+                                            console.log("datechanged: " + selectedDate);
                                             var startDateChanged = new Date(datechanged.value);
                                             var startDateChangedStr = startDateChanged.getDate() + '.' + (startDateChanged.getMonth() + 1) + "." + startDateChanged.getFullYear();
-                                            console.log("value changed: " + startDateChangedStr);
-                                            $('#dateStartinp').val(startDateChangedStr);
+                                            console.log("value changed: " + startDateChangedStr);*/
+                                            $('#dateStartinp').val(datechanged.value);
                                         },
                                     });
 
@@ -771,6 +845,7 @@
             }
 
             ajaxCall();
+            console.clear();
             var rowCount = $('.dx-datagrid-table >tbody >tr').length;
             console.log("Dx Row Count: " + rowCount);
 

@@ -12,11 +12,11 @@ namespace QSCustomer.Models.DbModels
         public int id { get; set; }
         public int idProjeDetay { get; set; }
         public int? idReferansPartNr { get; set; }
-        public string idDeliveryNote { get; set; }
+        public string? idDeliveryNote { get; set; }
         public int idHata { get; set; }
         public DateTime uretimTarihi { get; set; }
-        public string lotNo { get; set; }
-        public string seriNo { get; set; }
+        public string? lotNo { get; set; }
+        public string? seriNo { get; set; }
         public long KontrolAdedi { get; set; }
         public long HataAdeti { get; set; }
         public long TamirAdedi { get; set; }
@@ -33,7 +33,7 @@ namespace QSCustomer.Models.DbModels
         public int idClsHata { get; set; }
         public int hataCLSAdet { get; set; }
         public int mesai50Hesapla { get; set; }
-        public double SaatUcreti { get; set; }
-        public double LabCost { get; set; }
+        public double? SaatUcreti { get; set; }
+        public double? LabCost { get; set; }
     }
 }
