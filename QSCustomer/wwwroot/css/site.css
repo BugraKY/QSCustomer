@@ -39,7 +39,11 @@ a {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
-
+.justify-content-start {
+    -webkit-box-pack: start !important;
+    -ms-flex-pack: start !important;
+    justify-content: flex-start !important;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

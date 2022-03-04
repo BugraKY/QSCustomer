@@ -16,6 +16,7 @@
     bool open = Convert.ToBoolean(Context.Request.Cookies["_kj6ght"]);
     bool close = Convert.ToBoolean(Context.Request.Cookies["_h4k9xp"]);
     bool problematic = false;
+    int filter = 0;
     var _aaaaaa = close; }
 
 
@@ -31,7 +32,7 @@
     body {
         padding-right: 0px !important;
     }
-
+    /*
     main {
         min-height: 300px;
         max-height: 1000px;
@@ -41,7 +42,7 @@
     .page-wrapper {
         position: relative;
     }
-
+    */
     .spinner-loading {
         position: absolute;
     }
@@ -50,10 +51,31 @@
         display: none !important;
     }
 
-    .page-wrapper {
-        /*position: relative;*/
-        min-height: 100vh;
+
+    .dx-data-row:hover {
+        /*background-color: #2AA377;*/
+        /*background-color: #61C6BF;*/
+        background-color: #CDCDCD;
+        transition: background-color 0.5s;
     }
+
+    .dx-data-row {
+        transition: background-color 0.5s;
+    }
+
+    .modal-open {
+        overflow: unset !important;
+    }
+
+    .btn-dx-secondary {
+        background-color: #808080;
+        color: white;
+    }
+    /*
+    .page-wrapper {
+        position: relative;
+        min-height: 100vh;
+    }*/
     /*
     .site-footer {
 
@@ -266,24 +288,36 @@
     <input type="text" id="dateFinishinp" name="finishDate" asp-for="@finishDate" hidden />
 
     <input hidden type="text" id="selectedVal" value="" asp-for="@projectCode" />
-    <div class="container d-flex justify-content-end mt-5 mb-3 p-3 shadow-3" style="background-color: #f5f5f5">
+    <div class="container mt-5 mb-3 p-3 shadow-3" style="background-color: #f5f5f5">
+        <div class="d-flex justify-content-start row">
+            <div class="col-12">
+                <label id="type"></label>
+            </div>
+            <div class="col-6 mt-1">
+                <label id="name"></label>
+            </div>
+            <div class="d-flex justify-content-end col-6">
+                <div class="form-check m-1">
+                    <input class="form-check-input" type="checkbox" value="@open.ToString()" id="open" asp-for="@open" />
+                    <label class="form-check-label" for="open">
+                        Açık / Open
+                    </label>
+                </div>
 
-        <!-- Default checkbox -->
-        <div class="form-check m-1">
-            <input class="form-check-input" type="checkbox" value="@open.ToString()" id="open" asp-for="@open" />
-            <label class="form-check-label" for="open">
-                Açık / Open
-            </label>
-        </div>
+                <div class="form-check m-1">
+                    <input class="form-check-input" type="checkbox" value="@close.ToString()" id="close" asp-for="@close" />
+                    <label class="form-check-label" for="close">
+                        Kapalı / Close
+                    </label>
+                </div>
+                @*<input hidden class="form-check-input" type="checkbox" value="@problematic.ToString()" id="problematic" asp-for="@problematic" />*@
 
-        <!-- Checked checkbox -->
-        <div class="form-check m-1">
-            <input class="form-check-input" type="checkbox" value="@close.ToString()" id="close" asp-for="@close" />
-            <label class="form-check-label" for="close">
-                Kapalı / Close
-            </label>
+            </div>
+
+            <div class="col-12">
+                <label id="mail"></label>
+            </div>
         </div>
-        @*<input hidden class="form-check-input" type="checkbox" value="@problematic.ToString()" id="problematic" asp-for="@problematic" />*@
 
     </div>
     <div class="container p-0 mb-5">
@@ -348,18 +382,46 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-check-m1">
-                        <input type="checkbox" class="form-check-input" name="today" id="today" />
-                        <label class="form-check-label" for="today">Last Day</label>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filterRadio" id="daily" value="0" asp-for="@filter" />
+                        <label class="form-check-label" for="daily"> Last Day </label>
                     </div>
-                    <div class="form-check-m1">
-                        <input type="checkbox" class="form-check-input" name="week" id="week" />
-                        <label class="form-check-label" for="week">Last Week</label>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filterRadio" id="weekly" value="1" asp-for="@filter" />
+                        <label class="form-check-label" for="weekly"> Last Week </label>
                     </div>
-                    <div class="form-check-m1">
-                        <input type="checkbox" class="form-check-input" name="month" id="month" />
-                        <label class="form-check-label" for="month">Last Month</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filterRadio" id="monthly" value="2" asp-for="@filter" />
+                        <label class="form-check-label" for="monthly"> Last Month </label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filterRadio" id="optional" value="3" asp-for="@filter" />
+                        <label class="form-check-label" for="optional"> Optional Of Date </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filterRadio" id="allreport" value="4" asp-for="@filter" checked />
+                        <label class="form-check-label" for="allreport"> All Reports </label>
+                    </div>
+
+
+
+
+
+                    @*
+                        <div class="form-check-m1">
+                            <input type="checkbox" class="form-check-input" name="lastday" id="lastday" />
+                            <label class="form-check-label" for="today">Last Day</label>
+                        </div>
+                        <div class="form-check-m1">
+                            <input type="checkbox" class="form-check-input" name="week" id="week" />
+                            <label class="form-check-label" for="week">Last Week</label>
+                        </div>
+                        <div class="form-check-m1">
+                            <input type="checkbox" class="form-check-input" name="month" id="month" />
+                            <label class="form-check-label" for="month">Last Month</label>
+                        </div>*@
                     <div class="row">
                         <div class="col-12 mt-4">
                             <p class="m-0">You are about to open report, Project code: <span id="projectCode"></span></p>
@@ -368,16 +430,25 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+                    <button type="button" class="btn btn-dx-secondary ripple-surface-dark" data-mdb-dismiss="modal">
                         Close
                     </button>
-                    <button type="submit" class="btn btn-dx" id="submitCode">Open with PDF</button>
+                    <button type="submit" class="btn btn-dx ripple-surface-dark" id="submitCode">Open On Web</button>
+                    <button class="btn btn-dx ripple-surface-dark disabled" id="submitCode"><i class="far fa-lg fa-file-pdf"></i></button>
+                    <button type="button" class="btn btn-dx ripple-surface-dark" id="downloadfile"><i class="fas fa-lg fa-file-download"></i></button>
 
                     <!--<button type="submit" class="btn btn-dx" asp-controller="Reports" asp-action="Details" asp-all-route-data="">Open with PDF</button>-->
                 </div>
             </div>
         </div>
     </div>
+</form>
+
+<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_download" target="_blank">
+    <input type="text" name="_ProjectCode" id="zProjectCode" value="" hidden />
+    <input type="text" name="_ProjectFilter.StartDate" id="zProjectFilter_StartDate" value="" hidden />
+    <input type="text" name="_ProjectFilter.FinishDate" id="zProjectFilter_FinishDate" value="" hidden />
+    <input type="text" name="_FilterRadio" id="zFilterRadio" value="" hidden />
 </form>
 
 @*
@@ -405,6 +476,10 @@
             var open = false;
             var close = false;
             var selectedDate = new Date('@DateTime.Now.Date');
+            var pCode = '';
+            var pStartDate = '';
+            var pFinishDate = '';
+            var pFilterRadio = '';
             if ($('#open').is(":checked")) {
                 open = true;
             }
@@ -412,36 +487,33 @@
                 close = true;
             }
 
-            /*
-            $(() => {
-                const now = new Date();
-                $('#dateStarting').dxDateBox({
-                    type: 'date',
-                    value: now.getDay()+'/'+now.getMonth()+"/"+now.getFullYear(),
-                    placeholder: 'DateTime.Now.ToString("dd/MM/yyyy")',
-                    showClearButton: true,
-                    useMaskBehavior: true,
-                    displayFormat: 'dd/MM/yyyy',
-                    onValueChanged(data) {/*
-                        const dateVal = new Date(data.value);
-                        var year = dateVal.getFullYear();
-                        var month = dateVal.getMonth() + 1;
-                        var day = dateVal.getDate();
-                        var datestr = day.toString() + '/' + month.toString() + "/" + year.toString();
-                        console.log(day);
-                        console.log(month);
-                        console.log(year);
-                        console.log("value changeddd :" + data.value);
-                        $('#dateStartinp').val(data.value);
+            $("#downloadfile").click(function () {
 
-                    },
-                });
+                console.log("pCode: " + pCode);
+                alert("Downloading PDF - Project Code: " + pCode)
 
-                var dateVal = $("#dateStarting").dxDateBox("instance").option("value");
-                $('#dateStartinp').val(dateVal);
+                $('#zProjectCode').val(pCode);
+                $('#zProjectFilter_StartDate').val(pStartDate);
+                $('#zProjectFilter_FinishDate').val(pFinishDate);
+                $('#zFilterRadio').val(pFilterRadio);
+
+                $('#form_download').submit();
+
+
+
+
+
             });
-            */
-
+            $.ajax({
+                type: "GET",
+                url: "/getuser",
+                cache: false,
+                success: function (data) {
+                    $("#type").text('Area: '+data.userType);
+                    $("#name").text(data.nameField);
+                    $("#mail").text(data.email);
+                }
+            });
 
             $(() => {
                 const now = new Date();
@@ -453,8 +525,12 @@
                     useMaskBehavior: true,
                     displayFormat: "dd/MM/yyyy",
                     onValueChanged(data) {
-                        console.log("value changed :" + new Date(data.value));
-                        $('#dateFinishinp').val(data.value);
+
+                        var _fullDate = data.value;
+                        var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
+                        $('#dateFinishinp').val(datestr);
+                        pFinishDate = datestr;
+                        console.log("value changed :" + datestr);
                     },
                 });
 
@@ -693,8 +769,8 @@
                             /*cssClass: "far fa-dot-circle fa-lg text-primary"*/
 
                             @*
-                        1<td>@Reports.qprojeDetayKontrolTarihi</td>
-                        2<td>@Reports.qprojetanimProjeCode</td>
+                                1<td>@Reports.qprojeDetayKontrolTarihi</td>
+                                2<td>@Reports.qprojetanimProjeCode</td>
                         3<td>@Reports.qprojetanimProjeAcan</td>
                         4<td>@Reports.qprojetanimOnayDurumu</td>
                         5<td>@Reports.fabrikatanimFabrikaAdi</td>
@@ -737,21 +813,21 @@
                         onSelectionChanged(selectedItems) {
                             console.clear();
                             const data = selectedItems.selectedRowsData[0];
+                            pCode = data.projectCode;
+                            pStartDate = data.startDate;
 
-                            const now = new Date("11.2.2021");
+                            
+                            //var _fullDate = $('#dateFinishinp').val();
+                            var _fullDate = new Date();
+                            var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
 
-                            console.log('working format: ' + now);
-
-                            console.log("data: " + data.startDate);
-
-                            /*
-                            var match = /(\d+)\/(\d+)\/(\d+)/.exec(JSON.stringify(data.startDate));
-                            var start_date = new Date(match[3], match[2], match[1]);*/
-
+                            pFinishDate = datestr;
+                            $('#dateFinishinp').val(pFinishDate);
+                            pFilterRadio = $('#daily').val();
+                            console.log("FinishDate: " + pFinishDate);
 
                             if (data) {
-                                //$('input[name=selectedVal]').val(data.projectCode);
-                                //$('#selectedVal').val('435');
+
                                 $('#selectedVal').attr("value", data.projectCode);
                                 console.log("seçilen Proje: "+data.projectCode);
                                 $('#selectionMessage').modal('toggle');
@@ -775,18 +851,9 @@
                                     var datestr = JSON.stringify(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
                                     const startDateDxVal2 = new Date(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
                                     const startDateDxVal = month + '.' + day + '.' + year;
-                                    //const startDateStrAlt = new Date(startDateStr);
-                                    console.log("Checking: " + startDateFormat);
 
-                                    /*
-                                    console.log("data.startDate: " + data.startDate);
-                                    console.log("datestr: " + datestr);
-                                    console.log("startDateFormat: " + startDateFormat);
-                                    console.log("Before Convert Date: " + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getDate() + '.' + startDateFormat.getFullYear());
-                                    console.log("Must work: " + startDateDxVal);
-                                    */
-                                    var working_Date =
-                                        //console.log("Nan gelen Tarih: " + startDateStr);
+                                    console.log("Checking: " + startDateDxVal);
+
 
                                     $('#dateStarting').dxDateBox({
                                         type: 'date',
@@ -812,6 +879,7 @@
 
                                 //$('#dateStartinp').val();YAPILACAK
                                 $("#submitCode").click(function () {
+
                                     /*$("#frmCode").submit();*/
                                     $('#frmCode').submit(function (event) {
                                         //var action = '/project/' + data.projectCode;
@@ -820,6 +888,7 @@
                                         $(this).attr('action', action);*/
                                     });
                                 });
+
                             }
                         },
                     });
@@ -854,7 +923,7 @@
                 var day = date.getDate().toString();
                 day = day.length > 1 ? day : '0' + day;
 
-                return day + '/' + month + '/' + year;
+                return day + '.' + month + '.' + year;
             }
             function getFormattedDateRevReg(date) {
                 var year = date.getFullYear();
@@ -865,7 +934,7 @@
                 var day = date.getDate().toString();
                 day = day.length > 1 ? day : '0' + day;
 
-                return year + '/' + month + '/' + day;
+                return year + '.' + month + '.' + day;
             }
 
             /*

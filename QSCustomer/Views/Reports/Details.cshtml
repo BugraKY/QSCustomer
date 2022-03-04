@@ -113,9 +113,10 @@
         <div class="row">
             <div class="col-md-12">
                 <form method="post" asp-controller="Reports" asp-action="LoadingPdfView">
-                    <input type="text" asp-for="_ProjectCode" value="@Model._ProjectCode" hidden/>
-                    <input type="text" asp-for="_ProjectFilter.StartDate" value="@Model._ProjectFilter.StartDate" hidden/>
-                    <input type="text" asp-for="_ProjectFilter.FinishDate" value="@Model._ProjectFilter.FinishDate" hidden/>
+                    <input type="text" asp-for="_ProjectCode" value="@Model._ProjectCode" hidden />
+                    <input type="text" asp-for="_ProjectFilter.StartDate" value="@Model._ProjectFilter.StartDate" hidden />
+                    <input type="text" asp-for="_ProjectFilter.FinishDate" value="@Model._ProjectFilter.FinishDate" hidden />
+                    <input type="text" asp-for="_FilterRadio" value="@Model._FilterRadio" hidden />
                     <button id='pdf-report' class="btn btn-expert waves-effect waves-dark" target="_blank" draggable="false" type="submit"><i class="far fa-lg fa-file-pdf"></i></button>
                 </form>
             </div>
@@ -125,18 +126,20 @@
 
 <div class="container">
 
-
-    <div class="progress shadow-2-strong" style="height: 20px;">
-        <div class="progress-bar bg-expert"
-             id="theprogressbar"
-             role="progressbar"
-             style="width: 1%;"
-             aria-valuenow="0"
-             aria-valuemin="0"
-             aria-valuemax="100">
-            <output id="result"></output>
-        </div>
-    </div>
+    @*
+        <div class="progress shadow-2-strong" style="height: 20px;">
+            <div class="progress-bar bg-expert"
+                 id="theprogressbar"
+                 role="progressbar"
+                 style="width: 1%;"
+                 aria-valuenow="0"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+                <output id="result"></output>
+            </div>
+        </div>*@
+    <label for="theprogressbar">Downloading progress:</label>
+    <progress id="theprogressbar" value="0" max="100">0%</progress>
 </div>
 <br />
 
@@ -311,8 +314,11 @@
 
 
 @section Scripts{
-
+    <script type="text/javascript"
+            src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="~/js/progressbarHub.js"></script>
     <script>
+        var progressCookie = $.cookie('progress_id');
         /*import ProgressBar from "devextreme/ui/progress_bar";*/
 
         //import ProgressBar from "";
@@ -355,36 +361,8 @@
 
 
 
-
-
-        var w;
-
-        function startWorker() {
-            if (typeof (Worker) !== "undefined") {
-                if (typeof (w) == "undefined") {
-                    w = new Worker("/js/demo_workers.js");
-                }
-                w.onmessage = function (event) {
-                    document.getElementById("result").innerHTML = event.data + '%';
-                    $('#theprogressbar').attr('aria-valuenow', event.data).css('width', event.data +'%');
-                };
-            } else {
-                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
-            }
-        }
-        function stopWorker() {
-            w.terminate();
-            w = undefined;
-        }
-
         $(document).ready(function () {
-
-            startWorker();
-
-
-
-
-
+            
 
 
             //$('#progressbar').progressbar();
@@ -428,7 +406,7 @@
             console.log("Sıra - 1 ");
         $.ajax({
             type: "get",
-            url: "/detailTest/" + '@Model._ProjectCode' + "?&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate'  + "&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic',
+            url: "/detailTest/" + '@Model._ProjectCode' + "?&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate'  + "&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic'+ "&filterRadio=" + '@Model._FilterRadio',
                 success: function (data) {
 
                     //return data;
@@ -562,9 +540,6 @@
                         });
                     });
 
-                    stopWorker();
-                    $('#theprogressbar').attr('aria-valuenow', 100).css('width', 100 + '%');
-                    document.getElementById("result").innerHTML ='100%';
                     $('.modal').hide();
                         /*$("#dx-col-1").width("10px");*/
 
@@ -669,7 +644,7 @@
                 let seconds = 10;
                 let inProgress = false;
                 let intervalId;
-
+/*
                 const progressBarStatus = $('#progressBarStatus').dxProgressBar({
                     min: 0,
                     max: 100,
@@ -683,7 +658,7 @@
                         e.element.addClass('complete');
                     },
                 }).dxProgressBar('instance');
-
+                */
                 const progressButton = $('#progress-button').dxButton({
                     text: 'Start progress',
                     width: 200,

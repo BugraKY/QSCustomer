@@ -13,8 +13,9 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
+    @*
     <p>@Model.UserType</p>
-    <p>@Model.NameField</p>
+    <p>@Model.NameField</p>*@
     <h5><a asp-controller="Account" asp-action="Logout">Logout</a></h5>
 }
 else

@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using QSCustomer.Hubs;
 
 namespace QSCustomer
 {
@@ -80,6 +81,10 @@ namespace QSCustomer
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,13 +107,19 @@ namespace QSCustomer
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            /*
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("https://localhost:5001", "http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            });
+            */
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<HomeHub>("/homeHub");
             });
         }
     }

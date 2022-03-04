@@ -18,6 +18,7 @@ namespace QSCustomer.Models.ViewModels
         public List<ProjectDetails> _ProjectDetails { get; set; }
         public ProjectState _ProjectState { get; set; }
         public ProjectFilter _ProjectFilter { get; set; }
+        public int _FilterRadio { get; set; }
         public string _ProjectCode { get; set; }
         public int _ProjeHataTanimCount { get; set; }
         public double _CheckedTotal { get; set; }
@@ -28,7 +29,6 @@ namespace QSCustomer.Models.ViewModels
         public double _OverTime50Total { get; set; }
         public double _OverTime100Total { get; set; }
         public int _PPMTotal { get; set; }
-
         public string _DataFields { get; set; }
         public string _HtmlString { get; set; }
         public string _Url { get; set; }
