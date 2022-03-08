@@ -427,6 +427,14 @@
                             <p class="m-0">You are about to open report, Project code: <span id="projectCode"></span></p>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="proggress" style="display:none;">
+                                <label for="theprogressbar">Downloading progress:</label>
+                                <progress id="theprogressbar" value="0" max="100">0%</progress>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="modal-footer">
@@ -434,7 +442,7 @@
                         Close
                     </button>
                     <button type="submit" class="btn btn-dx ripple-surface-dark" id="submitCode">Open On Web</button>
-                    <button class="btn btn-dx ripple-surface-dark disabled" id="submitCode"><i class="far fa-lg fa-file-pdf"></i></button>
+                    <button type="button" class="btn btn-dx ripple-surface-dark" id="openfile"><i class="far fa-lg fa-file-pdf"></i></button>
                     <button type="button" class="btn btn-dx ripple-surface-dark" id="downloadfile"><i class="fas fa-lg fa-file-download"></i></button>
 
                     <!--<button type="submit" class="btn btn-dx" asp-controller="Reports" asp-action="Details" asp-all-route-data="">Open with PDF</button>-->
@@ -444,13 +452,31 @@
     </div>
 </form>
 
-<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_download" target="_blank">
-    <input type="text" name="_ProjectCode" id="zProjectCode" value="" hidden />
-    <input type="text" name="_ProjectFilter.StartDate" id="zProjectFilter_StartDate" value="" hidden />
-    <input type="text" name="_ProjectFilter.FinishDate" id="zProjectFilter_FinishDate" value="" hidden />
-    <input type="text" name="_FilterRadio" id="zFilterRadio" value="" hidden />
+<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_open" target="_blank" class="d-none" hidden>
+    <input type="text" name="_ProjectCode" id="zProjectCode" value="" />
+    <input type="text" name="_ProjectFilter.StartDate" id="zProjectFilter_StartDate" value="" />
+    <input type="text" name="_ProjectFilter.FinishDate" id="zProjectFilter_FinishDate" value="" />
+    <input type="text" name="_FilterRadio" id="zFilterRadio" value="" />
 </form>
-
+@*
+    <form method="post" asp-controller="Reports" asp-action="DownloadPdf" id="form_download" target="_blank" class="d-none" hidden>
+        <input type="text" name="_ProjectCode" id="xProjectCode" value="" />
+        <input type="text" name="_ProjectFilter.StartDate" id="xProjectFilter_StartDate" value="" />
+        <input type="text" name="_ProjectFilter.FinishDate" id="xProjectFilter_FinishDate" value="" />
+    </form>*@
+<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download" class="d-none" hidden>
+    <input type="text" name="projectCode" id="xProjectCode" value="" />
+    <input type="text" name="startDate" id="xProjectFilter_StartDate" value="" />
+    <input type="text" name="finishDate" id="xProjectFilter_FinishDate" value="" />
+    <input type="text" name="chartString" id="xChartString" />
+</form>
+<div class="demo-container d-none" id="renderedSection" hidden>
+    <div id="chart">
+    </div>
+</div>
+<div class="d-none">
+    <textarea id="textbox">Type something here</textarea> <button id="create">Create file</button> <a download="info.txt" id="downloadlink" style="display: none">Download</a>
+</div>
 @*
     @section Scripts{
         <script src="~/js/projeTanim.js"></script>
@@ -460,8 +486,11 @@
 
 @section Scripts{
     <script src="https://cdn3.devexpress.com/jslib/21.2.5/js/localization/dx.messages.tr.js"></script>
-    <script>
 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="~/js/progressbarHub.js"></script>
+    <script>
+        var progressCookie = $.cookie('progress_id');
         $("#datebtn").click(function () {
 
 
@@ -487,7 +516,7 @@
                 close = true;
             }
 
-            $("#downloadfile").click(function () {
+            $("#openfile").click(function () {
 
                 console.log("pCode: " + pCode);
                 alert("Downloading PDF - Project Code: " + pCode)
@@ -497,7 +526,91 @@
                 $('#zProjectFilter_FinishDate').val(pFinishDate);
                 $('#zFilterRadio').val(pFilterRadio);
 
-                $('#form_download').submit();
+                $('#form_open').submit();
+
+
+
+
+
+            });
+            $("#downloadfile").click(function () {
+
+                console.log("pCode: " + pCode);
+                alert("Downloading PDF - Project Code: " + pCode)
+
+                $('#xProjectCode').val(pCode);
+                $('#xProjectFilter_StartDate').val(pStartDate);
+                $('#xProjectFilter_FinishDate').val(pFinishDate);
+                $('#xFilterRadio').val(pFilterRadio);
+                console.log("pFinishDate: "+pFinishDate);
+                $.ajax({
+                    type: "GET",
+                    url: "/set-chart/?projectCode=" + pCode + "&startDate=" + pStartDate +"&finishDate="+ pFinishDate,
+                    success: function (dataSource) {
+                        console.log(dataSource);
+                        /*
+                        const dataSource = [
+                            state,
+                            kontrolAdedi,
+                            hataAdeti,
+                        ];*/
+                        $.fn.setChart = function () {
+                            $(() => {
+                                $('#chart').dxChart({
+                                    dataSource,
+                                    commonSeriesSettings: {
+                                        argumentField: 'kontrolTarihi',
+                                        type: 'bar',
+                                        hoverMode: 'allArgumentPoints',
+                                        selectionMode: 'allArgumentPoints',
+                                        label: {
+                                            visible: true,
+                                            format: {
+                                                type: 'fixedPoint',
+                                                precision: 0,
+                                            },
+                                        },
+                                    },
+                                    size: {
+                                        width: 930,
+                                    },
+                                    animation: {
+                                        enabled: false,
+                                    },/*
+                            render: {
+                                force: true,
+                                animate: false,
+                            },*/
+                                    series: [
+                                        { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
+                                        { valueField: 'hataAdeti', name: 'Hata Adedi' },
+                                    ],
+                                    title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                    legend: {
+                                        verticalAlignment: 'bottom',
+                                        horizontalAlignment: 'center',
+                                    },
+
+                                    /*
+                                    export: {
+                                        enabled: true,
+                                    },*/
+                                    onPointClick(e) {
+                                        e.target.select();
+                                    },
+                                });
+                            });
+                        };
+                        $().setChart();
+                        setTimeout(function () {
+                            $(document).trigger('afterready');
+                        }, 100);
+
+                    }
+                });
+
+
+                //$('#form_download').submit();
 
 
 
@@ -768,47 +881,7 @@
                             /*{ dataField: 'state', caption: 'State',"width":"auto" }, */
                             /*cssClass: "far fa-dot-circle fa-lg text-primary"*/
 
-                            @*
-                                1<td>@Reports.qprojeDetayKontrolTarihi</td>
-                                2<td>@Reports.qprojetanimProjeCode</td>
-                        3<td>@Reports.qprojetanimProjeAcan</td>
-                        4<td>@Reports.qprojetanimOnayDurumu</td>
-                        5<td>@Reports.fabrikatanimFabrikaAdi</td>
-                        6<td>@Reports.musteritanimMusteriAdi</td>
-                        7<td>@Reports.qprojedurumuProjeDurumu</td>
-                        8<td>@Reports.qprojetanimSikayetNo</td>
-                        9<td>@Reports.qprojeDetayTKontrolAdedi</td>
-                        10<td>@Reports.qprojeDetayTHataAdeti</td>
-                        11<td>@Reports.qprojeDetayTTamirAdedi</td>
-                        12<td>@Reports.qprojeDetayTOperatorSayisi</td>
-                        13<td>@Reports.qprojeDetaySaatUcreti</td>
-                        14<td>@Reports.qprojeDetayAnlasilanZaman</td>
-                        15<td>@Reports.qprojeDetayToplamSuredk</td>
-                        16<td>@Reports.qprojeDetayGerceklesenDk</td>
-                        17<td>@Reports.qprojeDetayDkEkleme</td>
-                        18<td>@Reports.qprojeDetayGeceklesenDkMesaGirileni</td>
-                        19<td>@Reports.qprojeDetayVerimlilik</td>
-                        20<td>@Math.Round(Reports.qprojeDetayHarcananSaat, 2)</td>
-                        21<td>@Reports.qprojeDetayHarcananSaatMesai</td>
-                        22<td>@Reports.qprojeDetayHarcananGirilenMesai</td>
-                        23<td>@Math.Round(Reports.qprojeDetayToplamUcret, 2)</td>
-                        24<td>@Reports.qprojeDetayToplamYemek</td>
-                        25<td>@Reports.qprojeDetayToplamYol</td>
-                        26<td>@Reports.qprojeDetayToplamEkHizmekDk</td>
-                        27<td>@Math.Round(Reports.qprojeDetayToplam, 2)</td>
-                        28<td>@Reports.qprojeDetayPpm</td>
-                        29<td>@Reports.qprojeDetayIdProforma</td>
-                        30<td>@Reports.paraBirimiDoviz</td>
-                        31<td>@Reports.qprojeDetayEksi</td>
-                        32<td>@Reports.qprojeDetayArti</td>
-                        33<td>@Reports.qprojeDetayFix</td>
-                        34<td>@Reports.qprojetanimFiyatIdKontrolTipi</td>
-                        35<td>@Reports.qprojeDetayGeceklesenDkMesai</td>
-                        36<td>@Reports.qprojeDetayMesaiHesapla</td>
-                        37<td>@Reports.qprojeDetayMesaiHesapla100</td>
 
-
-                                *@
                         ],
                         onSelectionChanged(selectedItems) {
                             console.clear();
@@ -816,7 +889,7 @@
                             pCode = data.projectCode;
                             pStartDate = data.startDate;
 
-                            
+
                             //var _fullDate = $('#dateFinishinp').val();
                             var _fullDate = new Date();
                             var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
@@ -825,7 +898,8 @@
                             $('#dateFinishinp').val(pFinishDate);
                             pFilterRadio = $('#daily').val();
                             console.log("FinishDate: " + pFinishDate);
-
+                            $('#proggress').css('display', 'none');
+                            $('#theprogressbar').html('0%').val(0);
                             if (data) {
 
                                 $('#selectedVal').attr("value", data.projectCode);
@@ -950,46 +1024,26 @@
             loadDataTable();
             */
         });
-        /*
-        function customSearch(data, text) {
-            return data.filter(function (row) {
-                return row.field.indexOf(text) > -1
-            })
-        }*/
-        /*
-        function loadDataTable(data) {
-            var id = 'Model'
 
-                console.log('id değeri: ',id);
-            dataTable = $('#reports').DataTable({
-                "ajax": {
-                    "url": "/Reports/GetAllReportJson",
-                    "type": "post",
-                    "dataSrc": "",
-                    "data": {
-                        'id': id,
-                    }
-                },
-                "order": [[0, "asc"]],
-
-                "columns": [
-                    { "data": "qprojeDetayKontrolTarihi", "width": "3%" },
-                    { "data": "qprojetanimProjeCode", "width": "10%" },
-                    { "data": "qprojetanimSikayetNo", "width": "10%" },
-                    { "data": "qprojeDetayTKontrolAdedi", "width": "10%" },
-                    { "data": "qprojeDetayTHataAdeti", "width": "10%" },
-                    { "data": "qprojeDetayTTamirAdedi", "width": "10%" },
-                    { "data": "qprojeDetayTOperatorSayisi", "width": "10%" },
-                    { "data": "qprojeDetayToplamSuredk", "width": "10%" },
-                    { "data": "qprojeDetayGerceklesenDk", "width": "10%" },
-                    { "data": "qprojeDetayHarcananSaat", "width": "10%" },
-                    { "data": "qprojeDetayToplam", "width": "10%" },
+        $(document).bind('afterready', function () {
+            var xprojectCode = $('#xProjectCode').val();
+            var xprojectFilterStart = $('#xProjectFilter_StartDate').val();
+            var xprojectFilterFinish = $('#xProjectFilter_FinishDate').val();
+            var chartString = $('#renderedSection').html();
+            $('#xChartString').val(chartString);
 
 
-                ]
-            });
-        }
-        */
+            $('#form_download').submit();
+
+            console.log("xprojectCode: "+xprojectCode);
+            console.log("xprojectFilterStart: "+xprojectFilterStart);
+            console.log("xprojectFilterFinish: "+xprojectFilterFinish);
+            console.log("chartString" + chartString);
+
+            $('#proggress').show();
+
+        });
+
 
         function customSearch(data, text) {
             text = document.getElementById("searchinput").value;
@@ -1001,71 +1055,7 @@
             })
         }
     </script>
-    @*
-        <script>
-            $("#tblData").draggable(); $("#droppable").droppable({ drop: function () { alert('dropped'); } });
-            function sortTable(n) {
-                var table,
-                    rows,
-                    switching,
-                    i,
-                    x,
-                    y,
-                    shouldSwitch,
-                    dir,
-                    switchcount = 0;
-                table = document.getElementById("tblData");
-                switching = true;
-                //Set the sorting direction to ascending:
-                dir = "asc";
-                /*Make a loop that will continue until
-                no switching has been done:*/
-                while (switching) {
-                    //start by saying: no switching is done:
-                    switching = false;
-                    rows = table.getElementsByTagName("TR");
-                    /*Loop through all table rows (except the
-                    first, which contains table headers):*/
-                    for (i = 1; i < rows.length - 1; i++) { //Change i=0 if you have the header th a separate table.
-                        //start by saying there should be no switching:
-                        shouldSwitch = false;
-                        /*Get the two elements you want to compare,
-                        one from current row and one from the next:*/
-                        x = rows[i].getElementsByTagName("TD")[n];
-                        y = rows[i + 1].getElementsByTagName("TD")[n];
-                        /*check if the two rows should switch place,
-                        based on the direction, asc or desc:*/
-                        if (dir == "asc") {
-                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                                //if so, mark as a switch and break the loop:
-                                shouldSwitch = true;
-                                break;
-                            }
-                        } else if (dir == "desc") {
-                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                                //if so, mark as a switch and break the loop:
-                                shouldSwitch = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (shouldSwitch) {
-                        /*If a switch has been marked, make the switch
-                        and mark that a switch has been done:*/
-                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                        switching = true;
-                        //Each time a switch is done, increase this count by 1:
-                        switchcount++;
-                    } else {
-                        /*If no switching has been done AND the direction is "asc",
-                        set the direction to "desc" and run the while loop again.*/
-                        if (switchcount == 0 && dir == "asc") {
-                            dir = "desc";
-                            switching = true;
-                        }
-                    }
-                }
-            }
-        </script>
-    *@
+
+
+
 }

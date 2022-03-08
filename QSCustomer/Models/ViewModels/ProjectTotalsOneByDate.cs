@@ -10,6 +10,5 @@ namespace QSCustomer.Models.ViewModels
         public string? kontrolTarihi { get; set; }
         public long? kontrolAdedi { get; set; }
         public long? hataAdeti { get; set; }
-
     }
 }

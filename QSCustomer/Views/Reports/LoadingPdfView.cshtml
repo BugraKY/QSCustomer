@@ -28,8 +28,7 @@
     </div>
 </div>
 <div class="container" hidden>
-    <form asp-action="DownloadPdf" asp-controller="Reports" id="renderedform" method="post" hidden>
-
+    <form asp-action="OpenPdf" asp-controller="Reports" id="renderedform" method="post" hidden>
         <input type="text" class="form-control form-text" value="@Model._ProjectCode" asp-for="_ProjectCode" />
         <input type="text" class="form-control form-text" value="@Model._ProjectFilter.StartDate" asp-for="_ProjectFilter.StartDate" />
         <input type="text" class="form-control form-text" value="@Model._ProjectFilter.FinishDate" asp-for="_ProjectFilter.FinishDate" />
@@ -119,6 +118,8 @@
             }
         ];
 
+        console.log(dataSource);
+
                 setTimeout(function () {
                     $(document).trigger('afterready');
                 }, 1000);
@@ -135,7 +136,7 @@
         $('#rendVal').val(htmlString);
         $('#urlVal').val('');
         $('#renderedform').submit();
-        window.print();
+        //window.print();
         /*window.print();
         window.close();*/
     });

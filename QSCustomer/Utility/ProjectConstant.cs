@@ -141,5 +141,15 @@ namespace QSCustomer.Utility
             public const string Operation_Area = "Operation Area";
             public const string Customer = "Customer";
         }
+        public static class Host
+        {
+            public const string URL_HTTP = "http://45.200.120.35/";
+            public const string URL_HTTPS = "https://45.200.120.35/";
+        }
+        public static class LocalHost
+        {
+            public const string URL_HTTP = "http://localhost:5000/";
+            public const string URL_HTTPS = "https://localhost:5001/";
+        }
     }
 }

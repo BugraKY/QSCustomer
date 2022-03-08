@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using QSCustomer.Hubs;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace QSCustomer
 {
@@ -72,6 +73,21 @@ namespace QSCustomer
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            */
+
+            // If using Kestrel:
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            // If using IIS:
+            /*
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
             */
             services.AddHttpContextAccessor();
             services.AddSession();
