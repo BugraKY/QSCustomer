@@ -84,203 +84,7 @@
         bottom: 0 !important;
     }*/
 </style>
-@*
-    <div class="p-4 border rounded">
-        <table id="tblData" class="table table-striped table-bordered sortable" style="width:100%">
-            <thead class="thead-dark">
-                <tr class="table-info" style="font-size:10.5px">
-                    <!--
-                    <th onclick="sortTable(1)">id</th>
-                    <th onclick="sortTable(1)">idOprArea</th>
-                    <th onclick="sortTable(1)">idMusteri</th>
-                    <th onclick="sortTable(1)">idProjeDurumu</th>
-                    <th onclick="sortTable(1)">projeCode</th>
-                    <th onclick="sortTable(1)">baslangicTarihi</th>
-                    <th onclick="sortTable(1)">bitisTarihi</th>
-                    <th onclick="sortTable(1)">projeAcan</th>
-                    <th onclick="sortTable(1)">projeAcan1</th>
-                    <th onclick="sortTable(1)">projeOlusturmaTarihi</th>
-                    <th onclick="sortTable(1)">onayTarih</th>
-                    <th onclick="sortTable(1)">onayDurumu</th>
-                    <th onclick="sortTable(1)">onaySonTarih</th>
-                    <th onclick="sortTable(1)">onayToplamPiece</th>
-                    <th onclick="sortTable(1)">onayToplamDk</th>
-                    <th onclick="sortTable(1)">onayToplamCost</th>
-                    <th onclick="sortTable(1)">onayLastNo</th>
-                    <th onclick="sortTable(1)">fiyatIdKontrolTipi</th>
-                    <th onclick="sortTable(1)">fiyatIdTipi</th>
-                    <th onclick="sortTable(1)">fiyatSaatUcreti</th>
-                    <th onclick="sortTable(1)">fiyatAnlasilanZaman</th>
-                    <th onclick="sortTable(1)">fiyatIdParaBirimi</th>
-                    <th onclick="sortTable(1)">fiyatYemek</th>
-                    <th onclick="sortTable(1)">fiyatUlasim</th>
-                    <th onclick="sortTable(1)">fiyatOfferSaatUcreti</th>
-                    <th onclick="sortTable(1)">sikayetNo</th>
-                    <th onclick="sortTable(1)">note</th>
-                    <th onclick="sortTable(1)">materyel</th>
-                    <th onclick="sortTable(1)">cls</th>
-                    -->
-                    <!--<th onclick="sortTable(1)">Ürün Özellikleri(EKLENMEDİ!)</th><!--Tabloda bu yok eklenebilir. Anlamı maddeler halinde ürün özelliklerinin açıklanması-->
-                    <th>Control Date</th>
-                    <th>Project Code</th>
-                    <th>Responsible</th>
-                    <th>Appr. State</th>
-                    <th>Operetion Areas</th>
-                    <th>Customers</th>
-                    <th>Project/State</th>
-                    <th>Compli. Nr</th>
-                    <th>Checked</th>
-                    <th>NOK</th>
-                    <th>Rework</th>
-                    <th>Opr.</th>
-                    <th>Hourly Rate.</th>
-                    <th>Agreed Time</th>
-                    <th>Spent Min.</th>
-                    <th>Actual Min.</th>
-                    <th>%50 OverTime Min</th>
-                    <th>%100 OverTime Min</th>
-                    <th>Productivity</th>
-                    <th>Spent Hours</th>
-                    <th>%50 OverTime</th>
-                    <th>%100 OverTime</th>
-                    <th>Lab Cost.</th>
-                    <th>Total Meal</th>
-                    <th>Total Trans</th>
-                    <th>Add Service</th>
-                    <th>Grand Total</th>
-                    <th>PPM</th>
-                    <th>Proform</th>
-                    <th>Currency</th>
-                    <th>Reduced</th>
-                    <th>Incares</th>
-                    <th>Fix Cost</th>
-                    <th>Control Type</th>
-                    <th>Eski Actual OverTime Min</th>
-                    <th>Eski OverTime(%50)</th>
-                    <th>Eski OverTime(%100)</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var Reports in Model)
-                {
-                    <tr style="font-size:12px">
-                        <td>@Reports.qprojeDetayKontrolTarihi</td>
-                        <td>@Reports.qprojetanimProjeCode</td>
-                        <td>@Reports.qprojetanimProjeAcan</td>
-                        <td>@Reports.qprojetanimOnayDurumu</td>
-                        <td>@Reports.fabrikatanimFabrikaAdi</td>
-                        <td>@Reports.musteritanimMusteriAdi</td>
-                        <td>@Reports.qprojedurumuProjeDurumu</td>
-                        <td>@Reports.qprojetanimSikayetNo</td>
-                        <td>@Reports.qprojeDetayTKontrolAdedi</td>
-                        <td>@Reports.qprojeDetayTHataAdeti</td>
-                        <td>@Reports.qprojeDetayTTamirAdedi</td>
-                        <td>@Reports.qprojeDetayTOperatorSayisi</td>
-                        <td>@Reports.qprojeDetaySaatUcreti</td>
-                        <td>@Reports.qprojeDetayAnlasilanZaman</td>
-                        <td>@Reports.qprojeDetayToplamSuredk</td>
-                        <td>@Reports.qprojeDetayGerceklesenDk</td>
-                        <td>@Reports.qprojeDetayDkEkleme</td>
-                        <td>@Reports.qprojeDetayGeceklesenDkMesaGirileni</td>
-                        <td>@Reports.qprojeDetayVerimlilik</td>
-                        <td>@Math.Round(Reports.qprojeDetayHarcananSaat, 2)</td>
-                        <td>@Reports.qprojeDetayHarcananSaatMesai</td>
-                        <td>@Reports.qprojeDetayHarcananGirilenMesai</td>
-                        <td>@Math.Round(Reports.qprojeDetayToplamUcret, 2)</td>
-                        <td>@Reports.qprojeDetayToplamYemek</td>
-                        <td>@Reports.qprojeDetayToplamYol</td>
-                        <td>@Reports.qprojeDetayToplamEkHizmekDk</td>
-                        <td>@Math.Round(Reports.qprojeDetayToplam, 2)</td>
-                        <td>@Reports.qprojeDetayPpm</td>
-                        <td>@Reports.qprojeDetayIdProforma</td>
-                        <td>@Reports.paraBirimiDoviz</td>
-                        <td>@Reports.qprojeDetayEksi</td>
-                        <td>@Reports.qprojeDetayArti</td>
-                        <td>@Reports.qprojeDetayFix</td>
-                        <td>@Reports.qprojetanimFiyatIdKontrolTipi</td>
-                        <td>@Reports.qprojeDetayGeceklesenDkMesai</td>
-                        <td>@Reports.qprojeDetayMesaiHesapla</td>
-                        <td>@Reports.qprojeDetayMesaiHesapla100</td>
 
-
-                    </tr>
-                }
-
-            </tbody>
-        </table>
-    </div>
-*@
-
-
-@*
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-lg-12 col-md-12 col-sm-12" style="padding: 13px;">
-                <div class="shadow" style="padding:13px; border-radius: 15px;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="float-left">
-                                <h4>Project Follow Up</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="padding-top:5px;">
-                        <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="reports">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            1<th>Control Date</th>
-                                            2<th>Project Code</th>
-                                            3<!--<th>Responsible</th>
-                                            4<th>Appr. State</th>
-                                            5<th>Operetion Areas</th>
-                                            6<th>Customers</th>
-                                            7<th>Project/State</th>-->
-                                            8<th>Compli. Nr</th>
-                                            9<th>Checked</th>
-                                            10<th>NOK</th>
-                                            11<th>Rework</th>
-                                            12<th>Opr.</th>
-                                            13<!--<th>Hourly Rate.</th>
-                                            14<th>Agreed Time</th>-->
-                                            15<th>Spent Min.</th>
-                                            16<th>Actual Min.</th>
-                                            17<!--<th>%50 OverTime Min</th>
-                                            18<th>%100 OverTime Min</th>
-                                            19<th>Productivity</th>-->
-                                            20<th>Spent Hours</th>
-                                            21<!--<th>%50 OverTime</th>
-                                            22<th>%100 OverTime</th>
-                                            23<th>Lab Cost.</th>
-                                            24<th>Total Meal</th>
-                                            25<th>Total Trans</th>
-                                            26<th>Add Service</th>-->
-                                            27<th>Grand Total</th>
-                                            28<!--<th>PPM</th>
-                                            29<th>Proform</th>
-                                            30<th>Currency</th>
-                                            31<th>Reduced</th>
-                                            32<th>Incares</th>
-                                            33<th>Fix Cost</th>
-                                            34<th>Control Type</th>
-                                            35<th>Eski Actual OverTime Min</th>
-                                            36<th>Eski OverTime(%50)</th>
-                                            37<th>Eski OverTime(%100)</th>-->
-
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-*@
 
 <form method="get" id="frmCode" asp-action="Details" asp-controller="Reports">
     <button id="datebtn" class="btn dx-button-default" type="button" hidden>Test</button>
@@ -332,23 +136,7 @@
                 <div id="gridContainer"></div>
             </div>
         </div>
-        @*
-            <div class="row pt-5">
 
-                <div class="col-md-2">Checked: <span id="checkedVal"></span></div>
-                <div class="col-md-2">Nok: <span id="nokVal"></span></div>
-                <div class="col-md-2">Rework: <span id="reworkVal"></span></div>
-                <div class="col-md-2">Opr: <span id="oprVal"></span></div>
-                <div class="col-md-2">Spent Min: <span id="spentMin"></span></div>
-                <div class="col-md-2">Actual Min: <span id="actualMin"></span></div>
-
-            </div>
-
-            <div class="row pt-5">
-                <div class="col-md-4">Spent Hours: <span id="spentHour"></span></div>
-                <div class="col-md-4">Grand Totals: <span id="grandTotal"></span></div>
-            </div>
-        *@
     </div>
 
 
@@ -361,7 +149,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Report Details</h5>
                     <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body modal-report">
                     <div class="row">
                         <div class="col-12">
                             <div class="dx-field">
@@ -382,46 +170,31 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="filterRadio" id="daily" value="0" asp-for="@filter" />
-                        <label class="form-check-label" for="daily"> Last Day </label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="filterRadio" id="weekly" value="1" asp-for="@filter" />
-                        <label class="form-check-label" for="weekly"> Last Week </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="filterRadio" id="monthly" value="2" asp-for="@filter" />
-                        <label class="form-check-label" for="monthly"> Last Month </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="filterRadio" id="optional" value="3" asp-for="@filter" />
-                        <label class="form-check-label" for="optional"> Optional Of Date </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="filterRadio" id="allreport" value="4" asp-for="@filter" checked />
-                        <label class="form-check-label" for="allreport"> All Reports </label>
-                    </div>
-
-
-
-
-
-                    @*
-                        <div class="form-check-m1">
-                            <input type="checkbox" class="form-check-input" name="lastday" id="lastday" />
-                            <label class="form-check-label" for="today">Last Day</label>
+                    <div id="filterRadioCheck">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="filterRadio" id="daily" value="0" asp-for="@filter" />
+                            <label class="form-check-label" for="daily"> Last Day </label>
                         </div>
-                        <div class="form-check-m1">
-                            <input type="checkbox" class="form-check-input" name="week" id="week" />
-                            <label class="form-check-label" for="week">Last Week</label>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="filterRadio" id="weekly" value="1" asp-for="@filter" />
+                            <label class="form-check-label" for="weekly"> Last Week </label>
                         </div>
-                        <div class="form-check-m1">
-                            <input type="checkbox" class="form-check-input" name="month" id="month" />
-                            <label class="form-check-label" for="month">Last Month</label>
-                        </div>*@
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="filterRadio" id="monthly" value="2" asp-for="@filter" />
+                            <label class="form-check-label" for="monthly"> Last Month </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="filterRadio" id="optional" value="3" asp-for="@filter" />
+                            <label class="form-check-label" for="optional"> Optional Of Date </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="filterRadio" id="allreport" value="4" asp-for="@filter" checked />
+                            <label class="form-check-label" for="allreport"> All Reports </label>
+                        </div>
+                    </div>
+
+
                     <div class="row">
                         <div class="col-12 mt-4">
                             <p class="m-0">You are about to open report, Project code: <span id="projectCode"></span></p>
@@ -429,7 +202,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <div id="proggress" style="display:none;">
+                            <div id="proggress" class="progress-show-bar" style="display:none;">
                                 <label for="theprogressbar">Downloading progress:</label>
                                 <progress id="theprogressbar" value="0" max="100">0%</progress>
                             </div>
@@ -452,29 +225,25 @@
     </div>
 </form>
 
-<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_open" target="_blank" class="d-none" hidden>
+<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_open" target="_blank">
     <input type="text" name="_ProjectCode" id="zProjectCode" value="" />
     <input type="text" name="_ProjectFilter.StartDate" id="zProjectFilter_StartDate" value="" />
     <input type="text" name="_ProjectFilter.FinishDate" id="zProjectFilter_FinishDate" value="" />
     <input type="text" name="_FilterRadio" id="zFilterRadio" value="" />
 </form>
-@*
-    <form method="post" asp-controller="Reports" asp-action="DownloadPdf" id="form_download" target="_blank" class="d-none" hidden>
-        <input type="text" name="_ProjectCode" id="xProjectCode" value="" />
-        <input type="text" name="_ProjectFilter.StartDate" id="xProjectFilter_StartDate" value="" />
-        <input type="text" name="_ProjectFilter.FinishDate" id="xProjectFilter_FinishDate" value="" />
-    </form>*@
-<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download" class="d-none" hidden>
+
+<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download">
     <input type="text" name="projectCode" id="xProjectCode" value="" />
     <input type="text" name="startDate" id="xProjectFilter_StartDate" value="" />
     <input type="text" name="finishDate" id="xProjectFilter_FinishDate" value="" />
+    <input type="text" name="filterRadio" id="xFilterRadio" value="" />
     <input type="text" name="chartString" id="xChartString" />
 </form>
 <div class="demo-container d-none" id="renderedSection" hidden>
     <div id="chart">
     </div>
 </div>
-<div class="d-none">
+<div class="">
     <textarea id="textbox">Type something here</textarea> <button id="create">Create file</button> <a download="info.txt" id="downloadlink" style="display: none">Download</a>
 </div>
 @*
@@ -490,6 +259,9 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="~/js/progressbarHub.js"></script>
     <script>
+        var pStartDate = '';
+        var pFinishDate = '';
+
         var progressCookie = $.cookie('progress_id');
         $("#datebtn").click(function () {
 
@@ -501,23 +273,30 @@
         });
 
         $(document).ready(function () {
+
             console.clear();
             var open = false;
             var close = false;
             var selectedDate = new Date('@DateTime.Now.Date');
             var pCode = '';
-            var pStartDate = '';
-            var pFinishDate = '';
-            var pFilterRadio = '';
+
+            var pFilterRadio = 4;
             if ($('#open').is(":checked")) {
                 open = true;
             }
             if ($('#close').is(":checked")) {
                 close = true;
             }
+            $('#filterRadioCheck input').on('change', function () {
+                pFilterRadio = $('input[name=filterRadio]:checked', '#filterRadioCheck').val();
+                pStartDate = $('#dateStartinp').val();
+                alert("radiochecked!");
+            });
+
+
+
 
             $("#openfile").click(function () {
-
                 console.log("pCode: " + pCode);
                 alert("Downloading PDF - Project Code: " + pCode)
 
@@ -534,26 +313,27 @@
 
             });
             $("#downloadfile").click(function () {
-
                 console.log("pCode: " + pCode);
-                alert("Downloading PDF - Project Code: " + pCode)
 
                 $('#xProjectCode').val(pCode);
                 $('#xProjectFilter_StartDate').val(pStartDate);
                 $('#xProjectFilter_FinishDate').val(pFinishDate);
                 $('#xFilterRadio').val(pFilterRadio);
-                console.log("pFinishDate: "+pFinishDate);
+
+                console.log("pFinishDate: " + pStartDate);
                 $.ajax({
                     type: "GET",
-                    url: "/set-chart/?projectCode=" + pCode + "&startDate=" + pStartDate +"&finishDate="+ pFinishDate,
+                    url: "/set-chart/?projectCode=" + pCode + "&startDate=" + pStartDate + "&finishDate=" + pFinishDate + "&filterRadio=" + pFilterRadio,
                     success: function (dataSource) {
-                        console.log(dataSource);
-                        /*
-                        const dataSource = [
-                            state,
-                            kontrolAdedi,
-                            hataAdeti,
-                        ];*/
+                        var projectFilter = dataSource._ProjectFilter;
+                        pFilterRadio = dataSource._FilterRadio;
+                        dataSource = dataSource._ProjectTotalsOnebyDate;
+                        console.log("startDate: " + projectFilter.startDate);
+                        pStartDate = projectFilter.startDate;
+                        pFinishDate = projectFilter.finishDate;
+                        alert(JSON.stringify(projectFilter.startDate));
+                        console.log("datasource: "+dataSource);
+
                         $.fn.setChart = function () {
                             $(() => {
                                 $('#chart').dxChart({
@@ -572,15 +352,11 @@
                                         },
                                     },
                                     size: {
-                                        width: 930,
+                                        width: 830,
                                     },
                                     animation: {
                                         enabled: false,
-                                    },/*
-                            render: {
-                                force: true,
-                                animate: false,
-                            },*/
+                                    },
                                     series: [
                                         { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
                                         { valueField: 'hataAdeti', name: 'Hata Adedi' },
@@ -591,10 +367,6 @@
                                         horizontalAlignment: 'center',
                                     },
 
-                                    /*
-                                    export: {
-                                        enabled: true,
-                                    },*/
                                     onPointClick(e) {
                                         e.target.select();
                                     },
@@ -608,13 +380,6 @@
 
                     }
                 });
-
-
-                //$('#form_download').submit();
-
-
-
-
 
             });
             $.ajax({
@@ -707,30 +472,14 @@
                     });
                 },
                 success: function (response) {
-
-
-                    /*NEW AJAX*/
-
-
                     $.ajax({
                         contentType: 'application/json; charset=utf-8',
                         dataType: 'json',
                         type: 'POST',
                         url: "/Reports/GetReportTotalValuesJson",
-                        /*
-                        "data": {
-                            'customerReports': response,
 
-                        },*/
                         "data": JSON.stringify(response),
-                        /*
-                        beforeSend: function () {
 
-                            $('#large-indicator').dxLoadIndicator({
-                                height: 60,
-                                width: 60,
-                            });
-                        },*/
 
                         success: function (totalVals) {
                             $('#checkedVal').empty();
@@ -752,63 +501,11 @@
                             $('#spentHour').append(totalVals.qprojeDetayHarcananSaat);
                             $('#grandTotal').append(totalVals.qprojeDetayToplam);
 
-                        @*
-                        1<td>@Reports.qprojeDetayKontrolTarihi</td>
-                        2<td>@Reports.qprojetanimProjeCode</td>
-                        3<td>@Reports.qprojetanimProjeAcan</td>
-                        4<td>@Reports.qprojetanimOnayDurumu</td>
-                        5<td>@Reports.fabrikatanimFabrikaAdi</td>
-                        6<td>@Reports.musteritanimMusteriAdi</td>
-                        7<td>@Reports.qprojedurumuProjeDurumu</td>
-                        8<td>@Reports.qprojetanimSikayetNo</td>
-                        9<td>@Reports.qprojeDetayTKontrolAdedi</td>
-                        10<td>@Reports.qprojeDetayTHataAdeti</td>
-                        11<td>@Reports.qprojeDetayTTamirAdedi</td>
-                        12<td>@Reports.qprojeDetayTOperatorSayisi</td>
-                        13<td>@Reports.qprojeDetaySaatUcreti</td>
-                        14<td>@Reports.qprojeDetayAnlasilanZaman</td>
-                        15<td>@Reports.qprojeDetayToplamSuredk</td>
-                        16<td>@Reports.qprojeDetayGerceklesenDk</td>
-                        17<td>@Reports.qprojeDetayDkEkleme</td>
-                        18<td>@Reports.qprojeDetayGeceklesenDkMesaGirileni</td>
-                        19<td>@Reports.qprojeDetayVerimlilik</td>
-                        20<td>@Math.Round(Reports.qprojeDetayHarcananSaat, 2)</td>
-                        21<td>@Reports.qprojeDetayHarcananSaatMesai</td>
-                        22<td>@Reports.qprojeDetayHarcananGirilenMesai</td>
-                        23<td>@Math.Round(Reports.qprojeDetayToplamUcret, 2)</td>
-                        24<td>@Reports.qprojeDetayToplamYemek</td>
-                        25<td>@Reports.qprojeDetayToplamYol</td>
-                        26<td>@Reports.qprojeDetayToplamEkHizmekDk</td>
-                        27<td>@Math.Round(Reports.qprojeDetayToplam, 2)</td>
-                        28<td>@Reports.qprojeDetayPpm</td>
-                        29<td>@Reports.qprojeDetayIdProforma</td>
-                        30<td>@Reports.paraBirimiDoviz</td>
-                        31<td>@Reports.qprojeDetayEksi</td>
-                        32<td>@Reports.qprojeDetayArti</td>
-                        33<td>@Reports.qprojeDetayFix</td>
-                        34<td>@Reports.qprojetanimFiyatIdKontrolTipi</td>
-                        35<td>@Reports.qprojeDetayGeceklesenDkMesai</td>
-                        36<td>@Reports.qprojeDetayMesaiHesapla</td>
-                        37<td>@Reports.qprojeDetayMesaiHesapla100</td>
 
-
-                                *@
 
                 },
-                /*
-                error: function (e) {
-                    $('#sectionArea').append('<div class="alert alert-danger" role="alert" data-mdb-color="danger">' + e.statusText + '</div >');
 
-                    $('#large-indicator').dxLoadIndicator({
-                        height: 0,
-                        width: 0,
-                    });
-                },
-                timeout: 60000,*/
             });
-
-
-                    /*NEW AJAX END*/
 
                     $('#large-indicator').dxLoadIndicator({
                         height: 0,
@@ -847,39 +544,22 @@
                         },
                         focusedRowEnabled: true,
                         columns: [
-                            /*{ dataField: 'id', caption: 'ID', "width": "0"},*/
+
                             { dataField: 'customerName', caption: 'Customers', "width": "auto" },//Görünecek alan
                             { dataField: 'operationArea', caption: 'Opr Area', "width": "auto" },//Görünmeyecek Alan
-                            /*{ dataField: 'customerName', caption: 'Customer' },*/
+
                             { dataField: 'projectCode', caption: 'Code', "width": "75px" },
-                            @*
-                            {
-
-                                /*dataField: 'state',*/
-                                /*cssClass: "far fa-dot-circle fa-lg text-primary",*/
-                                text: "Zoom In",
-                                icon: "plus",
-                                caption: 'State',
-                                width: "auto"
-
-                            },*@
+       
                             { dataField: 'state', caption: 'State',"width":"auto" },
                             { dataField: 'approvalState', caption: 'Approval State',"width":"auto" },
                             { dataField: 'startDate', caption: 'Start Date', "width": "85px" },
-                            /*{ dataField: 'finishDate', caption: 'Finish Date' },*/
-                            /*{ dataField: 'approvalDate', caption: 'Approval Date' },*/
+
                             { dataField: 'responsible', caption: 'Responsible', "width": "auto" },
-                            //{ dataField: 'controlType', caption: 'Control Type', "width": "auto" },
+
                             { dataField: 'compNr', caption: 'Comp Nr.' },
                             { dataField: 'material', caption: 'Material' },
                             /*{ dataField: 'note', caption: 'Note' },*/
                             /*{ dataField: 'currency', caption: 'Currency', "width": "5%" },*/
-
-
-
-
-                            /*{ dataField: 'state', caption: 'State',"width":"auto" }, */
-                            /*cssClass: "far fa-dot-circle fa-lg text-primary"*/
 
 
                         ],
@@ -897,9 +577,16 @@
                             pFinishDate = datestr;
                             $('#dateFinishinp').val(pFinishDate);
                             pFilterRadio = $('#daily').val();
+                            pFilterRadio = $('input[name=filterRadio]:checked', '#filterRadioCheck').val();
                             console.log("FinishDate: " + pFinishDate);
                             $('#proggress').css('display', 'none');
                             $('#theprogressbar').html('0%').val(0);
+
+                            $('#zProjectCode').val(pCode);
+                            $('#zProjectFilter_StartDate').val(pStartDate);
+                            $('#zProjectFilter_FinishDate').val(pFinishDate);
+                            $('#zFilterRadio').val(pFilterRadio);
+
                             if (data) {
 
                                 $('#selectedVal').attr("value", data.projectCode);
@@ -931,7 +618,6 @@
 
                                     $('#dateStarting').dxDateBox({
                                         type: 'date',
-                                        //value: getFormattedDate(startDateFormat),
                                         displayFormat: 'dd/MM/yyyy',
                                         value: startDateDxVal,
                                         placeholder: selectedDate,
@@ -939,22 +625,15 @@
                                         useMaskBehavior: false,
 
                                         onValueChanged(datechanged) {
+                                            pStartDate = datechanged.value;
                                             console.log("value changed :" + new Date(datechanged.value));
-                                            /*
-                                            console.log("datechanged: " + selectedDate);
-                                            var startDateChanged = new Date(datechanged.value);
-                                            var startDateChangedStr = startDateChanged.getDate() + '.' + (startDateChanged.getMonth() + 1) + "." + startDateChanged.getFullYear();
-                                            console.log("value changed: " + startDateChangedStr);*/
                                             $('#dateStartinp').val(datechanged.value);
                                         },
                                     });
 
                                 });
-
-                                //$('#dateStartinp').val();YAPILACAK
                                 $("#submitCode").click(function () {
 
-                                    /*$("#frmCode").submit();*/
                                     $('#frmCode').submit(function (event) {
                                         //var action = '/project/' + data.projectCode;
 
@@ -969,7 +648,6 @@
                 });
                 },
                 error: function (e) {
-                    //$('#sectionArea').append('<div class="alert alert-danger" role="alert" data-mdb-color="danger">A simple danger alert with <a href="#" class="alert-link">an example link</a>.Give it a click if you like. </div >');
                     $('#sectionArea').append('<div class="alert alert-danger" role="alert" data-mdb-color="danger">' +e.statusText+ '</div >');
 
                     $('#large-indicator').dxLoadIndicator({
@@ -1011,35 +689,26 @@
                 return year + '.' + month + '.' + day;
             }
 
-            /*
-            $("#searchinput").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-
-                $("tbody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-
-            });
-
-            loadDataTable();
-            */
         });
 
         $(document).bind('afterready', function () {
             var xprojectCode = $('#xProjectCode').val();
+            /*
             var xprojectFilterStart = $('#xProjectFilter_StartDate').val();
-            var xprojectFilterFinish = $('#xProjectFilter_FinishDate').val();
+            var xprojectFilterFinish = $('#xProjectFilter_FinishDate').val();*/
+            var xprojectFilterStart = pStartDate;
+            var xprojectFilterFinish = pFinishDate;
             var chartString = $('#renderedSection').html();
             $('#xChartString').val(chartString);
-
-
-            $('#form_download').submit();
+            $('#xProjectFilter_StartDate').val(pStartDate);
+            $('#xProjectFilter_FinishDate').val(pFinishDate);
 
             console.log("xprojectCode: "+xprojectCode);
             console.log("xprojectFilterStart: "+xprojectFilterStart);
             console.log("xprojectFilterFinish: "+xprojectFilterFinish);
             console.log("chartString" + chartString);
 
+            $('#form_download').submit();
             $('#proggress').show();
 
         });

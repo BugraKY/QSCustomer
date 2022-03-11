@@ -125,6 +125,9 @@ ul {
   margin-top: 0;
   margin-bottom: 0;
 }
+main{
+    min-height:55vh;
+}
 
 #particles-js {
   position: absolute;
@@ -300,6 +303,14 @@ ul {
   -moz-animation:spin 4s linear infinite;
   animation:spin 4s linear infinite;
 }
+
+.loading-text .loader__image {
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: spin 4s linear infinite;
+    -moz-animation: spin 4s linear infinite;
+    animation: spin 4s linear infinite;
+}
 @-moz-keyframes spin {
   100% { -moz-transform: rotate(360deg); }
 }
@@ -312,6 +323,9 @@ ul {
       transform:rotate(360deg);
   }
 }
+
+
+
 
 /* scroll to top */
 .scroll-to-top {
@@ -7915,4 +7929,16 @@ ul {
 .btn-secondary:active, .btn-secondary:focus {
     background-color: #2aa377;
 }
+#loading {
+    display: inline-block;
+    color: #2aa377;
+    border-right: 3px solid #1c4433;
+    font-size: 20px;
+    font-family: 'MyriadPro';
+    margin-top: 20px;
+}
 
+.loading-text {
+    padding: 150px 0 0 0;
+    text-align: center;
+}

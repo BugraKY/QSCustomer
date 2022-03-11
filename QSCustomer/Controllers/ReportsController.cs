@@ -409,12 +409,8 @@ namespace QSCustomer.Controllers
             return Json(ReportTotals);
         }
 
-        //[Route("project/{projectCode}")]
-        //[HttpPost("project")]
-        //[HttpGet("reports/project={projectCode}&open={open}&close={close}")]
         [HttpGet("reports/project")]
         public IActionResult Details(string startDate, string finishDate, string projectCode, bool open, bool close, bool problematic, int filterRadio)
-        //public IActionResult Details(string projectCode)
         {
             #region Variables
             string[] finishDateArr = finishDate.Split(' ');
@@ -498,7 +494,7 @@ namespace QSCustomer.Controllers
                 var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
                 //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
                 var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
-                var _startDateFilter = _finishDateFilter.AddDays(-7);
+                var _startDateFilter = _finishDateFilter.AddDays(-6);
                 _startDate = _startDateFilter;
                 _finishDate = _finishDateFilter;
             }
@@ -1381,7 +1377,7 @@ namespace QSCustomer.Controllers
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
-            string baseUrl = Host.URL_HTTP+"baseurlforpdfconvert/";
+            string baseUrl = Host.URL_HTTP + "baseurlforpdfconvert/";
 
 
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
@@ -1480,7 +1476,7 @@ namespace QSCustomer.Controllers
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
-            string baseUrl = Host.URL_HTTP+"baseurlforpdfconvert/";
+            string baseUrl = Host.URL_HTTP + "baseurlforpdfconvert/";
 
 
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
@@ -1514,7 +1510,6 @@ namespace QSCustomer.Controllers
             MemoryStream ms = new MemoryStream();
             iText.Html2pdf.HtmlConverter.ConvertToElements(_PdfString);*/
         }
-        //[HttpGet("baseurlforpdfconvert/{projectCode}")]
         [Route("/baseurlforpdfconvert/{projectCode}")]
         public IActionResult BaseUrlforPdfConvert(string projectCode)
         {
@@ -1696,13 +1691,14 @@ namespace QSCustomer.Controllers
             return Json(_userNull);
 
         }
+
         [HttpPost("reports")]
-        public async Task<IActionResult> SetChart(string projectCode, string startDate , string finishDate, string chartString)
+        public async Task<IActionResult> SetChart(string projectCode, string startDate, string finishDate, string chartString)
         {
 
-            if(projectCode==null || startDate==null || finishDate==null || chartString==null)
-                return Json("Fail: \nProject Code: "+projectCode+"\n"+"Start Date: "+ startDate+ "\n"+"Finish Date: "+ finishDate+"\n"+"Chart String: "+chartString);
-            
+            if (projectCode == null || startDate == null || finishDate == null || chartString == null)
+                return Json("Fail: \nProject Code: " + projectCode + "\n" + "Start Date: " + startDate + "\n" + "Finish Date: " + finishDate + "\n" + "Chart String: " + chartString);
+
             #region TEST
             /*
             var _projectTotalsOneByDate = new List<ProjectTotalsOneByDate>();
@@ -1721,7 +1717,7 @@ namespace QSCustomer.Controllers
             }
             */
             #endregion TEST
-            
+
 
             string MainTab_Chart = chartString;
             PdfReport StatusOpenProjects = new PdfReport();
@@ -1779,7 +1775,7 @@ namespace QSCustomer.Controllers
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
-            string baseUrl = Host.URL_HTTP+"baseurlforpdfconvert/";
+            string baseUrl = Host.URL_HTTP + "baseurlforpdfconvert/";
 
 
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
@@ -1819,23 +1815,103 @@ namespace QSCustomer.Controllers
             iText.Html2pdf.HtmlConverter.ConvertToElements(_PdfString);*/
 
         }
+
         [HttpGet("set-chart")]
-        public JsonResult SetChartHttpGet(string projectCode, string startDate, string finishDate)
+        public JsonResult SetChartHttpGet(string projectCode, string startDate, string finishDate, int filterRadio)
         {
+            //return Json(null);
+            #region Filter
+            if (filterRadio == 0)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter;
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            if (filterRadio == 1)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter.AddDays(-6);
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            if (filterRadio == 2)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter.AddMonths(-1);
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            if (filterRadio == 4)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter.AddMonths(-2);
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            #endregion Filter
+
             var _projectTotalsOneByDate = new List<ProjectTotalsOneByDate>();
             var _selectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
             var _ProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == _selectedProject.id).Where(d => d.kontrolTarihi >= DateTime.Parse(startDate)).Where(d => d.kontrolTarihi <= DateTime.Parse(finishDate));
-
-            foreach (var item in _ProjectDetails)
+            var ProjectStatus = _uow.ProjeDurumu.GetFirstOrDefault(i => i.id == _selectedProject.idProjeDurumu);
+            if (ProjectStatus.id == 1)
             {
-                var _chartvalues = new ProjectTotalsOneByDate()
+                foreach (var item in _ProjectDetails)
                 {
-                    kontrolTarihi = item.kontrolTarihi.ToString("dd/MM/yyyy"),
-                    hataAdeti = item.tHataAdeti,
-                    kontrolAdedi = item.tKontrolAdedi
-                };
-                _projectTotalsOneByDate.Add(_chartvalues);
+                    if (item.idProforma == 0)
+                    {
+                        var _chartvalues = new ProjectTotalsOneByDate()
+                        {
+                            kontrolTarihi = item.kontrolTarihi.ToString("dd/MM/yyyy"),
+                            hataAdeti = item.tHataAdeti,
+                            kontrolAdedi = item.tKontrolAdedi
+                        };
+                        _projectTotalsOneByDate.Add(_chartvalues);
+                    }
+                }
             }
+            else if (ProjectStatus.id == 4)
+            {
+                foreach (var item in _ProjectDetails)
+                {
+                    var _chartvalues = new ProjectTotalsOneByDate()
+                    {
+                        kontrolTarihi = item.kontrolTarihi.ToString("dd/MM/yyyy"),
+                        hataAdeti = item.tHataAdeti,
+                        kontrolAdedi = item.tKontrolAdedi
+                    };
+                    _projectTotalsOneByDate.Add(_chartvalues);
+                }
+            }
+            ProjectFilter _projectFilter = new ProjectFilter()
+            {
+                StartDate = DateTime.Parse(startDate),
+                FinishDate = DateTime.Parse(finishDate)
+
+            };
+            PdfReport _report = new PdfReport()
+            {
+                _FilterRadio = filterRadio,
+                _ProjectFilter=_projectFilter,
+                _ProjectTotalsOnebyDate= _projectTotalsOneByDate
+            };
             /*
             var _pdfReport = new PdfReport()
             {
@@ -1845,7 +1921,7 @@ namespace QSCustomer.Controllers
             };*/
 
             //return NoContent();
-            return Json(_projectTotalsOneByDate);
+            return Json(_report);
         }
         public Claim GetClaim()
         {

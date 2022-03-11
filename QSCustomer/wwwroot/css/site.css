@@ -19,30 +19,48 @@ a {
 
 .btn-expert {
     background-color: #2AA377;
+    border: 1px solid #2AA377;
+    color: #ffffff;
+}
+.btn-expert:hover {
+    border: 1px solid #2AA377;
+}
+.btn-expert .fa-file-pdf{
+    margin-right:3px;
 }
 
 .report-det-sect {
     padding-top: 50px;
-    border: 2px solid #808080 !important;
-    background-color: aliceblue;
-    border-radius: 7px 7px;
-    -webkit-box-shadow: 0 12px 15px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
-    box-shadow: 0 12px 15px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);
 }
 
 .border-expert {
-    border-color: #f05b41;
+    border-color: #1c4433;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
     background-color: #1b6ec2;
-    border-color: #1861ac;
+    border-color: #1c4433;
 }
 .justify-content-start {
     -webkit-box-pack: start !important;
     -ms-flex-pack: start !important;
     justify-content: flex-start !important;
+}
+
+.progress-show-bar {
+    display: flex;
+    align-items: center;
+}
+.progress-show-bar label {
+    margin-right: 10px;
+}
+.modal-report .form-check-input[type=radio] {
+    margin-top: 0.4em;
+}
+.modal-report .form-check label {
+    color: #8ca3a8;
+    font-weight: 100;
 }
 /* Sticky footer styles
 -------------------------------------------------- */

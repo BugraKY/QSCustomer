@@ -5,8 +5,10 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/homeHub").build();
 
 connection.on("ReceiveProgressRate", function (data) {
     if (progressCookie == data.id) {
+
         console.log("Socket Progress Bar Working %" + data.rate);
         $('#theprogressbar').val(data.rate);
+
     }
     else {
     }

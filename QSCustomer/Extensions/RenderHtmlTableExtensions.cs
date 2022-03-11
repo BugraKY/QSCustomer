@@ -37,12 +37,17 @@ namespace QSCustomer.Extensions
             await Task.Run(() =>
             {
                 string SecOne = @"
+<style>
+        .table-main > :not(caption) > * > * {
+            padding: 0.5rem 0.5rem !important;
+        }
+</style>
         <section class='container' id='renderedSection'>
             <div class='pb-lg-5'>
-                <table class='table table-bordered border-expert'>
+                <table class='table table-bordered table-main border-expert'>
                     <thead>
                         <tr>
-                            <th scope='col' class='mediumtx' style='width:90px;'>EXPRERT</th>
+                            <th scope='col' class='mediumtx' style='width:90px;'><img src='/assets/images/resources/logo-3.png' style='width:80px;'></th>
                             <th scope='col' class='table-active text-center mediumtx' colspan='5'>KALITE KONTROL & ROTUS RAPORU / QUALITY CONTROL & REWORK REPORT</th>
                             <th scope='col' class='smalltx'>
                                 OPR. NO<br />

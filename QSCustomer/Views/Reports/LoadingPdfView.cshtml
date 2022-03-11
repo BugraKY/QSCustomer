@@ -10,17 +10,33 @@
     List<long> ValTotal = new List<long>();
 
 }
+<style>
+    body{
 
+    }
+    .demo-container{
+        display:none;
+    }
+</style>
 <div class="container">
-    <div id="spinner-loading">
-        <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh">
-            <div class="text-center">
-                <div id="large-indicator">
+    @*<div id="spinner-loading">
+            <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh">
+                <div class="text-center">
+                    <div id="large-indicator">
+                    </div>
+                    <h6>Your pdf report is being prepared...</h6>
                 </div>
-                <h6>Your pdf report is being prepared...</h6>
-            </div>
 
-        </section>
+            </section>
+        </div>*@
+    <div class="loading-text">
+        <div class="loader_icon">
+            <img class="loader__image" width="60" src="~/assets/images/loader.png" alt="" />
+        </div>
+        <div id="loading">
+
+        </div>
+
     </div>
     <div class="demo-container" id="renderedSection">
         <div id="chart">
@@ -37,6 +53,7 @@
 </div>
 
 @section Scripts{
+    <script src="/js/loading.js"></script>
     <script>
     $(document).ready(function () {
         $('#large-indicator').dxLoadIndicator({
