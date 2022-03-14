@@ -72,74 +72,62 @@
         });*@
         //TEST
 
+                $.ajax({
+                    type: "GET",
+                    url: "/set-chart/?projectCode=" + '@Model._ProjectCode' + "&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate' + "&filterRadio=" + '@Model._FilterRadio',
+                    success: function (dataSource) {
+                        var projectFilter = dataSource._ProjectFilter;
+                        pFilterRadio = dataSource._FilterRadio;
+                        dataSource = dataSource._ProjectTotalsOnebyDate;
+                        pStartDate = projectFilter.startDate;
+                        pFinishDate = projectFilter.finishDate;
 
-                $.fn.myfunction = function () {
-                    $(() => {
-                        $('#chart').dxChart({
-                            dataSource,
-                            commonSeriesSettings: {
-                                argumentField: 'state',
-                                type: 'bar',
-                                hoverMode: 'allArgumentPoints',
-                                selectionMode: 'allArgumentPoints',
-                                label: {
-                                    visible: true,
-                                    format: {
-                                        type: 'fixedPoint',
-                                        precision: 0,
+                        $.fn.setChart = function () {
+                            $(() => {
+                                $('#chart').dxChart({
+                                    dataSource,
+                                    commonSeriesSettings: {
+                                        argumentField: 'kontrolTarihi',
+                                        type: 'bar',
+                                        hoverMode: 'allArgumentPoints',
+                                        selectionMode: 'allArgumentPoints',
+                                        label: {
+                                            visible: true,
+                                            format: {
+                                                type: 'fixedPoint',
+                                                precision: 0,
+                                            },
+                                        },
                                     },
-                                },
-                            },
-                            size: {
-                                width: 930,
-                            },
-                            animation: {
-                                enabled: false,
-                            },/*
-                            render: {
-                                force: true,
-                                animate: false,
-                            },*/
-                            series: [
-                                { valueField: 'year2018', name: 'Kontrol Adedi' },
-                                { valueField: 'year2017', name: 'Hata Adedi' },
-                            ],
-                            title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
-                            legend: {
-                                verticalAlignment: 'bottom',
-                                horizontalAlignment: 'center',
-                            },
+                                    size: {
+                                        width: 950,
+                                    },
+                                    animation: {
+                                        enabled: false,
+                                    },
+                                    series: [
+                                        { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
+                                        { valueField: 'hataAdeti', name: 'Hata Adedi' },
+                                    ],
+                                    title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                    legend: {
+                                        verticalAlignment: 'bottom',
+                                        horizontalAlignment: 'center',
+                                    },
 
-                            /*
-                            export: {
-                                enabled: true,
-                            },*/
-                            onPointClick(e) {
-                                e.target.select();
-                            },
-                        });
-                    });
-                };
+                                    onPointClick(e) {
+                                        e.target.select();
+                                    },
+                                });
+                            });
+                        };
+                        $().setChart();
+                        setTimeout(function () {
+                            $(document).trigger('afterready');
+                        }, 100);
 
-                $().myfunction();
-                const dataSource = [
-            @foreach (var item in Model._ProjectTotalsOnebyDate)
-            {
-                <text>
-                    {
-                        state: '@item.kontrolTarihi',
-                        year2017: @item.hataAdeti,
-                        year2018: @item.kontrolAdedi,
-                    },
-                </text>
-            }
-        ];
-
-        console.log(dataSource);
-
-                setTimeout(function () {
-                    $(document).trigger('afterready');
-                }, 1000);
+                    }
+                });
 
             });
 

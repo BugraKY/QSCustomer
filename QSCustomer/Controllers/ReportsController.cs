@@ -521,10 +521,6 @@ namespace QSCustomer.Controllers
                 _finishDate = _finishDateFilter;
             }
 
-            //return NoContent();
-
-
-            //_dateTime.Date.Month = DateTime.Parse(Month).Month;
             #endregion Variables
 
             #region Authentication
@@ -539,14 +535,6 @@ namespace QSCustomer.Controllers
             if (Claims != null)
             {
                 var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
-                //var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.mail == ApplicationUser.Email);//ORGINAL
-
-
-                /*
-                var CompanyAuth = _uow.MusteriYetkili.GetFirstOrDefault(i => i.id == Customer.id);//TEST
-                if (SelectedProject.idMusteri != CompanyAuth.idMusteriTanim)
-                    return NotFound();*/
-
 
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
                     return RedirectToAction("Unconfirmed", "Home");
@@ -567,43 +555,7 @@ namespace QSCustomer.Controllers
             var FilteredProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == SelectedProject.id).Where(d => d.kontrolTarihi >= _startDate).Where(d => d.kontrolTarihi <= _finishDate);
 
             #region MainCode
-            /*
-            int s = 0;
-            int say = 0;
-            int projedetay_say = 0;
-            foreach (var ProjeDetayItem in GetProjeDetay)
-            {
 
-                var GetProjeDetays = _uow.ProjeDetays.GetAll(i => i.idProjeDetay == ProjeDetayItem.id);
-                say += GetProjeDetays.Count();
-                if (ProjeDetayItem.idProforma == 0)
-                {
-                    projedetay_say++;
-                    var harcanansaat = ProjeDetayItem.harcananSaat;//ProjeDetaysItem ın içerisinde birkere yazılacak
-                    var harcanangirilenmesai = ProjeDetayItem.harcananGirilenMesai;//ProjeDetaysItem ın içerisinde birkere yazılacak
-                    foreach (var ProjeDetaysItem in GetProjeDetays)
-                    {
-                        var getPartNrItem = _uow.ProjePartNrTanimi.GetFirstOrDefault(i => i.id == ProjeDetaysItem.idReferansPartNr);
-                        var getHataDetay = _uow.ProjeHataDetay.GetFirstOrDefault(i => i.idProjeDetays == ProjeDetaysItem.id);
-
-
-                        foreach (var HataTanimi in ProjeHataTanim)
-                        {
-                            // HataTanimi.hataTanimi; ---> bir hata tanımı idprojedetayın id sine göre alınacak. Her hata tanımı idprojedetaydakine özel column eklenecek. Bu column html tabloda aolacak. Html tablodaki hata tanımlarının adetleri olacak.
-                            // Dynamic Model yapılabilir.
-                        }
-
-
-
-                        harcanansaat = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
-                        harcanangirilenmesai = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
-                        s++;
-                    }
-                }
-            }
-
-            var deg = s;
-            var deg_2 = projedetay_say;*/
             ProjectFilter projectFilter = new ProjectFilter()
             {
                 StartDate = _startDate,
@@ -1105,6 +1057,7 @@ namespace QSCustomer.Controllers
         [HttpPost]
         public IActionResult LoadingPdfView(PdfReport pdfReport)
         {
+            //return NoContent();
             var _projectTotalsOneByDate = new List<ProjectTotalsOneByDate>();
             #region TEST
             /*
@@ -1251,6 +1204,7 @@ namespace QSCustomer.Controllers
             */
             //pdfReport.
             #endregion TEST
+            /*
             var _selectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == pdfReport._ProjectCode);
             var _ProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == _selectedProject.id).Where(d => d.kontrolTarihi >= pdfReport._ProjectFilter.StartDate).Where(d => d.kontrolTarihi <= pdfReport._ProjectFilter.FinishDate);
 
@@ -1270,9 +1224,9 @@ namespace QSCustomer.Controllers
                 _ProjectFilter = pdfReport._ProjectFilter,
                 _ProjectTotalsOnebyDate = _projectTotalsOneByDate
             };
+            */
+            return View("loadingPdfView", pdfReport);
 
-            //return NoContent();
-            return View("loadingPdfView", _pdfReport);
         }
 
         [HttpPost]

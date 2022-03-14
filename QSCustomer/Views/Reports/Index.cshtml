@@ -225,14 +225,14 @@
     </div>
 </form>
 
-<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_open" target="_blank">
+<form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_open" target="_blank" class="d-none" hidden>
     <input type="text" name="_ProjectCode" id="zProjectCode" value="" />
     <input type="text" name="_ProjectFilter.StartDate" id="zProjectFilter_StartDate" value="" />
     <input type="text" name="_ProjectFilter.FinishDate" id="zProjectFilter_FinishDate" value="" />
     <input type="text" name="_FilterRadio" id="zFilterRadio" value="" />
 </form>
 
-<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download">
+<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download" class="d-none" hidden>
     <input type="text" name="projectCode" id="xProjectCode" value="" />
     <input type="text" name="startDate" id="xProjectFilter_StartDate" value="" />
     <input type="text" name="finishDate" id="xProjectFilter_FinishDate" value="" />

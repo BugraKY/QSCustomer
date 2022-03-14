@@ -115,8 +115,12 @@ namespace QSCustomer.Utility
                 }*/
 
         .verticalTableHeader span {
-            -webkit-writing-mode: vertical-rl;
             writing-mode: vertical-rl;
+            -webkit-writing-mode: vertical-rl;
+            -moz-writing-mode:vertical-rl;
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            transform: rotate(180deg);
             white-space:nowrap;
             text-align: left;
             height: 95px;
