@@ -22,5 +22,7 @@ namespace QSCustomer.Models.ViewModels
         public string Material { get; set; }
         public string Note { get; set; }
         public string Currency { get; set; }
+        public string ProductRefs { get; set; }
+        public string NokDescs { get; set; }
     }
 }

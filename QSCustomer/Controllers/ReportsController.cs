@@ -119,11 +119,16 @@ namespace QSCustomer.Controllers
         [HttpPost]
         public JsonResult GetAllReportJson(string id, bool open, bool close, bool problematic)
         {
-            Response.Cookies.Append("_kj6ght", open.ToString());
+            Response.Cookies.Append("_kj8gzt", open.ToString());
             Response.Cookies.Append("_h4k9xp", close.ToString());
 
-
-
+            bool open_status = Convert.ToBoolean(Request.Cookies["_kj8gzt"]);
+            bool close_status = Convert.ToBoolean(Request.Cookies["_h4k9xp"]);
+            if (!(open) && !(close))
+            {
+                open = true;
+                Response.Cookies.Append("_kj8gzt", open.ToString());
+            }
             #region Authentication Json
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -241,12 +246,24 @@ namespace QSCustomer.Controllers
 
             foreach (var item in GetAllProject)
             {
+                var nokdesc = _uow.ProjeHataTanimi.GetAll(i => i.idProje == item.id);
+                var productref = _uow.ProjePartNrTanimi.GetAll(i => i.idProje == item.id);
+                var nokdescStr = "";
+                var productrefStr = "";
+                foreach (var itemDesc in nokdesc)
+                {
+                    nokdescStr += itemDesc.hataTanimi+", ";
+                }
+                foreach (var itemRef in productref)
+                {
+                    productrefStr += itemRef.partNrTanimi + ", ";
+                }
                 if (open)
                 {
                     if (item.idProjeDurumu == 1)
                     {
                         var Customer = _uow.MusteriTanim.GetFirstOrDefault(i => i.id == item.idMusteri);
-                        var Operation = _uow.FabrikaTanim.GetFirstOrDefault(i => i.id == item.idOprArea);
+                        //var Operation = _uow.FabrikaTanim.GetFirstOrDefault(i => i.id == item.idOprArea);
                         var Currency = _uow.ParaBirimi.GetFirstOrDefault(i => i.id == item.fiyatIdParaBirimi);
                         var ProjectStatus = _uow.ProjeDurumu.GetFirstOrDefault(i => i.id == item.idProjeDurumu);
                         var ProjectControlType = _uow.ProjeKontrolTipi.GetFirstOrDefault(i => i.id == item.fiyatIdKontrolTipi);
@@ -279,7 +296,6 @@ namespace QSCustomer.Controllers
                             var ProjectItem = new ProjectList()
                             {
                                 Id = item.id,
-                                OperationArea = Operation.fabrikaAdi,
                                 CustomerName = Customer.musteriAdi,
                                 ProjectCode = item.projeCode,
                                 State = ProjectStatus.projeDurumu,
@@ -292,7 +308,9 @@ namespace QSCustomer.Controllers
                                 CompNr = item.sikayetNo,
                                 Material = item.materyel,
                                 Note = item.note,
-                                Currency = Currency.Sembol
+                                Currency = Currency.Sembol,
+                                NokDescs=nokdescStr,
+                                ProductRefs= productrefStr
 
                             };
                             ProjectList.Add(ProjectItem);
@@ -325,7 +343,9 @@ namespace QSCustomer.Controllers
                             CompNr = item.sikayetNo,
                             Material = item.materyel,
                             Note = item.note,
-                            Currency = Currency.Sembol
+                            Currency = Currency.Sembol,
+                            NokDescs = nokdescStr,
+                            ProductRefs = productrefStr
 
                         };
                         ProjectList.Add(ProjectItem);
@@ -360,7 +380,9 @@ namespace QSCustomer.Controllers
                                 CompNr = item.sikayetNo,
                                 Material = item.materyel,
                                 Note = item.note,
-                                Currency = Currency.Sembol
+                                Currency = Currency.Sembol,
+                                NokDescs = nokdescStr,
+                                ProductRefs = productrefStr
                             };
                             ProjectList.Add(ProjectItem);
                         }
