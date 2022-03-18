@@ -40,6 +40,7 @@ namespace QSCustomer.Extensions
         private List<ProjectTotalsOneByDate> projectTotalsOneByDateList = new List<ProjectTotalsOneByDate>();
         private List<qprojehataTanimi> ProjeHataTanimDynamic = new List<qprojehataTanimi>();
         private List<FaultString> FaultStringsList = new List<FaultString>();
+        private string Title = "Processing: ";
 
         public GetProjectDetailsExtensions(IUnitOfWork uow, PdfReport report, Claim claim, IHubContext<HomeHub> context, IHttpContextAccessor accessor)
         {
@@ -240,7 +241,7 @@ namespace QSCustomer.Extensions
                             harcanansaat = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
                             harcanangirilenmesai = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
                             ProjectDetCount++;
-                            await WebSocAct.ProgressBar_WebSocket(_claim, Convert.ToDouble(ProjectDetCount), Convert.ToDouble(ProjectDetLength), _accessor.HttpContext.Request.Cookies["progress_id"]);
+                            await WebSocAct.ProgressBar_WebSocket(_claim, Convert.ToDouble(ProjectDetCount), Convert.ToDouble(ProjectDetLength), _accessor.HttpContext.Request.Cookies["progress_id"],Title);
                         }
                     }
 
@@ -501,7 +502,7 @@ namespace QSCustomer.Extensions
                             harcanansaat = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
                             harcanangirilenmesai = 0;//foreach döngüsünde bir kere yazılması gerektiği için sıfırlıyoruz.
                             ProjectDetCount++;
-                            await WebSocAct.ProgressBar_WebSocket(_claim, Convert.ToDouble(ProjectDetCount), Convert.ToDouble(ProjectDetLength), _accessor.HttpContext.Request.Cookies["progress_id"]);
+                            await WebSocAct.ProgressBar_WebSocket(_claim, Convert.ToDouble(ProjectDetCount), Convert.ToDouble(ProjectDetLength), _accessor.HttpContext.Request.Cookies["progress_id"],Title);
                         }
                     }
                 }

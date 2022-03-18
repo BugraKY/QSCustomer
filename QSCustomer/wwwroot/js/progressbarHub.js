@@ -5,12 +5,12 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/homeHub").build();
 
 connection.on("ReceiveProgressRate", function (data) {
     if (progressCookie == data.id) {
-
-        console.log("Socket Progress Bar Working %" + data.rate);
+        console.log("Socket Progress Bar Working %" + data.title);
         $('#theprogressbar').val(data.rate);
-
+        $('#barTitle').html(data.title);
     }
     else {
+
     }
 
 });

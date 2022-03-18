@@ -33,6 +33,8 @@ namespace QSCustomer.Controllers
 
         public IActionResult Index()
         {
+
+
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var Claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 

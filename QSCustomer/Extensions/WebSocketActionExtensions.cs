@@ -18,10 +18,10 @@ namespace QSCustomer.Extensions
             _context = context;
             _uow = uow;
         }
-        public async Task ProgressBar_WebSocket(Claim Claims, double Count , double Length, string id)
+        public async Task ProgressBar_WebSocket(Claim Claims, double Count , double Length, string id,string title)
         {
             HomeHub Hub = new HomeHub(_context);
-            await Hub.Progressbar(Count,Length,id);
+            await Hub.Progressbar(Count, Length, id, title);
         }
     }
 }

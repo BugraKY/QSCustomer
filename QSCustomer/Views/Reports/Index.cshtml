@@ -22,7 +22,7 @@
     }
     bool problematic = false;
     int filter = 0;
-    var _aaaaaa = close; 
+    var _aaaaaa = close;
 }
 
 
@@ -39,16 +39,16 @@
         padding-right: 0px !important;
     }
     /*
-    main {
-        min-height: 300px;
-        max-height: 1000px;
-        height: auto;
-    }
+        main {
+            min-height: 300px;
+            max-height: 1000px;
+            height: auto;
+        }
 
-    .page-wrapper {
-        position: relative;
-    }
-    */
+        .page-wrapper {
+            position: relative;
+        }
+        */
     .spinner-loading {
         position: absolute;
     }
@@ -78,17 +78,17 @@
         color: white;
     }
     /*
-    .page-wrapper {
-        position: relative;
-        min-height: 100vh;
-    }*/
+        .page-wrapper {
+            position: relative;
+            min-height: 100vh;
+        }*/
     /*
-    .site-footer {
+        .site-footer {
 
-        position: absolute;
-        width: 100%;
-        bottom: 0 !important;
-    }*/
+            position: absolute;
+            width: 100%;
+            bottom: 0 !important;
+        }*/
 </style>
 
 
@@ -132,7 +132,7 @@
     </div>
     <div class="container p-0 mb-5">
         <div id="spinner-loading">
-            <section class="w-100 d-flex align-items-center justify-content-center" style="height: 100vh;" id="sectionArea">
+            <section class="w-100 d-flex align-items-center justify-content-center" style="height: 50vh;" id="sectionArea">
                 <img class="preloader__image" width="60" src="assets/images/loader.png" alt="" />
             </section>
         </div>
@@ -218,11 +218,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dx-secondary ripple-surface-dark" data-mdb-dismiss="modal">
+                        <i class="fas fa-window-close"></i>
                         Close
                     </button>
-                    <button type="submit" class="btn btn-dx ripple-surface-dark" id="submitCode">Open On Web</button>
-                    <button type="button" class="btn btn-dx ripple-surface-dark" id="openfile"><i class="far fa-lg fa-file-pdf"></i></button>
-                    <button type="button" class="btn btn-dx ripple-surface-dark" id="downloadfile"><i class="fas fa-lg fa-file-download"></i></button>
+                    <button type="submit" class="btn btn-dx ripple-surface-dark" id="submitCode"><i class="fas fa-globe"></i> Open On Web</button>
+                    @*<button type="button" class="btn btn-dx ripple-surface-dark" id="openfile"><i class="far fa-lg fa-file-pdf"></i></button>
+                    <button type="button" class="btn btn-dx ripple-surface-dark" id="downloadfile"><i class="fas fa-lg fa-file-download"></i></button>*@
+                    <button type="button" class="btn btn-dx ripple-surface-dark" id="print" target="_blank"><i class="fas fa-print"></i> Print</button>
 
                     <!--<button type="submit" class="btn btn-dx" asp-controller="Reports" asp-action="Details" asp-all-route-data="">Open with PDF</button>-->
                 </div>
@@ -230,20 +232,29 @@
         </div>
     </div>
 </form>
-
 <form method="post" asp-controller="Reports" asp-action="LoadingPdfView" id="form_open" target="_blank" class="d-none" hidden>
     <input type="text" name="_ProjectCode" id="zProjectCode" value="" />
     <input type="text" name="_ProjectFilter.StartDate" id="zProjectFilter_StartDate" value="" />
     <input type="text" name="_ProjectFilter.FinishDate" id="zProjectFilter_FinishDate" value="" />
     <input type="text" name="_FilterRadio" id="zFilterRadio" value="" />
 </form>
-
-<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download" class="d-none" hidden>
+@*
+<form method="post" asp-controller="Reports" asp-action="SetChart" id="form_download" >
     <input type="text" name="projectCode" id="xProjectCode" value="" />
     <input type="text" name="startDate" id="xProjectFilter_StartDate" value="" />
     <input type="text" name="finishDate" id="xProjectFilter_FinishDate" value="" />
     <input type="text" name="filterRadio" id="xFilterRadio" value="" />
     <input type="text" name="chartString" id="xChartString" />
+    <input type="text" name="isPrint" id="xIsPrint" value="" />
+</form>
+*@
+<form method="post" asp-controller="Reports" asp-action="printer" id="form_print" target="_blank" class="d-none" hidden>
+    <input type="text" name="projectCode" id="xProjectCode" value="" />
+    <input type="text" name="startDate" id="xProjectFilter_StartDate" value="" />
+    <input type="text" name="finishDate" id="xProjectFilter_FinishDate" value="" />
+    <input type="text" name="filterRadio" id="xFilterRadio" value="" />
+    <input type="text" name="chartString" id="xChartString" value="" />
+    <input type="text" name="isPrint" id="xIsPrint" value="" />
 </form>
 <div class="demo-container d-none" id="renderedSection" hidden>
     <div id="chart">
@@ -254,484 +265,565 @@
 </div>
 @*
     @section Scripts{
-        <script src="~/js/projeTanim.js"></script>
+    <script src="~/js/projeTanim.js"></script>
     }
 
 *@
 
 @section Scripts{
-    <script src="https://cdn3.devexpress.com/jslib/21.2.5/js/localization/dx.messages.tr.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/21.2.5/js/localization/dx.messages.tr.js"></script>
 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <script src="~/js/progressbarHub.js"></script>
-    <script>
-        var pStartDate = '';
-        var pFinishDate = '';
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="~/js/progressbarHub.js"></script>
+<script>
+    var pStartDate = '';
+    var pFinishDate = '';
 
-        var progressCookie = $.cookie('progress_id');
-        $("#datebtn").click(function () {
+    var progressCookie = $.cookie('progress_id');
+    $("#datebtn").click(function () {
 
+        console.log("Output: " + dateVal);
+        alert("date tested.");
+        $('#dateForm').submit();
+    });
 
+    $(document).ready(function () {
 
-            console.log("Output: " + dateVal);
-            alert("date tested.");
-            $('#dateForm').submit();
+        console.clear();
+        var open = false;
+        var close = false;
+        var selectedDate = new Date('@DateTime.Now.Date');
+        var pCode = '';
+
+        var pFilterRadio = 4;
+        if ($('#open').is(":checked")) {
+            open = true;
+        }
+        if ($('#close').is(":checked")) {
+            close = true;
+        }
+        $('#filterRadioCheck input').on('change', function () {
+            pFilterRadio = $('input[name=filterRadio]:checked', '#filterRadioCheck').val();
+            pStartDate = $('#dateStartinp').val();
+            alert("radiochecked!");
         });
 
-        $(document).ready(function () {
 
-            console.clear();
-            var open = false;
-            var close = false;
-            var selectedDate = new Date('@DateTime.Now.Date');
-            var pCode = '';
+        $("#openfile").click(function () {
+            console.log("pCode: " + pCode);
+            alert("Downloading PDF - Project Code: " + pCode)
 
-            var pFilterRadio = 4;
-            if ($('#open').is(":checked")) {
-                open = true;
-            }
-            if ($('#close').is(":checked")) {
-                close = true;
-            }
-            $('#filterRadioCheck input').on('change', function () {
-                pFilterRadio = $('input[name=filterRadio]:checked', '#filterRadioCheck').val();
-                pStartDate = $('#dateStartinp').val();
-                alert("radiochecked!");
-            });
+            $('#zProjectCode').val(pCode);
+            $('#zProjectFilter_StartDate').val(pStartDate);
+            $('#zProjectFilter_FinishDate').val(pFinishDate);
+            $('#zFilterRadio').val(pFilterRadio);
 
-
-
-
-            $("#openfile").click(function () {
-                console.log("pCode: " + pCode);
-                alert("Downloading PDF - Project Code: " + pCode)
-
-                $('#zProjectCode').val(pCode);
-                $('#zProjectFilter_StartDate').val(pStartDate);
-                $('#zProjectFilter_FinishDate').val(pFinishDate);
-                $('#zFilterRadio').val(pFilterRadio);
-
-                $('#form_open').submit();
-
-
-
-
-
-            });
-            $("#downloadfile").click(function () {
-                console.log("pCode: " + pCode);
-
-                $('#xProjectCode').val(pCode);
-                $('#xProjectFilter_StartDate').val(pStartDate);
-                $('#xProjectFilter_FinishDate').val(pFinishDate);
-                $('#xFilterRadio').val(pFilterRadio);
-
-                console.log("pFinishDate: " + pStartDate);
-                $.ajax({
-                    type: "GET",
-                    url: "/set-chart/?projectCode=" + pCode + "&startDate=" + pStartDate + "&finishDate=" + pFinishDate + "&filterRadio=" + pFilterRadio,
-                    success: function (dataSource) {
-                        var projectFilter = dataSource._ProjectFilter;
-                        pFilterRadio = dataSource._FilterRadio;
-                        dataSource = dataSource._ProjectTotalsOnebyDate;
-                        console.log("startDate: " + projectFilter.startDate);
-                        pStartDate = projectFilter.startDate;
-                        pFinishDate = projectFilter.finishDate;
-                        alert(JSON.stringify(projectFilter.startDate));
-                        console.log("datasource: "+dataSource);
-
-                        $.fn.setChart = function () {
-                            $(() => {
-                                $('#chart').dxChart({
-                                    dataSource,
-                                    commonSeriesSettings: {
-                                        argumentField: 'kontrolTarihi',
-                                        type: 'bar',
-                                        hoverMode: 'allArgumentPoints',
-                                        selectionMode: 'allArgumentPoints',
-                                        label: {
-                                            visible: true,
-                                            format: {
-                                                type: 'fixedPoint',
-                                                precision: 0,
-                                            },
-                                        },
-                                    },
-                                    size: {
-                                        width: 830,
-                                    },
-                                    animation: {
-                                        enabled: false,
-                                    },
-                                    series: [
-                                        { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
-                                        { valueField: 'hataAdeti', name: 'Hata Adedi' },
-                                    ],
-                                    title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
-                                    legend: {
-                                        verticalAlignment: 'bottom',
-                                        horizontalAlignment: 'center',
-                                    },
-
-                                    onPointClick(e) {
-                                        e.target.select();
-                                    },
-                                });
-                            });
-                        };
-                        $().setChart();
-                        setTimeout(function () {
-                            $(document).trigger('afterready');
-                        }, 100);
-
-                    }
-                });
-
-            });
-            $.ajax({
-                type: "GET",
-                url: "/getuser",
-                cache: false,
-                success: function (data) {
-                    $("#type").text('Area: '+data.userType);
-                    $("#name").text(data.nameField);
-                    $("#mail").text(data.email);
-                }
-            });
-
-            $(() => {
-                const now = new Date();
-                $('#dateFinish').dxDateBox({
-                    type: 'date',
-                    value: now,
-                    placeholder: '@DateTime.Now.ToString("dd/MM/yyyy")',
-                    showClearButton: true,
-                    useMaskBehavior: true,
-                    displayFormat: "dd/MM/yyyy",
-                    onValueChanged(data) {
-
-                        var _fullDate = data.value;
-                        var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
-                        $('#dateFinishinp').val(datestr);
-                        pFinishDate = datestr;
-                        console.log("value changed :" + datestr);
-                    },
-                });
-
-                var dateVal = $("#dateFinish").dxDateBox("instance").option("value");
-                $('#dateFinishinp').val(dateVal);
-            });
-
-            $("#open").change(function () {
-                if (this.checked) {
-                    open = true;
-                } else {
-                    open = false;
-                }
-
-
-                $('#large-indicator').dxLoadIndicator({
-                    height: 60,
-                    width: 60,
-                });
-                $('#spinner-loading').show();
-                $('#expertgrid').hide();
-                setTimeout(function () {
-                    ajaxCall();
-                }, 100);
-
-            });
-            $("#close").change(function () {
-                if (this.checked) {
-                    close = true;
-                } else {
-                    close = false;
-                }
-
-                $('#large-indicator').dxLoadIndicator({
-                    height: 60,
-                    width: 60,
-                });
-                $('#spinner-loading').show();
-                $('#expertgrid').hide();
-                setTimeout(function () {
-                    ajaxCall();
-                }, 100);
-            });
-
-
-
-            function ajaxCall() {
-                $.ajax({
-            type: "post",
-                url: "/Reports/GetAllReportJson",
-                "data": {
-                    'id': '@Model',
-                    'open': open,
-                    'close': close,
-                },
-                beforeSend: function () {
-
-                    $('#large-indicator').dxLoadIndicator({
-                        height: 60,
-                        width: 60,
-                    });
-                },
-                success: function (response) {
-                    $.ajax({
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        type: 'POST',
-                        url: "/Reports/GetReportTotalValuesJson",
-
-                        "data": JSON.stringify(response),
-
-
-                        success: function (totalVals) {
-                            $('#checkedVal').empty();
-                            $('#nokVal').empty();
-                            $('#reworkVal').empty();
-                            $('#oprVal').empty();
-                            $('#spentMin').empty();
-                            $('#actualMin').empty();
-                            $('#spentHour').empty();
-                            $('#grandTotal').empty();
-
-
-                            $('#checkedVal').append(totalVals.qprojeDetayTKontrolAdedi);
-                            $('#nokVal').append(totalVals.qprojeDetayTHataAdeti);
-                            $('#reworkVal').append(totalVals.qprojeDetayTTamirAdedi);
-                            $('#oprVal').append(totalVals.qprojeDetayTOperatorSayisi);
-                            $('#spentMin').append(totalVals.qprojeDetayToplamSuredk);
-                            $('#actualMin').append(totalVals.qprojeDetayGerceklesenDk);
-                            $('#spentHour').append(totalVals.qprojeDetayHarcananSaat);
-                            $('#grandTotal').append(totalVals.qprojeDetayToplam);
-
-
-
-                },
-
-            });
-
-                    $('#large-indicator').dxLoadIndicator({
-                        height: 0,
-                        width: 0,
-                    });
-                    $('#spinner-loading').hide();
-                    setTimeout(function () {
-                        $('#expertgrid').show();
-                    }, 100);
-                $(() => {
-
-                    $('#gridContainer').dxDataGrid({
-                        dataSource: response,
-                        keyExpr: 'id',
-                        showBorders: true,
-                        selection: {
-                            mode: 'single',
-                        },
-                        headerFilter: {
-                            visible: true,
-                        },
-
-                        filterPanel: {
-                            visible: true,
-                        },
-                        filterRow: {
-                            visible: true,
-                        },
-                        pager: {
-                            allowedPageSizes: [10,20,50,100],
-                            showPageSizeSelector: true,
-                            showNavigationButtons: true,
-                        },
-                        paging: {
-                            pageSize: 10,
-                        },
-                        focusedRowEnabled: true,
-                        columns: [
-
-                            { dataField: 'customerName', caption: 'Customers', "width": "auto" },//Görünecek alan
-                            /*{ dataField: 'operationArea', caption: 'Opr Area', "width": "auto" }*/,//Görünmeyecek Alan
-
-                            /*{ dataField: 'projectCode', caption: 'Code', "width": "75px" },*/
-                            { dataField: 'nokDescs', caption: 'Nok Descriptions', "width": "200px" },
-                            { dataField: 'productRefs', caption: 'Product Ref', "width": "200px" },
-       
-                            { dataField: 'state', caption: 'State',"width":"auto" },
-                            { dataField: 'approvalState', caption: 'Approval State',"width":"auto" },
-                            { dataField: 'startDate', caption: 'Start Date', "width": "85px" },
-
-                            /*{ dataField: 'responsible', caption: 'Responsible', "width": "auto" },*/
-
-                            { dataField: 'compNr', caption: 'Comp Nr.' },
-                            { dataField: 'material', caption: 'Material' },
-                            /*{ dataField: 'note', caption: 'Note' },*/
-                            /*{ dataField: 'currency', caption: 'Currency', "width": "5%" },*/
-
-
-                        ],
-                        onSelectionChanged(selectedItems) {
-                            console.clear();
-                            const data = selectedItems.selectedRowsData[0];
-                            pCode = data.projectCode;
-                            pStartDate = data.startDate;
-
-
-                            //var _fullDate = $('#dateFinishinp').val();
-                            var _fullDate = new Date();
-                            var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
-
-                            pFinishDate = datestr;
-                            $('#dateFinishinp').val(pFinishDate);
-                            pFilterRadio = $('#daily').val();
-                            pFilterRadio = $('input[name=filterRadio]:checked', '#filterRadioCheck').val();
-                            console.log("FinishDate: " + pFinishDate);
-                            $('#proggress').css('display', 'none');
-                            $('#theprogressbar').html('0%').val(0);
-
-                            $('#zProjectCode').val(pCode);
-                            $('#zProjectFilter_StartDate').val(pStartDate);
-                            $('#zProjectFilter_FinishDate').val(pFinishDate);
-                            $('#zFilterRadio').val(pFilterRadio);
-
-                            if (data) {
-
-                                $('#selectedVal').attr("value", data.projectCode);
-                                console.log("seçilen Proje: "+data.projectCode);
-                                $('#selectionMessage').modal('toggle');
-                                selectedDate = data.startDate;
-                                console.log("Json string: "+JSON.stringify(selectedDate));
-                                $('#dateStartinp').val(selectedDate);
-                                $('#projectCode').empty(data.startDate);
-                                $('#projectCode').append(data.projectCode);
-                                $(() => {
-                                    var dateStr = JSON.stringify(data.startDate);
-                                    var dateAr = dateStr.split('.');
-
-                                    var day = dateAr[0];
-                                    var month = dateAr[1];
-                                    var year = dateAr[2];
-
-                                    console.log("Testing: " + day + '.' + month + '.' + year);
-                                    console.log("dateStr: " + year);
-
-                                    var startDateFormat = new Date(JSON.stringify(data.startDate));
-                                    var datestr = JSON.stringify(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
-                                    const startDateDxVal2 = new Date(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
-                                    const startDateDxVal = month + '.' + day + '.' + year;
-
-                                    console.log("Checking: " + startDateDxVal);
-
-
-                                    $('#dateStarting').dxDateBox({
-                                        type: 'date',
-                                        displayFormat: 'dd/MM/yyyy',
-                                        value: startDateDxVal,
-                                        placeholder: selectedDate,
-                                        showClearButton: true,
-                                        useMaskBehavior: false,
-
-                                        onValueChanged(datechanged) {
-                                            pStartDate = datechanged.value;
-                                            console.log("value changed :" + new Date(datechanged.value));
-                                            $('#dateStartinp').val(datechanged.value);
-                                        },
-                                    });
-
-                                });
-                                $("#submitCode").click(function () {
-
-                                    $('#frmCode').submit(function (event) {
-                                        //var action = '/project/' + data.projectCode;
-
-                                        /*var action = 'project';
-                                        $(this).attr('action', action);*/
-                                    });
-                                });
-
-                            }
-                        },
-                    });
-                });
-                },
-                error: function (e) {
-                    $('#sectionArea').append('<div class="alert alert-danger" role="alert" data-mdb-color="danger">' +e.statusText+ '</div >');
-
-                    $('#large-indicator').dxLoadIndicator({
-                        height: 0,
-                        width: 0,
-                    });
-                },
-                timeout:60000,
-                });
-
-
-            }
-
-            ajaxCall();
-            console.clear();
-            var rowCount = $('.dx-datagrid-table >tbody >tr').length;
-            console.log("Dx Row Count: " + rowCount);
-
-            function getFormattedDate(date) {
-                var year = date.getFullYear();
-
-                var month = (1 + date.getMonth()).toString();
-                month = month.length > 1 ? month : '0' + month;
-
-                var day = date.getDate().toString();
-                day = day.length > 1 ? day : '0' + day;
-
-                return day + '.' + month + '.' + year;
-            }
-            function getFormattedDateRevReg(date) {
-                var year = date.getFullYear();
-
-                var month = (1 + date.getMonth()).toString();
-                month = month.length > 1 ? month : '0' + month;
-
-                var day = date.getDate().toString();
-                day = day.length > 1 ? day : '0' + day;
-
-                return year + '.' + month + '.' + day;
-            }
-
+            $('#form_open').submit();
         });
 
-        $(document).bind('afterready', function () {
-            var xprojectCode = $('#xProjectCode').val();
-            /*
-            var xprojectFilterStart = $('#xProjectFilter_StartDate').val();
-            var xprojectFilterFinish = $('#xProjectFilter_FinishDate').val();*/
-            var xprojectFilterStart = pStartDate;
-            var xprojectFilterFinish = pFinishDate;
-            var chartString = $('#renderedSection').html();
-            $('#xChartString').val(chartString);
+        $("#downloadfile").click(function () {
+            console.log("pCode: " + pCode);
+
+            $('#xProjectCode').val(pCode);
             $('#xProjectFilter_StartDate').val(pStartDate);
             $('#xProjectFilter_FinishDate').val(pFinishDate);
+            $('#xFilterRadio').val(pFilterRadio);
 
-            console.log("xprojectCode: "+xprojectCode);
-            console.log("xprojectFilterStart: "+xprojectFilterStart);
-            console.log("xprojectFilterFinish: "+xprojectFilterFinish);
-            console.log("chartString" + chartString);
+            console.log("pFinishDate: " + pStartDate);
+            $.ajax({
+                type: "GET",
+                url: "/set-chart/?projectCode=" + pCode + "&startDate=" + pStartDate + "&finishDate=" + pFinishDate + "&filterRadio=" + pFilterRadio,
+                success: function (dataSource) {
+                    var projectFilter = dataSource._ProjectFilter;
+                    pFilterRadio = dataSource._FilterRadio;
+                    dataSource = dataSource._ProjectTotalsOnebyDate;
+                    console.log("startDate: " + projectFilter.startDate);
+                    pStartDate = projectFilter.startDate;
+                    pFinishDate = projectFilter.finishDate;
+                    alert(JSON.stringify(projectFilter.startDate));
+                    console.log("datasource: "+dataSource);
 
-            $('#form_download').submit();
-            $('#proggress').show();
+                    $.fn.setChart = function () {
+                        $(() => {
+                            $('#chart').dxChart({
+                                dataSource,
+                                commonSeriesSettings: {
+                                    argumentField: 'kontrolTarihi',
+                                    type: 'bar',
+                                    hoverMode: 'allArgumentPoints',
+                                    selectionMode: 'allArgumentPoints',
+                                    label: {
+                                        visible: true,
+                                        format: {
+                                            type: 'fixedPoint',
+                                            precision: 0,
+                                        },
+                                    },
+                                },
+                                size: {
+                                    width: 1040,
+                                },
+                                animation: {
+                                    enabled: false,
+                                },
+                                series: [
+                                    { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
+                                    { valueField: 'hataAdeti', name: 'Hata Adedi' },
+                                ],
+                                title: {
+                                    font: {
+                                        color: "#212529",
+                                        size: 16.5,
+                                        family: "MyriadPro",
+                                        weight: 900,
+                                    },
+                                    text: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                },
+                                legend: {
+                                    verticalAlignment: 'bottom',
+                                    horizontalAlignment: 'center',
+                                },
 
+                                onPointClick(e) {
+                                    e.target.select();
+                                },
+                            });
+                        });
+                    };
+                    $().setChart();
+                    setTimeout(function () {
+                        $(document).trigger('afterready');
+                    }, 100);
+
+                }
+            });
+        });
+
+        $("#print").click(function () {
+            console.log("pCode: " + pCode);
+
+            $('#xProjectCode').val(pCode);
+            $('#xProjectFilter_StartDate').val(pStartDate);
+            $('#xProjectFilter_FinishDate').val(pFinishDate);
+            $('#xFilterRadio').val(pFilterRadio);
+            $('#xIsPrint').val(true);
+
+            console.log("pFinishDate: " + pStartDate);
+            $.ajax({
+                type: "GET",
+                url: "/set-chart/?projectCode=" + pCode + "&startDate=" + pStartDate + "&finishDate=" + pFinishDate + "&filterRadio=" + pFilterRadio,
+                success: function (dataSource) {
+                    var projectFilter = dataSource._ProjectFilter;
+                    pFilterRadio = dataSource._FilterRadio;
+                    dataSource = dataSource._ProjectTotalsOnebyDate;
+                    console.log("startDate: " + projectFilter.startDate);
+                    pStartDate = projectFilter.startDate;
+                    pFinishDate = projectFilter.finishDate;
+                    console.log("datasource: "+dataSource);
+
+                    $.fn.setChart = function () {
+                        $(() => {
+                            $('#chart').dxChart({
+                                dataSource,
+                                commonSeriesSettings: {
+                                    argumentField: 'kontrolTarihi',
+                                    type: 'bar',
+                                    hoverMode: 'allArgumentPoints',
+                                    selectionMode: 'allArgumentPoints',
+                                    label: {
+                                        visible: true,
+                                        format: {
+                                            type: 'fixedPoint',
+                                            precision: 0,
+                                        },
+                                    },
+                                },
+                                size: {
+                                    width: 1040,
+                                },
+                                animation: {
+                                    enabled: false,
+                                },
+                                series: [
+                                    { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
+                                    { valueField: 'hataAdeti', name: 'Hata Adedi' },
+                                ],
+                                title: {
+                                    font: {
+                                        color: "#212529",
+                                        size: 13.5,
+                                    },
+                                    text: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                },
+                                legend: {
+                                    verticalAlignment: 'bottom',
+                                    horizontalAlignment: 'center',
+                                },
+
+                                onPointClick(e) {
+                                    e.target.select();
+                                },
+                            });
+                        });
+                    };
+                    $().setChart();
+                    setTimeout(function () {
+                        $(document).trigger('printer');
+                    }, 100);
+
+                }
+            });
+        });
+
+        ///////////////////////////////////////////////////////
+
+        $.ajax({
+            type: "GET",
+            url: "/getuser",
+            cache: false,
+            success: function (data) {
+                $("#type").text('Area: '+data.userType);
+                $("#name").text(data.nameField);
+                $("#mail").text(data.email);
+            }
+        });
+
+        $(() => {
+            const now = new Date();
+            $('#dateFinish').dxDateBox({
+                type: 'date',
+                value: now,
+                placeholder: '@DateTime.Now.ToString("dd/MM/yyyy")',
+                showClearButton: true,
+                useMaskBehavior: true,
+                displayFormat: "dd/MM/yyyy",
+                onValueChanged(data) {
+
+                    var _fullDate = data.value;
+                    var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
+                    $('#dateFinishinp').val(datestr);
+                    pFinishDate = datestr;
+                    console.log("value changed :" + datestr);
+                },
+            });
+
+            var dateVal = $("#dateFinish").dxDateBox("instance").option("value");
+            $('#dateFinishinp').val(dateVal);
+        });
+
+        $("#open").change(function () {
+            if (this.checked) {
+                open = true;
+            } else {
+                open = false;
+            }
+
+
+            $('#large-indicator').dxLoadIndicator({
+                height: 60,
+                width: 60,
+            });
+            $('#spinner-loading').show();
+            $('#expertgrid').hide();
+            setTimeout(function () {
+                ajaxCall();
+            }, 100);
+
+        });
+        $("#close").change(function () {
+            if (this.checked) {
+                close = true;
+            } else {
+                close = false;
+            }
+
+            $('#large-indicator').dxLoadIndicator({
+                height: 60,
+                width: 60,
+            });
+            $('#spinner-loading').show();
+            $('#expertgrid').hide();
+            setTimeout(function () {
+                ajaxCall();
+            }, 100);
         });
 
 
-        function customSearch(data, text) {
-            text = document.getElementById("searchinput").value;
-            data = document.getElementById("reports");
-            console.log("text= ", text);
-            console.log("data= ", data);
-            return data.filter(function (row) {
-                return row.field.indexOf(text) > -1
-            })
+
+        function ajaxCall() {
+            $.ajax({
+        type: "post",
+            url: "/Reports/GetAllReportJson",
+            "data": {
+                'id': '@Model',
+                'open': open,
+                'close': close,
+            },
+            beforeSend: function () {
+
+                $('#large-indicator').dxLoadIndicator({
+                    height: 60,
+                    width: 60,
+                });
+            },
+            success: function (response) {
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/Reports/GetReportTotalValuesJson",
+
+                    "data": JSON.stringify(response),
+
+                    success: function (totalVals) {
+                        $('#checkedVal').empty();
+                        $('#nokVal').empty();
+                        $('#reworkVal').empty();
+                        $('#oprVal').empty();
+                        $('#spentMin').empty();
+                        $('#actualMin').empty();
+                        $('#spentHour').empty();
+                        $('#grandTotal').empty();
+
+
+                        $('#checkedVal').append(totalVals.qprojeDetayTKontrolAdedi);
+                        $('#nokVal').append(totalVals.qprojeDetayTHataAdeti);
+                        $('#reworkVal').append(totalVals.qprojeDetayTTamirAdedi);
+                        $('#oprVal').append(totalVals.qprojeDetayTOperatorSayisi);
+                        $('#spentMin').append(totalVals.qprojeDetayToplamSuredk);
+                        $('#actualMin').append(totalVals.qprojeDetayGerceklesenDk);
+                        $('#spentHour').append(totalVals.qprojeDetayHarcananSaat);
+                        $('#grandTotal').append(totalVals.qprojeDetayToplam);
+            },
+
+        });
+                $('#large-indicator').dxLoadIndicator({
+                    height: 0,
+                    width: 0,
+                });
+                $('#spinner-loading').hide();
+                setTimeout(function () {
+                    $('#expertgrid').show();
+                }, 100);
+            $(() => {
+
+                $('#gridContainer').dxDataGrid({
+                    dataSource: response,
+                    keyExpr: 'id',
+                    showBorders: true,
+                    selection: {
+                        mode: 'single',
+                    },
+                    headerFilter: {
+                        visible: true,
+                    },
+
+                    filterPanel: {
+                        visible: true,
+                    },
+                    filterRow: {
+                        visible: true,
+                    },
+                    pager: {
+                        allowedPageSizes: [10,20,50,100],
+                        showPageSizeSelector: true,
+                        showNavigationButtons: true,
+                    },
+                    paging: {
+                        pageSize: 10,
+                    },
+                    focusedRowEnabled: true,
+                    columns: [
+
+                        { dataField: 'customerName', caption: 'Customers', "width": "auto" },//Görünecek alan
+                        /*{ dataField: 'operationArea', caption: 'Opr Area', "width": "auto" }*/,//Görünmeyecek Alan
+                        /*{ dataField: 'projectCode', caption: 'Code', "width": "75px" },*/
+                        { dataField: 'nokDescs', caption: 'Nok Descriptions', "width": "200px" },
+                        { dataField: 'productRefs', caption: 'Product Ref', "width": "200px" },
+                        { dataField: 'state', caption: 'State',"width":"auto" },
+                        { dataField: 'approvalState', caption: 'Approval State',"width":"auto" },
+                        { dataField: 'startDate', caption: 'Start Date', "width": "85px" },
+                        /*{ dataField: 'responsible', caption: 'Responsible', "width": "auto" },*/
+                        { dataField: 'compNr', caption: 'Comp Nr.' },
+                        { dataField: 'material', caption: 'Material' },
+                        /*{ dataField: 'note', caption: 'Note' },*/
+                        /*{ dataField: 'currency', caption: 'Currency', "width": "5%" },*/
+
+
+                    ],
+                    onSelectionChanged(selectedItems) {
+                        console.clear();
+                        const data = selectedItems.selectedRowsData[0];
+                        pCode = data.projectCode;
+                        pStartDate = data.startDate;
+
+                        var _fullDate = new Date();
+                        var datestr = _fullDate.getDate() + '.' + (_fullDate.getMonth() + 1) + "." + _fullDate.getFullYear();
+
+                        pFinishDate = datestr;
+                        $('#dateFinishinp').val(pFinishDate);
+                        pFilterRadio = $('#daily').val();
+                        pFilterRadio = $('input[name=filterRadio]:checked', '#filterRadioCheck').val();
+                        console.log("FinishDate: " + pFinishDate);
+                        $('#proggress').css('display', 'none');
+                        $('#theprogressbar').html('0%').val(0);
+
+                        $('#zProjectCode').val(pCode);
+                        $('#zProjectFilter_StartDate').val(pStartDate);
+                        $('#zProjectFilter_FinishDate').val(pFinishDate);
+                        $('#zFilterRadio').val(pFilterRadio);
+
+                        if (data) {
+
+                            $('#selectedVal').attr("value", data.projectCode);
+                            console.log("seçilen Proje: "+data.projectCode);
+                            $('#selectionMessage').modal('toggle');
+                            selectedDate = data.startDate;
+                            console.log("Json string: "+JSON.stringify(selectedDate));
+                            $('#dateStartinp').val(selectedDate);
+                            $('#projectCode').empty(data.startDate);
+                            $('#projectCode').append(data.projectCode);
+                            $(() => {
+                                var dateStr = JSON.stringify(data.startDate);
+                                var dateAr = dateStr.split('.');
+
+                                var day = dateAr[0];
+                                var month = dateAr[1];
+                                var year = dateAr[2];
+
+                                console.log("Testing: " + day + '.' + month + '.' + year);
+                                console.log("dateStr: " + year);
+
+                                var startDateFormat = new Date(JSON.stringify(data.startDate));
+                                var datestr = JSON.stringify(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
+                                const startDateDxVal2 = new Date(startDateFormat.getDate() + '.' + (startDateFormat.getMonth() + 1) + "." + startDateFormat.getFullYear());
+                                const startDateDxVal = month + '.' + day + '.' + year;
+
+                                console.log("Checking: " + startDateDxVal);
+
+
+                                $('#dateStarting').dxDateBox({
+                                    type: 'date',
+                                    displayFormat: 'dd/MM/yyyy',
+                                    value: startDateDxVal,
+                                    placeholder: selectedDate,
+                                    showClearButton: true,
+                                    useMaskBehavior: false,
+
+                                    onValueChanged(datechanged) {
+                                        pStartDate = datechanged.value;
+                                        console.log("value changed :" + new Date(datechanged.value));
+                                        $('#dateStartinp').val(datechanged.value);
+                                    },
+                                });
+
+                            });
+                            $("#submitCode").click(function () {
+
+                                $('#frmCode').submit(function (event) {
+                                    //var action = '/project/' + data.projectCode;
+
+                                    /*var action = 'project';
+                                    $(this).attr('action', action);*/
+                                });
+                            });
+
+                        }
+                    },
+                });
+            });
+            },
+            error: function (e) {
+                $('#sectionArea').append('<div class="alert alert-danger" role="alert" data-mdb-color="danger">' +e.statusText+ '</div >');
+
+                $('#large-indicator').dxLoadIndicator({
+                    height: 0,
+                    width: 0,
+                });
+            },
+            timeout:60000,
+            });
+
+
         }
-    </script>
+
+        ajaxCall();
+        console.clear();
+        var rowCount = $('.dx-datagrid-table >tbody >tr').length;
+        console.log("Dx Row Count: " + rowCount);
+
+        function getFormattedDate(date) {
+            var year = date.getFullYear();
+
+            var month = (1 + date.getMonth()).toString();
+            month = month.length > 1 ? month : '0' + month;
+
+            var day = date.getDate().toString();
+            day = day.length > 1 ? day : '0' + day;
+
+            return day + '.' + month + '.' + year;
+        }
+        function getFormattedDateRevReg(date) {
+            var year = date.getFullYear();
+
+            var month = (1 + date.getMonth()).toString();
+            month = month.length > 1 ? month : '0' + month;
+
+            var day = date.getDate().toString();
+            day = day.length > 1 ? day : '0' + day;
+
+            return year + '.' + month + '.' + day;
+        }
+
+    });
+
+    $(document).bind('afterready', function () {
+        var xprojectCode = $('#xProjectCode').val();
+
+        var xprojectFilterStart = pStartDate;
+        var xprojectFilterFinish = pFinishDate;
+        var chartString = $('#renderedSection').html();
+        $('#xChartString').val(chartString);
+        $('#xProjectFilter_StartDate').val(pStartDate);
+        $('#xProjectFilter_FinishDate').val(pFinishDate);
+
+        console.log("xprojectCode: "+xprojectCode);
+        console.log("xprojectFilterStart: "+xprojectFilterStart);
+        console.log("xprojectFilterFinish: "+xprojectFilterFinish);
+        console.log("chartString" + chartString);
+
+        $('#form_download').submit();
+        $('#proggress').show();
+    });
+
+    $(document).bind('printer', function () {
+        var xprojectCode = $('#xProjectCode').val();
+
+        var xprojectFilterStart = pStartDate;
+        var xprojectFilterFinish = pFinishDate;
+        var chartString = $('#renderedSection').html();
+        $('#xChartString').val(chartString);
+        $('#xProjectFilter_StartDate').val(pStartDate);
+        $('#xProjectFilter_FinishDate').val(pFinishDate);
+
+        console.log("xprojectCode: "+xprojectCode);
+        console.log("xprojectFilterStart: "+xprojectFilterStart);
+        console.log("xprojectFilterFinish: "+xprojectFilterFinish);
+        console.log("chartString" + chartString);
+
+        $('#form_print').submit();
+    });
+
+    function customSearch(data, text) {
+        text = document.getElementById("searchinput").value;
+        data = document.getElementById("reports");
+        console.log("text= ", text);
+        console.log("data= ", data);
+        return data.filter(function (row) {
+            return row.field.indexOf(text) > -1
+        })
+    }
+</script>
 
 
 

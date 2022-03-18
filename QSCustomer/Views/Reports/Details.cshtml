@@ -272,9 +272,7 @@
         <img class="loader__image" width="60" src="~/assets/images/loader.png" alt="" />
     </div>
     <div id="loading">
-
     </div>
-
 </div>
 
 
@@ -312,8 +310,6 @@
     <script>
         var progressCookie = $.cookie('progress_id');
         /*import ProgressBar from "devextreme/ui/progress_bar";*/
-
-        //import ProgressBar from "";
 
 
 
@@ -354,42 +350,6 @@
 
 
         $(document).ready(function () {
-
-
-
-            //$('#progressbar').progressbar();
-
-            /*
-            for (var i = 0; i < 10; i++) {
-                $.ajax({
-                    url: "/progressbarval",
-                    type: "get",
-                    cache: false,
-                    async: true,
-                    crossDomain: true,
-                    timeout: 2000
-                }).always(function (data) {
-                        console.log("done: " + data);
-                    });
-            }*/
-
-
-/*
-            setTimeout(function () {
-
-
-                }, 2000);
-                */
-
-
-
-            /*
-            $.ajax({
-                url: "test.html",
-                context: document.body
-            }).always(function (data) {
-                $(this).addClass("done: "+data);
-            });*/
 
             $('#large-indicator').dxLoadIndicator({
                 height: 60,
@@ -453,10 +413,6 @@
 
                     console.log("Hatalar sayısı:" + faultsLength);
 
-                    /*
-                    $('#projetanimleng').val(faultsLength);
-                    console.log();*/
-
                     @{
                         count = Model._ProjeHataTanimCount;
                         await System.Threading.Tasks.Task.Delay(500);
@@ -483,14 +439,6 @@
                                 mode: "standard",
                                 showScrollbar: "onHover" // or "onScroll" | "always" | "never"
                             },
-                            /*
-                            customizeColumns(columns) {
-                                columns[1].width = 68;
-                                columns[2].width = 68;
-                                columns[3].width = 60;
-                                columns[4].width = 60;
-                                columns[5].width = 70;
-                            },*/
                             columnMinWidth:0,
                             hoverStateEnabled: true,
                             //columns: [html]
@@ -549,12 +497,6 @@
                 success: function (dataSource) {
                     console.log(dataSource);
                     dataSource = dataSource._ProjectTotalsOnebyDate;
-                    /*
-                    const dataSource = [
-                        state,
-                        kontrolAdedi,
-                        hataAdeti,
-                    ];*/
                     $.fn.setChart = function () {
                         $(() => {
                             $('#chart').dxChart({
@@ -577,25 +519,25 @@
                                 },
                                 animation: {
                                     enabled: false,
-                                },/*
-                            render: {
-                                force: true,
-                                animate: false,
-                            },*/
+                                },
                                 series: [
                                     { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
                                     { valueField: 'hataAdeti', name: 'Hata Adedi' },
                                 ],
-                                title: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                title: {
+                                    font: {
+                                        color: "#212529",
+                                        size: 16.5,
+                                        family: "MyriadPro",
+                                        weight: 900,
+                                    },
+                                    text: 'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                },
                                 legend: {
                                     verticalAlignment: 'bottom',
                                     horizontalAlignment: 'center',
                                 },
 
-                                /*
-                                export: {
-                                    enabled: true,
-                                },*/
                                 onPointClick(e) {
                                     e.target.select();
                                 },
@@ -615,21 +557,7 @@
                 let seconds = 10;
                 let inProgress = false;
                 let intervalId;
-/*
-                const progressBarStatus = $('#progressBarStatus').dxProgressBar({
-                    min: 0,
-                    max: 100,
-                    width: '90%',
-                    statusFormat(value) {
-                        return `Loading: ${value * 100}%`;
-                    },
-                    onComplete(e) {
-                        inProgress = false;
-                        progressButton.option('text', 'Restart progress');
-                        e.element.addClass('complete');
-                    },
-                }).dxProgressBar('instance');
-                */
+
                 const progressButton = $('#progress-button').dxButton({
                     text: 'Start progress',
                     width: 200,

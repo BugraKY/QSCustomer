@@ -1,0 +1,142 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model QSCustomer.Models.ViewModels.PdfReport
+<style>
+    .empty {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: aliceblue;
+        z-index: 9999;
+    }
+</style>
+<div class="empty">
+    <div class="row h-100" style="display: flex; justify-content: center; align-items: center;">
+        <div class="col-12">
+            <div id="proggress" class="progress-show-bar" style="justify-content: center; align-items: center;">
+                <label for="theprogressbar" id="barTitle" >Processing: </label>
+                <progress id="theprogressbar" value="0" max="100">0%</progress>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="printSec">
+
+</div>
+
+@section scripts
+{
+<script src="https://cdn3.devexpress.com/jslib/21.2.5/js/localization/dx.messages.tr.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="~/js/progressbarHub.js"></script>
+<script src="~/js/printer.js"></script>
+<script>
+    var progressCookie = $.cookie('progress_id');
+    var globalData="";
+    $(document).ready(function () {
+        console.clear();
+        $.ajax({
+        type: "post",
+        url: "/reports",
+            "data": {
+                'projectCode': '@Model._ProjectCode',
+                'startDate': '@Model._ProjectFilter.StartDate',
+                'finishDate': '@Model._ProjectFilter.FinishDate',
+                'chartString': '@Html.Raw(Model._HtmlString)',
+                'isPrint': true,
+            },/*
+            beforeSend: function () {
+
+                $('#large-indicator').dxLoadIndicator({
+                    height: 60,
+                    width: 60,
+                });
+            },*/
+            
+            success: function (response) {
+                globalData=response;
+                const dataSource=response;
+                @*
+                $.ajax({
+                type: "GET",
+                url: "/set-chart/?projectCode=" + 'Model._ProjectCode' + "&startDate=" + 'Model._ProjectFilter.StartDate' + "&finishDate=" + 'Model._ProjectFilter.FinishDate' + "&filterRadio=" + "1",
+                success: function (dataSource) {
+                    $.fn.setChart = function () {
+                        $(() => {
+                            $('#chart').dxChart({
+                                dataSource,
+                                commonSeriesSettings: {
+                                    argumentField: 'kontrolTarihi',
+                                    type: 'bar',
+                                    hoverMode: 'allArgumentPoints',
+                                    selectionMode: 'allArgumentPoints',
+                                    label: {
+                                        visible: true,
+                                        format: {
+                                            type: 'fixedPoint',
+                                            precision: 0,
+                                        },
+                                    },
+                                },
+                                size: {
+                                    width: 1040,
+                                },
+                                animation: {
+                                    enabled: false,
+                                },
+                                series: [
+                                    { valueField: 'kontrolAdedi', name: 'Kontrol Adedi' },
+                                    { valueField: 'hataAdeti', name: 'Hata Adedi' },
+                                ],
+                                title:{
+                                    font:{
+                                        color:"#212529",
+                                        size: 16.5,
+                                        family: "MyriadPro",
+                                        weight: 900,
+                                    },
+                                    text:'Günlük Kontrol / Hatalı Adetleri - Daily Checked / Nok QTYS - Hatalar / NOK QTY',
+                                },
+                                legend: {
+                                    verticalAlignment: 'bottom',
+                                    horizontalAlignment: 'center',
+                                },
+
+                                onPointClick(e) {
+                                    e.target.select();
+                                },
+                            });
+                        });
+                    };
+                    $().setChart();
+                    setTimeout(function () {
+                        $(document).trigger('afterready');
+                    }, 100);
+                }
+            });
+            *@
+
+                jQuery("#printSec").html(globalData);
+
+
+                console.log(globalData);
+
+                printreport();
+
+
+
+
+            }
+        });
+    });
+
+</script>
+}

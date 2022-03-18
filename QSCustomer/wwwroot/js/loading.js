@@ -1,5 +1,5 @@
 ﻿// List of sentences
-var _CONTENT = ["Searching for selected documentation...", "Documentation is being prepared...", "Adding little details...", "Documentation almost ready... Please Wait..."];
+var _CONTENT = ["Searching for selected documentation...", "Documentation is being prepared...", "Adding little details...", "Documentation almost ready... Please wait..."];
 
 // Current sentence being processed
 var _PART = 0;

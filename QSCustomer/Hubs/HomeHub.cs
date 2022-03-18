@@ -23,7 +23,7 @@ namespace QSCustomer.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", message);
         }
-        public async Task Progressbar(double CountProgress, double LengthProgress, string id)
+        public async Task Progressbar(double CountProgress, double LengthProgress, string id, string title)
         {
             double rate = 1;
 
@@ -32,6 +32,7 @@ namespace QSCustomer.Hubs
             var progressBar = new ProgressBar()
             {
                 Id = id,
+                Title=title,
                 Rate = (int)rate
             };
             await _context.Clients.All.SendAsync("ReceiveProgressRate", progressBar);

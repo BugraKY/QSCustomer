@@ -31,7 +31,11 @@ namespace QSCustomer.Models.ViewModels
         public int _PPMTotal { get; set; }
         public string _DataFields { get; set; }
         public string _HtmlString { get; set; }
+        public string _HtmlHeader { get; set; }
+        public string _HtmlChart { get; set; }
+        public string _HtmlTable { get; set; }
         public string _Url { get; set; }
+        public bool _IsPrint { get; set; }
 
     }
 }

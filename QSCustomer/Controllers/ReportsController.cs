@@ -252,7 +252,7 @@ namespace QSCustomer.Controllers
                 var productrefStr = "";
                 foreach (var itemDesc in nokdesc)
                 {
-                    nokdescStr += itemDesc.hataTanimi+", ";
+                    nokdescStr += itemDesc.hataTanimi + ", ";
                 }
                 foreach (var itemRef in productref)
                 {
@@ -309,8 +309,8 @@ namespace QSCustomer.Controllers
                                 Material = item.materyel,
                                 Note = item.note,
                                 Currency = Currency.Sembol,
-                                NokDescs=nokdescStr,
-                                ProductRefs= productrefStr
+                                NokDescs = nokdescStr,
+                                ProductRefs = productrefStr
 
                             };
                             ProjectList.Add(ProjectItem);
@@ -1335,7 +1335,7 @@ namespace QSCustomer.Controllers
             PdfReport AllReports = new PdfReport();
             Console.WriteLine("Section 3");
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report, GetClaim(), _context, _accessor);
-            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
+            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions(_context,_uow,GetClaim(),_accessor);
 
             if (ProjectStatus.sıra == 1)
             {
@@ -1434,7 +1434,7 @@ namespace QSCustomer.Controllers
             PdfReport AllReports = new PdfReport();
             Console.WriteLine("Section 3");
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report, GetClaim(), _context, _accessor);
-            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
+            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions(_context, _uow, GetClaim(), _accessor);
 
             if (ProjectStatus.sıra == 1)
             {
@@ -1669,8 +1669,9 @@ namespace QSCustomer.Controllers
         }
 
         [HttpPost("reports")]
-        public async Task<IActionResult> SetChart(string projectCode, string startDate, string finishDate, string chartString)
+        public async Task<IActionResult> SetChart(string projectCode, string startDate, string finishDate, string chartString, bool isPrint)
         {
+            //return NoContent();
 
             if (projectCode == null || startDate == null || finishDate == null || chartString == null)
                 return Json("Fail: \nProject Code: " + projectCode + "\n" + "Start Date: " + startDate + "\n" + "Finish Date: " + finishDate + "\n" + "Chart String: " + chartString);
@@ -1733,7 +1734,7 @@ namespace QSCustomer.Controllers
             PdfReport AllReports = new PdfReport();
             Console.WriteLine("Section 3");
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report, GetClaim(), _context, _accessor);
-            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions();
+            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions(_context, _uow, GetClaim(), _accessor);
 
             if (ProjectStatus.sıra == 1)
             {
@@ -1746,8 +1747,16 @@ namespace QSCustomer.Controllers
 
             //StatusCloseProjects = getProjectDetail.GetStatusClose();
 
-            string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects, MainTab_Chart);
 
+            if (isPrint)
+            {
+
+                string RenderedTableforPrint = await renderHtmlTable.GetTableString(StatusOpenProjects, MainTab_Chart);
+                string _reportheader = await renderHtmlTable.ReportHeader(StatusOpenProjects);
+                string _PrintString = PrintString.Before + RenderedTableforPrint + PrintString.After;
+                return Json(_PrintString);
+            }
+            string RenderedTableString = await renderHtmlTable.GetTableString(StatusOpenProjects, MainTab_Chart);
             string _PdfString = PDFString.Before + RenderedTableString + PDFString.After;
             //string baseUrl = string.Empty;
             //string baseUrl = "https://localhost:5001/reports/DownloadPdf";
@@ -1791,7 +1800,24 @@ namespace QSCustomer.Controllers
             iText.Html2pdf.HtmlConverter.ConvertToElements(_PdfString);*/
 
         }
+        [HttpPost("reports/printer")]
+        public IActionResult printer(string projectCode, string startDate, string finishDate, string chartString, bool isPrint)
+        {
+            var filter = new ProjectFilter()
+            {
+                StartDate = DateTime.Parse(startDate),
+                FinishDate = DateTime.Parse(finishDate)
+            };
+            var report = new PdfReport()
+            {
+                _ProjectCode = projectCode,
+                _ProjectFilter = filter,
+                _HtmlString = chartString,
+                _IsPrint = isPrint
 
+            };
+            return View(report);
+        }
         [HttpGet("set-chart")]
         public JsonResult SetChartHttpGet(string projectCode, string startDate, string finishDate, int filterRadio)
         {
@@ -1885,8 +1911,8 @@ namespace QSCustomer.Controllers
             PdfReport _report = new PdfReport()
             {
                 _FilterRadio = filterRadio,
-                _ProjectFilter=_projectFilter,
-                _ProjectTotalsOnebyDate= _projectTotalsOneByDate
+                _ProjectFilter = _projectFilter,
+                _ProjectTotalsOnebyDate = _projectTotalsOneByDate
             };
             /*
             var _pdfReport = new PdfReport()

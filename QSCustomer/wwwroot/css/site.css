@@ -16,7 +16,6 @@ a {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
-
 .btn-expert {
     background-color: #2AA377;
     border: 1px solid #2AA377;
@@ -132,8 +131,9 @@ html {
     }
 
     .mediumtx {
-        font-size: 11.5px;
+        font-size: 14.5px;
         font-weight: 900 !important;
+        font-family: var(--conult-font);
     }
     .bg-expert {
         background: #2aa377;

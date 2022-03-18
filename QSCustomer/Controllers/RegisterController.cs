@@ -118,9 +118,8 @@ namespace QSCustomer.Controllers
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    EmailSenderExtension.SendEmail(Input.Email, callbackUrl);
+                    //EmailSenderExtension.SendEmail(Input.Email, callbackUrl);
 
-                    /*Email Send*/
 
                     if (IsOperationArea != null)
                     {
