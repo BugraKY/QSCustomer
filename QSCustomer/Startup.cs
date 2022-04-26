@@ -81,7 +81,12 @@ namespace QSCustomer
             {
                 options.AllowSynchronousIO = true;
             });
-
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/login";
+                //options.LogoutPath = $"/Identity/Accout/Logout";
+                //options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
             // If using IIS:
             /*
             services.Configure<IISServerOptions>(options =>
@@ -117,6 +122,16 @@ namespace QSCustomer
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/";
+                    await next();
+                }
+            });
+
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -129,6 +144,7 @@ namespace QSCustomer
                 builder.WithOrigins("https://localhost:5001", "http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
             });
             */
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

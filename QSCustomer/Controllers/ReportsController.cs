@@ -30,12 +30,14 @@ using Microsoft.AspNetCore.SignalR;
 using QSCustomer.Hubs;
 using Microsoft.AspNetCore.Http.Features;
 using System.Net.WebSockets;
+using Microsoft.AspNetCore.Authorization;
 //using iTextSharp.text;
 //using iTextSharp.text.pdf;
 //using iTextSharp.text.html.simpleparser;
 
 namespace QSCustomer.Controllers
 {
+    [Authorize]
     public class ReportsController : Controller
     {
         private readonly IUnitOfWork _uow;
@@ -557,6 +559,23 @@ namespace QSCustomer.Controllers
             if (Claims != null)
             {
                 var ApplicationUser = _uow.ApplicationUser.GetFirstOrDefault(i => i.Id == Claims.Value);
+
+                #region CheckUser
+                if (User.IsInRole(UserTypeConst.Customer) || User.IsInRole(UserTypeConst.Mod))
+                {
+                    if(ApplicationUser.DefinitionId != SelectedProject.idMusteri)
+                    {
+                        return Redirect("/");
+                    }
+                }
+                else if (User.IsInRole(UserTypeConst.Operation_Area) || User.IsInRole(UserTypeConst.Mod))
+                {
+                    if (ApplicationUser.DefinitionId != SelectedProject.idOprArea)
+                    {
+                        return Redirect("/");
+                    }
+                }
+                #endregion CheckUser
 
                 if (ApplicationUser != null && ApplicationUser.EmailConfirmed == false)
                     return RedirectToAction("Unconfirmed", "Home");
