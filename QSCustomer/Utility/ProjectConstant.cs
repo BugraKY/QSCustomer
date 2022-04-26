@@ -273,6 +273,7 @@ namespace QSCustomer.Utility
         {
             public const string Operation_Area = "Operation Area";
             public const string Customer = "Customer";
+            public const string Mod = "Moderator";
         }
         public static class Host
         {

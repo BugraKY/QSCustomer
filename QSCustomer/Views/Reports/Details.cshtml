@@ -92,6 +92,15 @@
     .btn-expert:hover {
         color: #2AA377!important;
     }
+    /*
+    #pie {
+        height:550px;
+    }*/
+
+        #pie * {
+            margin: 0 auto;
+        }
+
 
     @if (Model._ProjeHataTanimCount > 10)
     {
@@ -261,6 +270,9 @@
         </div>
     </div>
 
+    <div class="demo-container">
+        <div id="pie"></div>
+    </div>
 
     <div class="demo-container">
         <div id="gridContainer"></div>
@@ -307,6 +319,7 @@
             src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="~/js/progressbarHub.js"></script>
     <script src="/js/loading.js"></script>
+    <script src="~/js/pie.chart.js"></script>
     <script>
         var progressCookie = $.cookie('progress_id');
         /*import ProgressBar from "devextreme/ui/progress_bar";*/
@@ -350,20 +363,19 @@
 
 
         $(document).ready(function () {
+            var setPieUrl = "/set-pie/?projectCode=" + '@Model._ProjectCode' + "&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate' + "&filterRadio=" + '@Model._FilterRadio.ToString()';
 
             $('#large-indicator').dxLoadIndicator({
                 height: 60,
                 width: 60,
             });
-            console.log("Sıra - 1 ");
+
         $.ajax({
             type: "get",
             url: "/detailTest/" + '@Model._ProjectCode' + "?&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate'  + "&open=" + '@Model._ProjectState.Open' + "&close=" + '@Model._ProjectState.Close' + "&problematic=" + '@Model._ProjectState.Problematic'+ "&filterRadio=" + '@Model._FilterRadio',
                 success: function (data) {
 
                     //return data;
-                    console.log(data);
-                    console.log("İşlenen veri: " + JSON.stringify(data._SelectedProject))
 
                     var baslangicTarihi = new Date(data._SelectedProject.baslangicTarihi);
                     var _PartNrTanimlariArr = data._PartNrTanimlari.length;
@@ -410,8 +422,6 @@
 
                     var faultsLength = data._ProjeHataTanim.length;
                     sessionStorage.setItem("faultsLength", faultsLength);
-
-                    console.log("Hatalar sayısı:" + faultsLength);
 
                     @{
                         count = Model._ProjeHataTanimCount;
@@ -495,7 +505,6 @@
                 type: "GET",
                 url: "/set-chart/?projectCode=" + '@Model._ProjectCode' + "&startDate=" + '@Model._ProjectFilter.StartDate' + "&finishDate=" + '@Model._ProjectFilter.FinishDate' + "&filterRadio=" + '@Model._FilterRadio.ToString()',
                 success: function (dataSource) {
-                    console.log(dataSource);
                     dataSource = dataSource._ProjectTotalsOnebyDate;
                     $.fn.setChart = function () {
                         $(() => {
@@ -552,6 +561,7 @@
                 }
             });
 
+            getPie(setPieUrl, false);
 
             $(() => {
                 let seconds = 10;

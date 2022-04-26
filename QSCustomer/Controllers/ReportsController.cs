@@ -1335,7 +1335,7 @@ namespace QSCustomer.Controllers
             PdfReport AllReports = new PdfReport();
             Console.WriteLine("Section 3");
             GetProjectDetailsExtensions getProjectDetail = new GetProjectDetailsExtensions(_uow, report, GetClaim(), _context, _accessor);
-            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions(_context,_uow,GetClaim(),_accessor);
+            RenderHtmlTableExtensions renderHtmlTable = new RenderHtmlTableExtensions(_context, _uow, GetClaim(), _accessor);
 
             if (ProjectStatus.sıra == 1)
             {
@@ -1924,6 +1924,161 @@ namespace QSCustomer.Controllers
 
             //return NoContent();
             return Json(_report);
+        }
+
+        [HttpGet("set-pie")]
+        public JsonResult SetPieHttpGet(string projectCode, string startDate, string finishDate, int filterRadio)
+        {
+            List<Pie> _TotalPie = new List<Pie>();
+            //return Json(null);
+            #region Filter
+            if (filterRadio == 0)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter;
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            if (filterRadio == 1)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter.AddDays(-6);
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            if (filterRadio == 2)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter.AddMonths(-1);
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            if (filterRadio == 4)
+            {
+                var projectId = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode).id;
+                var _projectDetail = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).ToList();
+                var _projectDetailCount = _uow.ProjeDetay.GetAll(i => i.idProje == projectId).Count();
+                //var _startDateFilter = _projectDetail[_projectDetailCount-7].kontrolTarihi;
+                var _finishDateFilter = _projectDetail[_projectDetailCount - 1].kontrolTarihi;
+                var _startDateFilter = _finishDateFilter.AddMonths(-2);
+                startDate = _startDateFilter.ToString("dd.MM.yyyy");
+                finishDate = _finishDateFilter.ToString("dd.MM.yyyy");
+            }
+            #endregion Filter
+
+            var _projectTotalsOneByDate = new List<ProjectTotalsOneByDate>();
+            var _selectedProject = _uow.ProjeTanim.GetFirstOrDefault(i => i.projeCode == projectCode);
+            var _ProjectDetails = _uow.ProjeDetay.GetAll(i => i.idProje == _selectedProject.id).Where(d => d.kontrolTarihi >= DateTime.Parse(startDate)).Where(d => d.kontrolTarihi <= DateTime.Parse(finishDate));
+            var ProjectStatus = _uow.ProjeDurumu.GetFirstOrDefault(i => i.id == _selectedProject.idProjeDurumu);
+            var hatatanim = _uow.ProjeHataTanimi.GetAll(i => i.idProje == _selectedProject.id);
+            float quantities = 0;
+            foreach (var item in hatatanim)
+            {
+                var hatatanims = _uow.ProjeHataDetay.GetAll(i => i.idHataTanimi == item.id).Where(x => x.idProje == _selectedProject.id);
+                foreach (var itemDefi in hatatanims)
+                {
+                    var projedetay = _uow.ProjeDetay.GetFirstOrDefault(i => i.id == itemDefi.idProjeDetay);
+                    if (projedetay.idProforma == 0 && projedetay.kontrolTarihi>= DateTime.Parse(startDate)&& projedetay.kontrolTarihi <= DateTime.Parse(finishDate))
+                    {
+                        quantities += itemDefi.Adet;
+                    }
+                }
+            }
+
+            foreach (var item in hatatanim)
+            {
+                var hatatanims = _uow.ProjeHataDetay.GetAll(i => i.idHataTanimi == item.id).Where(x => x.idProje == _selectedProject.id);
+                float quantity = 0;
+
+
+                foreach (var itemDefi in hatatanims)
+                {
+                    var projedetay = _uow.ProjeDetay.GetFirstOrDefault(i => i.id == itemDefi.idProjeDetay);
+                    if (projedetay.idProforma == 0 && projedetay.kontrolTarihi >= DateTime.Parse(startDate) && projedetay.kontrolTarihi <= DateTime.Parse(finishDate))
+                    {
+                        quantity += itemDefi.Adet;
+                    }
+                    //itemDefi.idProjeDetay
+
+                    /*
+                    var _pie = new Pie()
+                    {
+                        Definition= item.hataTanimi,
+                        Rate=itemDefi.Adet
+                    };*/
+                }
+                var rateTest = quantities - quantity;
+                var _rate = Math.Round(quantity / quantities,2)*100;
+                var _pie = new Pie()
+                {
+                    Definition = item.hataTanimi + ": " + quantity,
+                    Rate = (float)_rate
+                };
+                if(quantity > 0)
+                    _TotalPie.Add(_pie);
+            }
+            if (ProjectStatus.id == 1)
+            {
+                foreach (var item in _ProjectDetails)
+                {
+                    if (item.idProforma == 0)
+                    {
+                        var _chartvalues = new ProjectTotalsOneByDate()
+                        {
+                            kontrolTarihi = item.kontrolTarihi.ToString("dd/MM/yyyy"),
+                            hataAdeti = item.tHataAdeti,
+                            kontrolAdedi = item.tKontrolAdedi,
+                        };
+                        _projectTotalsOneByDate.Add(_chartvalues);
+
+
+                        var _pie = new Pie()
+                        {
+                            //Definition=item.hatalar
+                        };
+
+                    }
+                }
+            }
+            else if (ProjectStatus.id == 4)
+            {
+                foreach (var item in _ProjectDetails)
+                {
+                    var _chartvalues = new ProjectTotalsOneByDate()
+                    {
+                        kontrolTarihi = item.kontrolTarihi.ToString("dd/MM/yyyy"),
+                        hataAdeti = item.tHataAdeti,
+                        kontrolAdedi = item.tKontrolAdedi
+                    };
+                    _projectTotalsOneByDate.Add(_chartvalues);
+                }
+            }
+            ProjectFilter _projectFilter = new ProjectFilter()
+            {
+                StartDate = DateTime.Parse(startDate),
+                FinishDate = DateTime.Parse(finishDate)
+
+            };
+            PdfReport _report = new PdfReport()
+            {
+                _FilterRadio = filterRadio,
+                _ProjectFilter = _projectFilter,
+                _ProjectTotalsOnebyDate = _projectTotalsOneByDate
+            };
+
+            return Json(_TotalPie);
         }
         public Claim GetClaim()
         {
